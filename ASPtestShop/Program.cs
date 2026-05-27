@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews()
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
-builder.Services.AddDbContext<Hshop2023Context>(options => {
+builder.Services.AddDbContext<AppDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Hshop"));
 });
 var app = builder.Build();
@@ -43,7 +43,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         // Gọi DbContext ra để kiểm tra
-        var context = services.GetRequiredService<Hshop2023Context>(); 
+        var context = services.GetRequiredService<AppDbContext>(); 
         
         if (context.Database.CanConnect())
         {
