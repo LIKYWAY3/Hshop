@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 namespace ASPtestShop.Data;
-
 public partial class BanBe
 {
     public int MaBb { get; set; }
