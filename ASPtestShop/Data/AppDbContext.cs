@@ -4,13 +4,8 @@ using ASPtestShop.Data.Entities;
 
 namespace ASPtestShop.Data
 {
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext(options)
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-        }
-
         public DbSet<Category> Categories { get; set; }
         public DbSet<User> Users { get; set; }
 
