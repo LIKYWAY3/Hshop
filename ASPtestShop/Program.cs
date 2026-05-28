@@ -29,6 +29,7 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+app.MapControllers();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
@@ -49,6 +50,8 @@ using (var scope = app.Services.CreateScope())
         {
             Console.WriteLine("\n==================================================");
             Console.WriteLine("[SUCCESS] KET NOI TOI SQL SERVER (Hshop) OK!");
+            Console.WriteLine("====================XIN CHÀO==================\n");
+
             Console.WriteLine("==================================================\n");
         }
         else
