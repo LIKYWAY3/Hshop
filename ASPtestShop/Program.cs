@@ -37,6 +37,7 @@ app.MapControllerRoute(
 
 // =========================================================================
 // ĐOẠN CODE TEST KẾT NỐI DATABASE (THÊM VÀO ĐÂY)
+
 // =========================================================================
 using (var scope = app.Services.CreateScope())
 {
