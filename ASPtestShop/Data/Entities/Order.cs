@@ -12,7 +12,7 @@ namespace ASPtestShop.Data.Entities
         [MaxLength(50)]
         public string OrderCode { get; set; }
 
-        public string UserId { get; set; }
+        public int UserId { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }

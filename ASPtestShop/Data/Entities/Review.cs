@@ -8,7 +8,7 @@ namespace ASPtestShop.Data.Entities
 
         public int ProductId { get; set; }
 
-        public string UserId { get; set; }
+        public int UserId { get; set; }
 
         [Range(1, 5)]
         public int Rating { get; set; }
