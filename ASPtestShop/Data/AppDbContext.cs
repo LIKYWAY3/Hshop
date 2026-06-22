@@ -1,13 +1,12 @@
+using ASPtestShop.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ASPtestShop.Data.Entities;
 
 namespace ASPtestShop.Data
 {
-    public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext(options)
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
         public DbSet<Category> Categories { get; set; }
-        public DbSet<User> Users { get; set; }
 
         public DbSet<Product> Products { get; set; }
 
@@ -30,14 +29,13 @@ namespace ASPtestShop.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<User>()
-                .HasIndex(u => u.Username)
+            builder.Entity<ApplicationUser>()
+                .HasIndex(u => u.UserName)
                 .IsUnique();
 
-            builder.Entity<User>()
+            builder.Entity<ApplicationUser>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
-
 
             builder.Entity<Product>()
                 .HasIndex(p => p.Slug)

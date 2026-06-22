@@ -1,6 +1,7 @@
 ﻿using ASPtestShop.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 namespace ASPtestShop.Controllers.Api
 {
     [Route("api/categories")]
@@ -8,6 +9,7 @@ namespace ASPtestShop.Controllers.Api
     public class CategoryApiController(AppDbContext context) : ControllerBase
     {
         private readonly AppDbContext _context = context;
+
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
@@ -26,16 +28,5 @@ namespace ASPtestShop.Controllers.Api
                 .ToListAsync();
             return Ok(categories);
         }
-
-
-
-
-
-
-
-
-
-
-
     }
 }
