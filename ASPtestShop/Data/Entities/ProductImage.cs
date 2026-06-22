@@ -6,7 +6,7 @@ namespace ASPtestShop.Data.Entities
     {
         public int ProductImageId { get; set; }
 
-        public int ProductId { get; set; } 
+        public int ProductId { get; set; }
 
         [Required]
         [MaxLength(500)]

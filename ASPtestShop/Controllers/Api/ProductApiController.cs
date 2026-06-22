@@ -33,7 +33,6 @@ namespace ASPtestShop.Controllers.Api
             return Ok(products);
         }
 
-
         // GET: api/products/category/id
         // Lấy danh sách sản phẩm từ categoryId
         [HttpGet("category/{categoryId}")]
@@ -92,6 +91,7 @@ namespace ASPtestShop.Controllers.Api
 
             return Ok(product);
         }
+
         //Get: api/products/featured
         // Lấy danh sách sản phẩm nổi bật
         [HttpGet("featured")]
@@ -115,6 +115,7 @@ namespace ASPtestShop.Controllers.Api
 
             return Ok(products);
         }
+
         //Get: api/products/search?keyword=abc
         // Tìm kiếm sản phẩm theo keyword
         [HttpGet("search")]
@@ -138,6 +139,5 @@ namespace ASPtestShop.Controllers.Api
 
             return Ok(products);
         }
-
     }
 }
