@@ -1,4 +1,4 @@
-﻿namespace ASPtestShop.Models.DTO
+﻿namespace ASPtestShop.Models.DTO.Cart
 {
     public class AddToCartDto
     {
