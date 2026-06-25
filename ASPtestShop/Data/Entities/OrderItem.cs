@@ -13,7 +13,7 @@ namespace ASPtestShop.Data.Entities
 
         [Required]
         [MaxLength(200)]
-        public string ProductNameSnapshot { get; set; }
+        public string ProductNameSnapshot { get; set; } = string.Empty;
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal UnitPrice { get; set; }
