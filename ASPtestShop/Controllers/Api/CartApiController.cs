@@ -185,5 +185,34 @@ namespace ASPtestShop.Controllers.Api
             await _context.SaveChangesAsync();
             return Ok(new { Message = "Xóa sản phẩm khỏi giỏ hàng thành công." });
         }
+
+        // Xóa tất cả sản phẩm khỏi giỏ hàng của người dùng hiện tại
+        [Authorize]
+        [HttpDelete("clear")]
+        public async Task<IActionResult> ClearCart(int cartItemId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized(new { Message = "Bạn chưa đăng nhập" });
+            }
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+            //check goi hàng có tồn tại không
+            if (cart == null || !cart.CartItems.Any())
+            {
+                return Ok(new
+                {
+                    Message = "Giỏ hàng trống",
+                    Items = new List<object>(),
+                    TotalAmount = 0
+                });
+            }
+            // Xóa tất cả sản phẩm trong giỏ hàng
+            _context.CartItems.RemoveRange(cart.CartItems);
+            await _context.SaveChangesAsync();
+            return Ok(new { Message = "Xóa toàn bộ sản phẩm khỏi giỏ hàng thành công." });
+        }
     }
 }

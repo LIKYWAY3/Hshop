@@ -32,19 +32,19 @@ namespace ASPtestShop.Data.Entities
         public string PaymentStatus { get; set; } = "Unpaid";
 
         [MaxLength(30)]
-        public string PaymentMethod { get; set; }
+        public string PaymentMethod { get; set; } = string.Empty;
 
         [MaxLength(100)]
-        public string ReceiverName { get; set; }
+        public string ReceiverName { get; set; } = string.Empty;
 
         [MaxLength(20)]
-        public string ReceiverPhone { get; set; }
+        public string ReceiverPhone { get; set; } = string.Empty;
 
         [MaxLength(255)]
-        public string ShippingAddress { get; set; }
+        public string ShippingAddress { get; set; } = string.Empty;
 
         [MaxLength(500)]
-        public string? Note { get; set; }
+        public string? Note { get; set; } = string.Empty;
 
         public ApplicationUser? User { get; set; }
 
