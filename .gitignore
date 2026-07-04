@@ -2,4 +2,9 @@
 bin/
 obj/
 *.user
-*.suo
+*.suo\
+/appsettings.json
+/appsettings.Development.json
+/Properties/launchSettings.json
+migrations/
+Program.cs

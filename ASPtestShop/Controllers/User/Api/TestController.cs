@@ -9,4 +9,4 @@ namespace ASPtestShop.Controllers.Api
         [HttpGet]
         public IActionResult Get() => Ok("ok");
     }
-}
+}   
