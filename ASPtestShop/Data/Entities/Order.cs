@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using ASPtestShop.Data;
 namespace ASPtestShop.Data.Entities
 {
     public class Order : BaseEntity
@@ -9,7 +9,10 @@ namespace ASPtestShop.Data.Entities
 
         [Required]
         [MaxLength(50)]
-        public string OrderCode { get; set; }
+        public string OrderCode { get; set; } = String.Empty;
+        public int? CouponId { get; set; }
+        //viết hoa chữ cái đầu (PascalCase) theo chuẩn của .NET:
+        public Coupon? Coupon { get; set; }
 
         public string? UserId { get; set; }
 

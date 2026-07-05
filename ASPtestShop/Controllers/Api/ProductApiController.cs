@@ -33,7 +33,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(products);
         }
 
-        // GET: api/products/category/id
+        // GET: api/products/category/{categoryId}
         // Lấy danh sách sản phẩm từ categoryId
         [HttpGet("category/{categoryId}")]
         public async Task<IActionResult> GetProductsByCategory(int categoryId)
@@ -57,7 +57,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(products);
         }
 
-        // GET: api/products/1
+        // GET: api/products/{id}
         // Lấy chi tiết 1 sản phẩm
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(int id)

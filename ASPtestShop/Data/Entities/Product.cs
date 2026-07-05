@@ -9,7 +9,7 @@ namespace ASPtestShop.Data.Entities
 
         public int CategoryId { get; set; }
 
-        [Required]
+        [Required] 
         [MaxLength(200)]
         public string ProductName { get; set; }
 
