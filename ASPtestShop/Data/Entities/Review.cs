@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-
+using ASPtestShop.Data;
 namespace ASPtestShop.Data.Entities
 {
     public class Review : BaseEntity
@@ -18,7 +18,7 @@ namespace ASPtestShop.Data.Entities
 
         public bool IsApproved { get; set; } = false;
 
-        public Product Product { get; set; }
+        public Product Product { get; set; } = null!;
 
         public ApplicationUser? User { get; set; }
     }
