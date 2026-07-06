@@ -1,31 +1,60 @@
-﻿using ASPtestShop.Data;
+﻿using ASPtestShop.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ASPtestShop.Controllers.Api
 {
     [Route("api/categories")]
     [ApiController]
-    public class CategoryApiController(AppDbContext context) : ControllerBase
+    public class CategoryApiController : ControllerBase
     {
-        private readonly AppDbContext _context = context;
+        private readonly ICategoryService _categoryService;
 
+        public CategoryApiController(ICategoryService categoryService)
+        {
+            _categoryService = categoryService;
+        }
+
+        // GET: api/categories
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
-            var categories = await _context.Categories
-                .Select(c => new
+            var categories = await _categoryService.GetCategoriesAsync();
+
+            return Ok(categories);
+        }
+
+        // GET: api/categories/{categoryId}
+        [HttpGet("{categoryId:int}")]
+        public async Task<IActionResult> GetCategoryById(int categoryId)
+        {
+            var category = await _categoryService.GetCategoryByIdAsync(categoryId);
+
+            if (category == null)
+            {
+                return NotFound(new
                 {
-                    c.CategoryId,
-                    c.CategoryName,
-                    ImageUrl = c.Products
-                        .OrderBy(p => p.ProductId)
-                        .SelectMany(p => p.ProductImages)
-                        .OrderBy(img => img.SortOrder)
-                        .Select(img => img.ImageUrl)
-                        .FirstOrDefault()
-                })
-                .ToListAsync();
+                    Message = $"Không tìm thấy danh mục có ID = {categoryId}"
+                });
+            }
+
+            return Ok(category);
+        }
+
+        // GET: api/categories/parents
+        [HttpGet("parents")]
+        public async Task<IActionResult> GetParentCategories()
+        {
+            var categories = await _categoryService.GetParentCategoriesAsync();
+
+            return Ok(categories);
+        }
+
+        // GET: api/categories/{parentCategoryId}/subcategories
+        [HttpGet("{parentCategoryId:int}/subcategories")]
+        public async Task<IActionResult> GetSubCategories(int parentCategoryId)
+        {
+            var categories = await _categoryService.GetSubCategoriesAsync(parentCategoryId);
+
             return Ok(categories);
         }
     }

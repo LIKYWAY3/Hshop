@@ -173,6 +173,9 @@ namespace ASPtestShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
 
+                    b.Property<int?>("CategoryId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -200,6 +203,8 @@ namespace ASPtestShop.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("CategoryId");
+
+                    b.HasIndex("CategoryId1");
 
                     b.HasIndex("ParentCategoryId");
 
@@ -385,6 +390,9 @@ namespace ASPtestShop.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
                     b.ToTable("Coupons");
                 });
 
@@ -395,6 +403,9 @@ namespace ASPtestShop.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+
+                    b.Property<int?>("CouponId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CouponId")
                         .HasColumnType("int");
@@ -463,6 +474,8 @@ namespace ASPtestShop.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("OrderId");
+
+                    b.HasIndex("CouponId");
 
                     b.HasIndex("CouponId");
 
@@ -859,7 +872,7 @@ namespace ASPtestShop.Migrations
                     b.HasOne("ASPtestShop.Data.Entities.Product", "Product")
                         .WithMany("CartItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Cart");
@@ -869,9 +882,14 @@ namespace ASPtestShop.Migrations
 
             modelBuilder.Entity("ASPtestShop.Data.Entities.Category", b =>
                 {
-                    b.HasOne("ASPtestShop.Data.Entities.Category", "ParentCategory")
+                    b.HasOne("ASPtestShop.Data.Entities.Category", null)
                         .WithMany("ChildCategories")
-                        .HasForeignKey("ParentCategoryId");
+                        .HasForeignKey("CategoryId1");
+
+                    b.HasOne("ASPtestShop.Data.Entities.Category", "ParentCategory")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ParentCategory");
                 });
@@ -935,7 +953,7 @@ namespace ASPtestShop.Migrations
                     b.HasOne("ASPtestShop.Data.Entities.Product", "Product")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Order");
@@ -959,7 +977,7 @@ namespace ASPtestShop.Migrations
                     b.HasOne("ASPtestShop.Data.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -981,12 +999,13 @@ namespace ASPtestShop.Migrations
                     b.HasOne("ASPtestShop.Data.Entities.Product", "Product")
                         .WithMany("Reviews")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ASPtestShop.Data.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Product");
 

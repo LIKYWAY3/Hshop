@@ -3,7 +3,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer; // Thêm namespace cho JWT 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;                // Thêm namespace cho Token Validation
-using System.Text;                                  // Thêm namespace cho Encoding.UTF8.GetBytes()
+using System.Text;
+using ASPtestShop.Services.Interfaces;
+using ASPtestShop.Services.Implementations;
+using ASPtestShop.Services.Implementations.PaymentProviders;
+using ASPtestShop.Services.PaymentProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +47,21 @@ builder.Services.AddAuthentication(options =>
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
+//Đăng kí services cho các lớp dịch vụ
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+// Payment providers
+builder.Services.AddScoped<IPaymentProvider, CodPaymentProvider>();
+// tạm thời chưa dùng
+//builder.Services.AddScoped<IPaymentProvider, MomoPaymentProvider>();
+//builder.Services.AddScoped<IPaymentProvider, ZaloPayPaymentProvider>();
+//builder.Services.AddScoped<IPaymentProvider, VnPayPaymentProvider>();
+builder.Services.AddScoped<IPaymentProviderFactory, PaymentProviderFactory>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
