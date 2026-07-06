@@ -390,9 +390,6 @@ namespace ASPtestShop.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
                     b.ToTable("Coupons");
                 });
 
@@ -403,9 +400,6 @@ namespace ASPtestShop.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
-
-                    b.Property<int?>("CouponId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("CouponId")
                         .HasColumnType("int");
@@ -474,8 +468,6 @@ namespace ASPtestShop.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("OrderId");
-
-                    b.HasIndex("CouponId");
 
                     b.HasIndex("CouponId");
 
@@ -856,7 +848,7 @@ namespace ASPtestShop.Migrations
                     b.HasOne("ASPtestShop.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("User");
                 });
@@ -931,11 +923,13 @@ namespace ASPtestShop.Migrations
                 {
                     b.HasOne("ASPtestShop.Data.Entities.Coupon", "Coupon")
                         .WithMany("Orders")
-                        .HasForeignKey("CouponId");
+                        .HasForeignKey("CouponId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("ASPtestShop.Data.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Coupon");
 
@@ -1073,6 +1067,8 @@ namespace ASPtestShop.Migrations
                     b.Navigation("ChildCategories");
 
                     b.Navigation("Products");
+
+                    b.Navigation("SubCategories");
                 });
 
             modelBuilder.Entity("ASPtestShop.Data.Entities.ChatMessage", b =>
