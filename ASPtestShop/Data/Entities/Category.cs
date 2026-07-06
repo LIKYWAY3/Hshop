@@ -21,6 +21,9 @@ namespace ASPtestShop.Data.Entities
 
         public Category? ParentCategory { get; set; }
 
+        public ICollection<Category> SubCategories { get; set; }
+            = new List<Category>();
+
         public ICollection<Category> ChildCategories { get; set; }
             = new List<Category>();
 

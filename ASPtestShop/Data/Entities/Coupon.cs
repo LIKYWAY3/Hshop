@@ -6,6 +6,7 @@ namespace ASPtestShop.Data.Entities
     public class Coupon : BaseEntity
     {
         public int CouponId { get; set; }
+
         public ICollection<Order> Orders { get; set; }
         = new List<Order>();
 
