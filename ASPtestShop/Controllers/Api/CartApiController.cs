@@ -1,218 +1,132 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using ASPtestShop.Data;
-using ASPtestShop.Data.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Security.Claims;
 using ASPtestShop.Models.DTO.Cart;
+using ASPtestShop.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ASPtestShop.Controllers.Api
 {
     [Route("api/cart")]
     [ApiController]
-    public class CartApiController(AppDbContext context) : ControllerBase
+    [Authorize]
+    public class CartApiController : ControllerBase
     {
-        private readonly AppDbContext _context = context;
+        private readonly ICartService _cartService;
 
-        [Authorize]
+        public CartApiController(ICartService cartService)
+        {
+            _cartService = cartService;
+        }
+
         [HttpPost("add")]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartDto dto)
         {
-            // kiểm tra xem người dùng đã đăng nhập chưa, nếu chưa thì trả về lỗi
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-            {
-                return Unauthorized(new { Message = "Bạn chưa đăng nhập" });
-            }
 
-            // kiểm tra xem sản phẩm có tồn tại không
-            var product = await _context.Products
-                .FirstOrDefaultAsync(p => p.ProductId == dto.ProductId);
-            if (product == null)
+            if (string.IsNullOrEmpty(userId))
             {
-                return NotFound(new { Message = "Sản phẩm không tồn tại" });
-            }
-
-            //Tìm giỏ hàng của UserId, nếu chưa có thì tạo mới
-            var cart = await _context.Carts
-                .Include(c => c.CartItems)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
-            if (cart == null)
-            {
-                cart = new Cart
+                return Unauthorized(new
                 {
-                    UserId = userId
-                };
-                _context.Carts.Add(cart);
-                await _context.SaveChangesAsync();
-            }
-            //Kiểm tra sản phẩm đã có trong giỏ hàng chưa
-            var cartIten = await _context.CartItems
-                .FirstOrDefaultAsync(ci => ci.CartId == cart.CartId && ci.ProductId == dto.ProductId);
-            if (cartIten != null)
-            {
-                cartIten.Quantity += dto.Quantity;
-            }
-            else
-            {
-                _context.CartItems.Add(new CartItem
-                {
-                    CartId = cart.CartId,
-                    ProductId = dto.ProductId,
-                    Quantity = dto.Quantity,
-                    UnitPrice = product.SalePrice ?? product.Price
+                    Message = "Bạn chưa đăng nhập"
                 });
             }
-            await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                Message = "Thêm vào giỏ hàng thành công."
-            });
+            var result = await _cartService.AddToCartAsync(userId, dto);
+
+            return HandleCartResult(result);
         }
 
-        // Lấy thông tin giỏ hàng của người dùng
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetCart()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-            {
-                return Unauthorized(new { Message = "Bạn chưa đăng nhập" });
-            }
-            // Lấy giỏ hàng của người dùng, bao gồm các sản phẩm trong giỏ hàng
-            var cart = await _context.Carts
-                .Include(c => c.CartItems)
-                .ThenInclude(ci => ci.Product)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
 
-            if (cart == null || !cart.CartItems.Any())
+            if (string.IsNullOrEmpty(userId))
             {
-                return Ok(new
+                return Unauthorized(new
                 {
-                    Message = "Giỏ hàng trống",
-                    Items = new List<object>(),
-                    TotalAmount = 0
+                    Message = "Bạn chưa đăng nhập"
                 });
             }
-            var items = cart.CartItems.Select(ci => new
-            {
-                ci.CartItemId,
-                ci.ProductId,
-                ci.Product.ProductName,
-                ci.Quantity,
-                ci.UnitPrice,
-                Total = ci.Quantity * ci.UnitPrice
-            }).ToList();
 
-            var totalAmount = items.Sum(i => i.Total);
+            var result = await _cartService.GetCartAsync(userId);
 
-            return Ok(new
-            {
-                cart.CartId,
-                Items = items,
-                TotalAmount = totalAmount
-            });
+            return Ok(result);
         }
 
-        //update số lượng sản phẩm trong giỏ hàng
-        [Authorize]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateCartItem([FromBody] UpdateCartItemDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-            {
-                return Unauthorized(new { Message = "Bạn chưa đăng nhập" });
-            }
 
-            var cart = await _context.Carts
-                .Include(c => c.CartItems)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
-            // Kiểm tra số lượng sản phẩm có hợp lệ không
-            if (dto.Quantity <= 0)
+            if (string.IsNullOrEmpty(userId))
             {
-                return BadRequest(new
+                return Unauthorized(new
                 {
-                    Message = "Số lượng phải lớn hơn 0"
+                    Message = "Bạn chưa đăng nhập"
                 });
             }
 
-            // Kiểm tra giỏ hàng có tồn tại không
-            if (cart == null)
-            {
-                return NotFound(new { Message = "Giỏ hàng không tồn tại" });
-            }
-            var cartItem = await _context.CartItems
-            .Include(ci => ci.Cart)
-            .FirstOrDefaultAsync(ci =>
-            ci.CartItemId == dto.CartItemId &&
-            ci.Cart.UserId == userId);
-            // Kiểm tra sản phẩm có tồn tại trong giỏ hàng không
-            if (cartItem == null)
-            {
-                return NotFound(new { Message = "Sản phẩm không tồn tại trong giỏ hàng" });
-            }
+            var result = await _cartService.UpdateCartItemAsync(userId, dto);
 
-            cartItem.Quantity = dto.Quantity;
-            await _context.SaveChangesAsync();
-
-            return Ok(new { Message = "Cập nhật số lượng sản phẩm trong giỏ hàng thành công." });
+            return HandleCartResult(result);
         }
 
-        // Xóa sản phẩm khỏi giỏ hàng theo cartItemId, chỉ xóa sản phẩm của người dùng hiện tại
-        //User bấm Xóa -> DELETE /api/cart/remove/{cartItemId} -> [Authorize] -> Lấy UserId từ JWT -> Tìm CartItem thuộc User đó -> Remove() -> SaveChangesAsync() -> Return Ok
-        [Authorize]
-        [HttpDelete("remove/{cartItemId}")]
+        [HttpDelete("remove/{cartItemId:int}")]
         public async Task<IActionResult> RemoveCartItem(int cartItemId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
-            {
-                return Unauthorized(new { Message = "Bạn chưa đăng nhập" });
-            }
-            var cartItem = await _context.CartItems
-                .Include(ci => ci.Cart)
-                .FirstOrDefaultAsync(ci =>
-                    ci.CartItemId == cartItemId &&
-                    ci.Cart.UserId == userId);
-            if (cartItem == null)
-            {
-                return NotFound(new { Message = "Sản phẩm không tồn tại trong giỏ hàng" });
-            }
-            _context.CartItems.Remove(cartItem);
-            await _context.SaveChangesAsync();
-            return Ok(new { Message = "Xóa sản phẩm khỏi giỏ hàng thành công." });
-        }
 
-        // Xóa tất cả sản phẩm khỏi giỏ hàng của người dùng hiện tại
-        [Authorize]
-        [HttpDelete("clear")]
-        public async Task<IActionResult> ClearCart(int cartItemId)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
+            if (string.IsNullOrEmpty(userId))
             {
-                return Unauthorized(new { Message = "Bạn chưa đăng nhập" });
-            }
-            var cart = await _context.Carts
-                .Include(c => c.CartItems)
-                .FirstOrDefaultAsync(c => c.UserId == userId);
-            //check goi hàng có tồn tại không
-            if (cart == null || !cart.CartItems.Any())
-            {
-                return Ok(new
+                return Unauthorized(new
                 {
-                    Message = "Giỏ hàng trống",
-                    Items = new List<object>(),
-                    TotalAmount = 0
+                    Message = "Bạn chưa đăng nhập"
                 });
             }
-            // Xóa tất cả sản phẩm trong giỏ hàng
-            _context.CartItems.RemoveRange(cart.CartItems);
-            await _context.SaveChangesAsync();
-            return Ok(new { Message = "Xóa toàn bộ sản phẩm khỏi giỏ hàng thành công." });
+
+            var result = await _cartService.RemoveCartItemAsync(userId, cartItemId);
+
+            return HandleCartResult(result);
+        }
+
+        [HttpDelete("clear")]
+        public async Task<IActionResult> ClearCart()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new
+                {
+                    Message = "Bạn chưa đăng nhập"
+                });
+            }
+
+            var result = await _cartService.ClearCartAsync(userId);
+
+            return Ok(result);
+        }
+
+        private IActionResult HandleCartResult(CartResultDto result)
+        {
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            if (result.ErrorCode == "NotFound")
+            {
+                return NotFound(new
+                {
+                    result.Message
+                });
+            }
+
+            return BadRequest(new
+            {
+                result.Message
+            });
         }
     }
 }

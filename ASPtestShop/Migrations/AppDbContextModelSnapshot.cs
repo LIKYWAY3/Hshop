@@ -85,10 +85,6 @@ namespace ASPtestShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasFilter("[Email] IS NOT NULL");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -96,10 +92,6 @@ namespace ASPtestShop.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("UserName")
-                        .IsUnique()
-                        .HasFilter("[UserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -181,6 +173,9 @@ namespace ASPtestShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
 
+                    b.Property<int?>("CategoryId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -208,6 +203,8 @@ namespace ASPtestShop.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("CategoryId");
+
+                    b.HasIndex("CategoryId1");
 
                     b.HasIndex("ParentCategoryId");
 
@@ -261,6 +258,9 @@ namespace ASPtestShop.Migrations
 
                     b.HasKey("CouponId");
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
                     b.ToTable("Coupons");
                 });
 
@@ -271,6 +271,9 @@ namespace ASPtestShop.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+
+                    b.Property<int?>("CouponId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -336,6 +339,8 @@ namespace ASPtestShop.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("OrderId");
+
+                    b.HasIndex("CouponId");
 
                     b.HasIndex("UserId");
 
@@ -713,7 +718,8 @@ namespace ASPtestShop.Migrations
                 {
                     b.HasOne("ASPtestShop.Data.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("User");
                 });
@@ -729,7 +735,7 @@ namespace ASPtestShop.Migrations
                     b.HasOne("ASPtestShop.Data.Entities.Product", "Product")
                         .WithMany("CartItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Cart");
@@ -739,18 +745,31 @@ namespace ASPtestShop.Migrations
 
             modelBuilder.Entity("ASPtestShop.Data.Entities.Category", b =>
                 {
-                    b.HasOne("ASPtestShop.Data.Entities.Category", "ParentCategory")
+                    b.HasOne("ASPtestShop.Data.Entities.Category", null)
                         .WithMany("ChildCategories")
-                        .HasForeignKey("ParentCategoryId");
+                        .HasForeignKey("CategoryId1");
+
+                    b.HasOne("ASPtestShop.Data.Entities.Category", "ParentCategory")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ParentCategory");
                 });
 
             modelBuilder.Entity("ASPtestShop.Data.Entities.Order", b =>
                 {
+                    b.HasOne("ASPtestShop.Data.Entities.Coupon", "Coupon")
+                        .WithMany("Orders")
+                        .HasForeignKey("CouponId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("ASPtestShop.Data.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Coupon");
 
                     b.Navigation("User");
                 });
@@ -766,7 +785,7 @@ namespace ASPtestShop.Migrations
                     b.HasOne("ASPtestShop.Data.Entities.Product", "Product")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Order");
@@ -790,7 +809,7 @@ namespace ASPtestShop.Migrations
                     b.HasOne("ASPtestShop.Data.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -812,12 +831,13 @@ namespace ASPtestShop.Migrations
                     b.HasOne("ASPtestShop.Data.Entities.Product", "Product")
                         .WithMany("Reviews")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ASPtestShop.Data.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Product");
 
@@ -885,6 +905,13 @@ namespace ASPtestShop.Migrations
                     b.Navigation("ChildCategories");
 
                     b.Navigation("Products");
+
+                    b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("ASPtestShop.Data.Entities.Coupon", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("ASPtestShop.Data.Entities.Order", b =>
