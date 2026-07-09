@@ -1,0 +1,495 @@
+﻿@{
+    ViewData["Title"] = "Admin Product";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Quản lý sản phẩm</h2>
+
+    <!-- TOKEN ADMIN -->
+    <div class="card mb-4">
+        <div class="card-header">
+            Token Admin
+        </div>
+        <div class="card-body">
+            <div class="input-group">
+                <input id="adminTokenInput" type="text" class="form-control" placeholder="Dán Admin token vào đây">
+                <button class="btn btn-dark" onclick="saveToken()">Lưu token</button>
+            </div>
+            <small class="text-muted">
+                Dùng tạm token admin để gọi API. Sau này làm login MVC thì bỏ phần này.
+            </small>
+        </div>
+    </div>
+
+    <div id="messageBox"></div>
+
+    <!-- FORM THÊM PRODUCT -->
+    <div class="card mb-4">
+        <div class="card-header">
+            Thêm sản phẩm
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tên sản phẩm</label>
+                    <input id="productName" type="text" class="form-control" placeholder="Ví dụ: Cần câu Shimano">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Slug</label>
+                    <input id="slug" type="text" class="form-control" placeholder="Ví dụ: can-cau-shimano">
+                    <small class="text-muted">Có thể bỏ trống, API sẽ tự tạo slug.</small>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Danh mục</label>
+                    <select id="categoryId" class="form-select">
+                        <option value="">Chọn danh mục</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Số lượng tồn kho</label>
+                    <input id="stockQuantity" type="number" class="form-control" value="0">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Giá gốc</label>
+                    <input id="price" type="number" class="form-control" value="0">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Giá khuyến mãi</label>
+                    <input id="salePrice" type="number" class="form-control" placeholder="Có thể bỏ trống">
+                </div>
+
+                <div class="col-12 mb-3">
+                    <label class="form-label">Mô tả ngắn</label>
+                    <input id="shortDescription" type="text" class="form-control">
+                </div>
+
+                <div class="col-12 mb-3">
+                    <label class="form-label">Mô tả chi tiết</label>
+                    <textarea id="description" class="form-control" rows="4"></textarea>
+                </div>
+
+                <div class="col-12 mb-3">
+                    <div class="form-check">
+                        <input id="isFeatured" class="form-check-input" type="checkbox">
+                        <label class="form-check-label" for="isFeatured">
+                            Sản phẩm nổi bật
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- UPLOAD ẢNH -->
+            <div class="mb-3">
+                <label class="form-label">Upload ảnh sản phẩm</label>
+
+                <div class="input-group">
+                    <input id="productImageFile" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp">
+                    <button class="btn btn-outline-dark" onclick="uploadProductImage()">Upload ảnh</button>
+                </div>
+
+                <small class="text-muted">
+                    Upload ảnh trước, sau đó ảnh sẽ được tự gắn vào sản phẩm.
+                </small>
+            </div>
+
+            <div id="uploadedImageList" class="row g-3 mb-3">
+            </div>
+
+            <button class="btn btn-primary" onclick="createProduct()">Thêm sản phẩm</button>
+            <button class="btn btn-secondary" onclick="resetProductForm()">Reset</button>
+        </div>
+    </div>
+
+    <!-- DANH SÁCH PRODUCT -->
+    <div class="card">
+        <div class="card-header">
+            Danh sách sản phẩm
+        </div>
+
+        <div class="card-body">
+            <button class="btn btn-outline-dark mb-3" onclick="loadProducts()">Tải lại</button>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Ảnh</th>
+                            <th>ID</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Giá</th>
+                            <th>Sale</th>
+                            <th>Tồn kho</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const TOKEN_KEY = "admin_token";
+
+    const PRODUCT_API = "/api/admin/products";
+    const CATEGORY_API = "/api/admin/categories";
+    const UPLOAD_API = "/api/admin/uploads/product-image";
+
+    let uploadedImages = [];
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const savedToken = localStorage.getItem(TOKEN_KEY);
+
+        if (savedToken) {
+            document.getElementById("adminTokenInput").value = savedToken;
+        }
+
+        loadCategories();
+        loadProducts();
+    });
+
+    function saveToken() {
+        const token = document.getElementById("adminTokenInput").value.trim();
+
+        if (!token) {
+            showMessage("Vui lòng nhập token admin", "danger");
+            return;
+        }
+
+        localStorage.setItem(TOKEN_KEY, token);
+
+        showMessage("Đã lưu token", "success");
+
+        loadCategories();
+        loadProducts();
+    }
+
+    function getToken() {
+        return localStorage.getItem(TOKEN_KEY);
+    }
+
+    function getJsonHeaders() {
+        return {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + getToken()
+        };
+    }
+
+    async function loadCategories() {
+        try {
+            const response = await fetch(CATEGORY_API, {
+                method: "GET",
+                headers: getJsonHeaders()
+            });
+
+            if (!response.ok) {
+                showMessage("Không lấy được danh mục. Kiểm tra token admin.", "danger");
+                return;
+            }
+
+            const categories = await response.json();
+
+            const select = document.getElementById("categoryId");
+            select.innerHTML = `<option value="">Chọn danh mục</option>`;
+
+            categories
+                .filter(c => c.isActive)
+                .forEach(category => {
+                    select.innerHTML += `
+                            <option value="${category.categoryId}">
+                                ${category.categoryName}
+                            </option>
+                        `;
+                });
+
+        } catch (error) {
+            console.error(error);
+            showMessage("Lỗi load category", "danger");
+        }
+    }
+
+    async function uploadProductImage() {
+        const fileInput = document.getElementById("productImageFile");
+        const file = fileInput.files[0];
+
+        if (!file) {
+            showMessage("Vui lòng chọn ảnh", "danger");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await fetch(UPLOAD_API, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + getToken()
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                showMessage(result.message ?? "Upload ảnh thất bại", "danger");
+                return;
+            }
+
+            uploadedImages.push({
+                imageUrl: result.imageUrl,
+                isPrimary: uploadedImages.length === 0,
+                sortOrder: uploadedImages.length + 1
+            });
+
+            fileInput.value = "";
+
+            renderUploadedImages();
+
+            showMessage("Upload ảnh thành công", "success");
+
+        } catch (error) {
+            console.error(error);
+            showMessage("Lỗi upload ảnh", "danger");
+        }
+    }
+
+    function renderUploadedImages() {
+        const list = document.getElementById("uploadedImageList");
+        list.innerHTML = "";
+
+        if (uploadedImages.length === 0) {
+            return;
+        }
+
+        uploadedImages.forEach((image, index) => {
+            list.innerHTML += `
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <img src="${image.imageUrl}"
+                                 class="card-img-top"
+                                 style="height: 160px; object-fit: cover;">
+
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="primaryImage"
+                                           ${image.isPrimary ? "checked" : ""}
+                                           onchange="setPrimaryImage(${index})">
+
+                                    <label class="form-check-label">
+                                        Ảnh chính
+                                    </label>
+                                </div>
+
+                                <button class="btn btn-sm btn-danger" onclick="removeUploadedImage(${index})">
+                                    Xóa ảnh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        });
+    }
+
+    function setPrimaryImage(index) {
+        uploadedImages = uploadedImages.map((image, i) => {
+            return {
+                ...image,
+                isPrimary: i === index
+            };
+        });
+
+        renderUploadedImages();
+    }
+
+    function removeUploadedImage(index) {
+        uploadedImages.splice(index, 1);
+
+        uploadedImages = uploadedImages.map((image, i) => {
+            return {
+                ...image,
+                isPrimary: i === 0,
+                sortOrder: i + 1
+            };
+        });
+
+        renderUploadedImages();
+    }
+
+    async function createProduct() {
+        const categoryId = document.getElementById("categoryId").value;
+        const productName = document.getElementById("productName").value.trim();
+        const slug = document.getElementById("slug").value.trim();
+        const shortDescription = document.getElementById("shortDescription").value.trim();
+        const description = document.getElementById("description").value.trim();
+        const price = document.getElementById("price").value;
+        const salePrice = document.getElementById("salePrice").value;
+        const stockQuantity = document.getElementById("stockQuantity").value;
+        const isFeatured = document.getElementById("isFeatured").checked;
+
+        if (uploadedImages.length === 0) {
+            showMessage("Vui lòng upload ít nhất 1 ảnh sản phẩm trước khi thêm", "danger");
+            return;
+        }
+        if (!categoryId) {
+            showMessage("Vui lòng chọn danh mục", "danger");
+            return;
+        }
+
+        if (!productName) {
+            showMessage("Vui lòng nhập tên sản phẩm", "danger");
+            return;
+        }
+
+        if (!price || Number(price) < 0) {
+            showMessage("Giá sản phẩm không hợp lệ", "danger");
+            return;
+        }
+
+        const primaryImage = uploadedImages.find(img => img.isPrimary);
+        const thumbnailUrl = primaryImage ? primaryImage.imageUrl : null;
+
+        const body = {
+            categoryId: parseInt(categoryId),
+            productName: productName,
+            slug: slug || null,
+            shortDescription: shortDescription || null,
+            description: description || null,
+            price: Number(price),
+            salePrice: salePrice ? Number(salePrice) : null,
+            stockQuantity: stockQuantity ? parseInt(stockQuantity) : 0,
+            thumbnailUrl: thumbnailUrl,
+            isFeatured: isFeatured,
+            images: uploadedImages.map((image, index) => {
+                return {
+                    imageUrl: image.imageUrl,
+                    isPrimary: image.isPrimary,
+                    sortOrder: index + 1
+                };
+            })
+        };
+
+        try {
+            const response = await fetch(PRODUCT_API, {
+                method: "POST",
+                headers: getJsonHeaders(),
+                body: JSON.stringify(body)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                showMessage(result.message ?? "Thêm sản phẩm thất bại", "danger");
+                return;
+            }
+
+            showMessage(result.message ?? "Thêm sản phẩm thành công", "success");
+
+            resetProductForm();
+            loadProducts();
+
+        } catch (error) {
+            console.error(error);
+            showMessage("Lỗi thêm sản phẩm", "danger");
+        }
+    }
+
+    async function loadProducts() {
+        try {
+            const response = await fetch(PRODUCT_API, {
+                method: "GET",
+                headers: getJsonHeaders()
+            });
+
+            if (!response.ok) {
+                showMessage("Không lấy được danh sách sản phẩm", "danger");
+                return;
+            }
+
+            const products = await response.json();
+
+            renderProductTable(products);
+
+        } catch (error) {
+            console.error(error);
+            showMessage("Lỗi load sản phẩm", "danger");
+        }
+    }
+
+    function renderProductTable(products) {
+        const tbody = document.getElementById("productTableBody");
+        tbody.innerHTML = "";
+
+        if (!products || products.length === 0) {
+            tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center">Chưa có sản phẩm</td>
+                    </tr>
+                `;
+            return;
+        }
+
+        products.forEach(product => {
+            const imageUrl = product.thumbnailUrl || "/images/no-image.png";
+
+            const status = product.isActive
+                ? `<span class="badge bg-success">Đang hiện</span>`
+                : `<span class="badge bg-secondary">Đã ẩn</span>`;
+
+            tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <img src="${imageUrl}"
+                                 style="width: 70px; height: 70px; object-fit: cover;">
+                        </td>
+                        <td>${product.productId}</td>
+                        <td>${product.productName}</td>
+                        <td>${product.categoryName ?? ""}</td>
+                        <td>${product.price.toLocaleString("vi-VN")} đ</td>
+                        <td>${product.salePrice ? product.salePrice.toLocaleString("vi-VN") + " đ" : ""}</td>
+                        <td>${product.stockQuantity}</td>
+                        <td>${status}</td>
+                    </tr>
+                `;
+        });
+    }
+
+    function resetProductForm() {
+        document.getElementById("productName").value = "";
+        document.getElementById("slug").value = "";
+        document.getElementById("categoryId").value = "";
+        document.getElementById("shortDescription").value = "";
+        document.getElementById("description").value = "";
+        document.getElementById("price").value = "0";
+        document.getElementById("salePrice").value = "";
+        document.getElementById("stockQuantity").value = "0";
+        document.getElementById("isFeatured").checked = false;
+
+        uploadedImages = [];
+        renderUploadedImages();
+    }
+
+    function showMessage(message, type) {
+        const box = document.getElementById("messageBox");
+
+        box.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+    }
+</script>
