@@ -1,4 +1,38 @@
 ﻿<!-- Start Header/Navigation -->
+<style>
+	/* Nút Category trên navbar */
+	#categoryDropdown {
+		color: #ffffff !important;
+	}
+
+		#categoryDropdown:hover,
+		#categoryDropdown:focus {
+			color: #f9bf29 !important;
+		}
+
+	/* Khung dropdown */
+	#categoryDropdownMenu.dropdown-menu {
+		background-color: #3b5d50 !important;
+		border: 1px solid #f9bf29 !important;
+		min-width: 180px !important;
+		padding: 8px 0 !important;
+	}
+
+	/* Chữ item trong dropdown */
+	#categoryDropdownMenu .dropdown-item {
+		color: #ffffff !important;
+		background-color: transparent !important;
+		padding: 10px 18px !important;
+		font-weight: 500 !important;
+	}
+
+		/* Hover item */
+		#categoryDropdownMenu .dropdown-item:hover,
+		#categoryDropdownMenu .dropdown-item:focus {
+			color: #000000 !important;
+			background-color: #f9bf29 !important;
+		}
+</style>
 <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
 	<div class="container">
@@ -11,21 +45,80 @@
 		<div class="collapse navbar-collapse" id="navbarsFurni">
 			<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
 				<li class="nav-item active">
-					<a class="nav-link" asp-controller="/MVC/Home" asp-action="Index">Home</a>
+					<a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
 				</li>
-				<li><a class="nav-link" asp-controller="/MVC/Shop" asp-action="Index">Shop</a></li>
-				<li><a class="nav-link" asp-controller="/MVC/About" asp-action="Index">About us</a></li>
-				<li><a class="nav-link" asp-controller="/MVC/Services" asp-action="Index">Services</a></li>
-				<li><a class="nav-link" asp-controller="/MVC/Blog" asp-action="Index">Blog</a></li>
-				<li><a class="nav-link" asp-controller="/MVC/Contact" asp-action="Index">Contact us</a></li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle"
+					   href="#"
+					   id="categoryDropdown"
+					   role="button"
+					   data-bs-toggle="dropdown"
+					   aria-expanded="false">
+						Category
+					</a>
+
+					<ul class="dropdown-menu" aria-labelledby="categoryDropdown" id="categoryDropdownMenu">
+						<li>
+							<a class="dropdown-item" href="/Shop#products">Tất cả sản phẩm</a>
+						</li>
+					</ul>
+				</li>
+				<li><a class="nav-link" asp-controller="About" asp-action="Index">About us</a></li>
+				<li><a class="nav-link" asp-controller="Services" asp-action="Index">Services</a></li>
+				<li><a class="nav-link" asp-controller="Blog" asp-action="Index">Blog</a></li>
+				<li><a class="nav-link" asp-controller="Contact" asp-action="Index">Contact us</a></li>
 			</ul>
 
 			<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-				<li><a class="nav-link" asp-controller="/MVC/Account" asp-action="Profile"><img src="images/user.svg"></a></li>
-				<li><a class="nav-link" asp-controller="/MVC/Cart" asp-action="Cart"><img src="images/cart.svg"></a></li>
+				<li><a class="nav-link" asp-controller="Account" asp-action="Profile"><img src="images/user.svg"></a></li>
+				<li><a class="nav-link" asp-controller="Cart" asp-action="Cart"><img src="images/cart.svg"></a></li>
 			</ul>
 		</div>
 	</div>
 
 </nav>
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		loadNavbarCategories();
+	});
+
+	async function loadNavbarCategories() {
+		try {
+			const response = await fetch("/api/categories");
+
+			if (!response.ok) {
+				console.log("Không lấy được category");
+				return;
+			}
+
+			const categories = await response.json();
+
+			const menu = document.getElementById("categoryDropdownMenu");
+
+			if (!menu) {
+				return;
+			}
+
+			menu.innerHTML = `
+					<li>
+						<a class="dropdown-item" href="/Shop#products">
+							Tất cả sản phẩm
+						</a>
+					</li>
+				`;
+
+			categories.forEach(category => {
+				menu.innerHTML += `
+						<li>
+							<a class="dropdown-item" href="/Shop?categoryId=${category.categoryId}#products">
+								${category.categoryName}
+							</a>
+						</li>
+					`;
+			});
+		} catch (error) {
+			console.error("Lỗi load navbar categories:", error);
+		}
+	}
+</script>
 <!-- End Header/Navigation -->
