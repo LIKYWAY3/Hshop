@@ -20,6 +20,7 @@ namespace ASPtestShop.Controllers.Api
             _orderService = orderService;
         }
 
+        //===============================CHECKOUT======================================
         [HttpPost("checkout")]
         public async Task<IActionResult> Checkout([FromBody] CheckoutDto checkoutDto)
         {
@@ -44,6 +45,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(result);
         }
 
+        //===============================GET ORDER HISTORY======================================
         //Lịch sử đơn hàng
         [HttpGet("history")]
         public async Task<IActionResult> GetOrderHistory()
@@ -76,6 +78,7 @@ namespace ASPtestShop.Controllers.Api
             });
         }
 
+        //===============================GET ORDER DETAILS======================================
         // Lấy chi tiết lịch sử đơn hàng
         [Authorize]
         [HttpGet("{orderId:int}")]

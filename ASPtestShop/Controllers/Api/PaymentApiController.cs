@@ -17,6 +17,7 @@ namespace ASPtestShop.Controllers.Api
             _paymentService = paymentService;
         }
 
+        //===============================GET PAYMENT BY ORDERID======================================
         // GET: api/payments/order/{orderId}
         // Lấy thông tin thanh toán theo OrderId
         [HttpGet("order/{orderId:int}")]
@@ -49,6 +50,7 @@ namespace ASPtestShop.Controllers.Api
             });
         }
 
+        //===============================CONFIRM COD PAYMENT======================================
         // PUT: api/payments/cod/{orderId}/confirm
         // Xác nhận thanh toán COD
         [HttpPut("cod/{orderId:int}/confirm")]
