@@ -16,6 +16,7 @@ namespace ASPtestShop.Controllers.Api
             _productService = productService;
         }
 
+        //===============================GET PRODUCTS======================================
         // GET: api/products
         // Lấy danh sách sản phẩm
         [HttpGet]
@@ -28,6 +29,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(products);
         }
 
+        //===============================GET PRODUCTS BY CATEGORY======================================
         // GET: api/products/category/{categoryId}
         // Lấy danh sách sản phẩm từ categoryId
         [HttpGet("category/{categoryId:int}")]
@@ -39,6 +41,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(products);
         }
 
+        //===============================GET PRODUCT BY ID======================================
         // GET: api/products/{id}
         // Lấy chi tiết 1 sản phẩm
         // Dùng {id:int} để tránh đụng route với "featured" hoặc "search"
@@ -60,6 +63,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(product);
         }
 
+        //===============================GET FEATURED PRODUCTS======================================
         // GET: api/products/featured
         // Lấy danh sách sản phẩm nổi bật
         [HttpGet("featured")]
@@ -71,6 +75,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(products);
         }
 
+        //===============================SEARCH PRODUCTS======================================
         // GET: api/products/search?keyword=abc
         // Tìm kiếm sản phẩm theo keyword
         [HttpGet("search")]

@@ -14,6 +14,7 @@ namespace ASPtestShop.Controllers.Api
             _categoryService = categoryService;
         }
 
+        //===============================GET CATEGORIES======================================
         // GET: api/categories
         [HttpGet]
         public async Task<IActionResult> GetCategories()
@@ -23,6 +24,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(categories);
         }
 
+        //===============================GET CATEGORY BY ID======================================
         // GET: api/categories/{categoryId}
         [HttpGet("{categoryId:int}")]
         public async Task<IActionResult> GetCategoryById(int categoryId)
@@ -40,6 +42,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(category);
         }
 
+        //===============================GET PARENT CATEGORIES======================================
         // GET: api/categories/parents
         [HttpGet("parents")]
         public async Task<IActionResult> GetParentCategories()
@@ -49,6 +52,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(categories);
         }
 
+        //===============================GET SUBCATEGORIES BY PARENT CATEGORYID======================================
         // GET: api/categories/{parentCategoryId}/subcategories
         [HttpGet("{parentCategoryId:int}/subcategories")]
         public async Task<IActionResult> GetSubCategories(int parentCategoryId)

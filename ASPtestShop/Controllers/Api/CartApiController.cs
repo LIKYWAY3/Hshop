@@ -18,6 +18,7 @@ namespace ASPtestShop.Controllers.Api
             _cartService = cartService;
         }
 
+        //====================================ADD TO CART======================================
         [HttpPost("add")]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartDto dto)
         {
@@ -36,6 +37,7 @@ namespace ASPtestShop.Controllers.Api
             return HandleCartResult(result);
         }
 
+        //====================================GET CART======================================
         [HttpGet]
         public async Task<IActionResult> GetCart()
         {
@@ -54,6 +56,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(result);
         }
 
+        //====================================UPDATE CART ITEM======================================
         [HttpPut("update")]
         public async Task<IActionResult> UpdateCartItem([FromBody] UpdateCartItemDto dto)
         {
@@ -72,6 +75,7 @@ namespace ASPtestShop.Controllers.Api
             return HandleCartResult(result);
         }
 
+        //====================================REMOVE CART ITEM======================================
         [HttpDelete("remove/{cartItemId:int}")]
         public async Task<IActionResult> RemoveCartItem(int cartItemId)
         {
@@ -90,6 +94,7 @@ namespace ASPtestShop.Controllers.Api
             return HandleCartResult(result);
         }
 
+        //====================================CLEAR CART======================================
         [HttpDelete("clear")]
         public async Task<IActionResult> ClearCart()
         {
