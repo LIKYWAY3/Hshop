@@ -1,5 +1,58 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ASPtestShop.Models.ViewModels.Auth.LoginViewModel
+
 @{
+    ViewData["Title"] = "Đăng nhập";
 }
+
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white text-center">
+            <h4 class="mb-0">Đăng nhập</h4>
+        </div>
+
+        <div class="card-body p-4">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+            <form asp-action="Login" asp-controller="Account" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="EmailOrUserName" class="form-label">Email hoặc Username</label>
+                    <input asp-for="EmailOrUserName" class="form-control" placeholder="Nhập email hoặc username" />
+                    <span asp-validation-for="EmailOrUserName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Mật khẩu</label>
+                    <input asp-for="Password" class="form-control" placeholder="Nhập mật khẩu" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label asp-for="RememberMe" class="form-check-label">
+                        Ghi nhớ đăng nhập
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-dark w-100">
+                    Đăng nhập
+                </button>
+
+                <div class="text-center mt-3">
+                    <a href="/account/register">Chưa có tài khoản? Đăng ký</a>
+                    <br />
+                    <a href="/account/forgot-password">Quên mật khẩu?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

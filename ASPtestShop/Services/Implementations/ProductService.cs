@@ -53,11 +53,42 @@ namespace ASPtestShop.Services.Implementations
         // Code này được tách từ API GET /api/products/category/{categoryId}
         public async Task<List<ProductListItemDto>> GetProductsByCategoryAsync(int categoryId)
         {
-            var products = await _context.Products
-                // Lọc sản phẩm theo CategoryId
-                .Where(p => p.CategoryId == categoryId)
+            var allActiveCategories = await _context.Categories
+                .Where(c => c.IsActive)
+                .Select(c => new
+                {
+                    c.CategoryId,
+                    c.ParentCategoryId
+                })
+                .ToListAsync();
 
-                // Map sang DTO
+            var categoryIds = new List<int> { categoryId };
+
+            var queue = new Queue<int>();
+            queue.Enqueue(categoryId);
+
+            while (queue.Count > 0)
+            {
+                var currentCategoryId = queue.Dequeue();
+
+                var childIds = allActiveCategories
+                    .Where(c => c.ParentCategoryId == currentCategoryId)
+                    .Select(c => c.CategoryId)
+                    .ToList();
+
+                foreach (var childId in childIds)
+                {
+                    if (!categoryIds.Contains(childId))
+                    {
+                        categoryIds.Add(childId);
+                        queue.Enqueue(childId);
+                    }
+                }
+            }
+
+            return await _context.Products
+                .Include(p => p.ProductImages)
+                .Where(p => p.IsActive && categoryIds.Contains(p.CategoryId))
                 .Select(p => new ProductListItemDto
                 {
                     ProductId = p.ProductId,
@@ -65,16 +96,13 @@ namespace ASPtestShop.Services.Implementations
                     Price = p.SalePrice ?? p.Price,
                     OriginalPrice = p.Price,
                     ThumbnailUrl = p.ThumbnailUrl,
-
-                    // Lấy ảnh đầu tiên của sản phẩm
                     ImageUrl = p.ProductImages
-                        .OrderBy(img => img.SortOrder)
+                        .OrderByDescending(img => img.IsPrimary)
+                        .ThenBy(img => img.SortOrder)
                         .Select(img => img.ImageUrl)
                         .FirstOrDefault()
                 })
                 .ToListAsync();
-
-            return products;
         }
 
         // Lấy chi tiết một sản phẩm theo id

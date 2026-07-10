@@ -1,12 +1,14 @@
 using ASPtestShop.Auth;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using ASPtestShop.Data;
 using ASPtestShop.Services.Implementations;
 using ASPtestShop.Services.Implementations.Admin;
 using ASPtestShop.Services.Implementations.PaymentProviders;
+using ASPtestShop.Services.Implementations.User;
 using ASPtestShop.Services.Interfaces;
 using ASPtestShop.Services.Interfaces.Admin;
+using ASPtestShop.Services.Interfaces.User;
 using ASPtestShop.Services.PaymentProviders;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer; // Thêm namespace cho JWT Bearer Authentication
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -88,6 +90,19 @@ builder.Services.AddAuthentication(options =>
         }
     };
 })
+.AddCookie(UserCookieAuth.Scheme, options =>
+{
+    options.Cookie.Name = "HShop.User.Auth";
+    options.LoginPath = "/account/login";
+    options.AccessDeniedPath = "/account/access-denied";
+
+    options.ExpireTimeSpan = TimeSpan.FromHours(6);
+    options.SlidingExpiration = true;
+
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+})
 .AddCookie(AdminCookieAuth.Scheme, options =>
 {
     options.Cookie.Name = "HShop.Admin.Auth";
@@ -113,7 +128,8 @@ builder.Services.AddScoped<IAdminProductService, AdminProductService>();
 builder.Services.AddScoped<IAdminUploadService, AdminUploadService>();
 builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
 builder.Services.AddScoped<IAdminAuthService, AdminAuthService>();
-
+//user services
+builder.Services.AddScoped<IUserAuthService, UserAuthService>();
 // Payment providers
 builder.Services.AddScoped<IPaymentProvider, CodPaymentProvider>();
 // tạm thời chưa dùng
