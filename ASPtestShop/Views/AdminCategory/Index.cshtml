@@ -1,23 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Admin Category";
+    Layout = "_AdminLayout";
 }
+
 <div class="container mt-4">
     <h2 class="mb-3">Quản lý danh mục</h2>
-
-    <div class="card mb-4">
-        <div class="card-header">
-            Token Admin
-        </div>
-        <div class="card-body">
-            <div class="input-group">
-                <input id="adminTokenInput" type="text" class="form-control" placeholder="Dán Admin token vào đây">
-                <button class="btn btn-dark" onclick="saveToken()">Lưu token</button>
-            </div>
-            <small class="text-muted">
-                Tạm thời mình dùng token để gọi API Admin. Sau này làm MVC Auth thì login xong sẽ tự lưu token.
-            </small>
-        </div>
-    </div>
 
     <div id="messageBox"></div>
 
@@ -31,12 +18,12 @@
 
             <div class="mb-3">
                 <label class="form-label">Tên danh mục</label>
-                <input id="categoryName" type="text" class="form-control" placeholder="Ví dụ: Điện thoại">
+                <input id="categoryName" type="text" class="form-control" placeholder="Ví dụ: Cần câu">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Slug</label>
-                <input id="slug" type="text" class="form-control" placeholder="Ví dụ: dien-thoai">
+                <input id="slug" type="text" class="form-control" placeholder="Ví dụ: can-cau">
                 <small class="text-muted">Có thể bỏ trống, API sẽ tự tạo slug từ tên danh mục.</small>
             </div>
 
@@ -59,7 +46,7 @@
                 </label>
             </div>
 
-            <button class="btn btn-primary" onclick="submitCategory()">Lưu</button>
+            <button class="btn btn-primary" id="submitCategoryBtn" onclick="submitCategory()">Lưu</button>
             <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
         </div>
     </div>
@@ -83,7 +70,7 @@
                             <th>Sản phẩm</th>
                             <th>Danh mục con</th>
                             <th>Trạng thái</th>
-                            <th style="width: 180px;">Thao tác</th>
+                            <th style="width: 220px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="categoryTableBody">
@@ -96,42 +83,14 @@
 
 <script>
     const API_URL = "/api/admin/categories";
-    const TOKEN_KEY = "admin_token";
 
     document.addEventListener("DOMContentLoaded", function() {
-        const savedToken = localStorage.getItem(TOKEN_KEY);
-
-        if (savedToken) {
-            document.getElementById("adminTokenInput").value = savedToken;
-        }
-
         loadCategories();
     });
 
-    function saveToken() {
-        const token = document.getElementById("adminTokenInput").value.trim();
-
-        if (!token) {
-            showMessage("Vui lòng nhập token", "danger");
-            return;
-        }
-
-        localStorage.setItem(TOKEN_KEY, token);
-        showMessage("Đã lưu token", "success");
-
-        loadCategories();
-    }
-
-    function getToken() {
-        return localStorage.getItem(TOKEN_KEY);
-    }
-
     function getHeaders() {
-        const token = getToken();
-
         return {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
+            "Content-Type": "application/json"
         };
     }
 
@@ -139,16 +98,22 @@
         try {
             const response = await fetch(API_URL, {
                 method: "GET",
-                headers: getHeaders()
+                headers: getHeaders(),
+                credentials: "same-origin"
             });
 
             if (response.status === 401) {
-                showMessage("Bạn chưa đăng nhập hoặc token không hợp lệ", "danger");
+                showMessage("Bạn chưa đăng nhập Admin hoặc phiên đăng nhập đã hết hạn", "danger");
                 return;
             }
 
             if (response.status === 403) {
-                showMessage("Token này không có quyền Admin", "danger");
+                showMessage("Tài khoản này không có quyền Admin", "danger");
+                return;
+            }
+
+            if (!response.ok) {
+                showMessage("Không lấy được danh sách danh mục", "danger");
                 return;
             }
 
@@ -156,6 +121,7 @@
 
             renderCategoryTable(categories);
             renderParentCategorySelect(categories);
+
         } catch (error) {
             console.error(error);
             showMessage("Không gọi được API danh mục", "danger");
@@ -180,23 +146,29 @@
                 ? `<span class="badge bg-success">Đang hiện</span>`
                 : `<span class="badge bg-secondary">Đã ẩn</span>`;
 
+            const actionButton = category.isActive
+                ? `<button class="btn btn-sm btn-danger" onclick="deleteCategory(${category.categoryId})">
+                            Ẩn
+                       </button>`
+                : `<button class="btn btn-sm btn-success" onclick="restoreCategory(${category.categoryId})">
+                            Restore
+                       </button>`;
+
             const row = `
                     <tr>
                         <td>${category.categoryId}</td>
                         <td>${category.categoryName}</td>
-                        <td>${category.slug}</td>
+                        <td>${category.slug ?? ""}</td>
                         <td>${category.parentCategoryName ?? ""}</td>
-                        <td>${category.productCount}</td>
-                        <td>${category.subCategoryCount}</td>
+                        <td>${category.productCount ?? 0}</td>
+                        <td>${category.subCategoryCount ?? 0}</td>
                         <td>${statusBadge}</td>
                         <td>
                             <button class="btn btn-sm btn-warning" onclick="editCategory(${category.categoryId})">
                                 Sửa
                             </button>
 
-                            <button class="btn btn-sm btn-danger" onclick="deleteCategory(${category.categoryId})">
-                                Ẩn
-                            </button>
+                            ${actionButton}
                         </td>
                     </tr>
                 `;
@@ -241,7 +213,7 @@
             ? parseInt(parentCategoryIdValue)
             : null;
 
-        let body = {
+        const body = {
             categoryName: categoryName,
             slug: slug || null,
             description: description || null,
@@ -262,6 +234,7 @@
             const response = await fetch(url, {
                 method: method,
                 headers: getHeaders(),
+                credentials: "same-origin",
                 body: JSON.stringify(body)
             });
 
@@ -276,6 +249,7 @@
 
             resetForm();
             loadCategories();
+
         } catch (error) {
             console.error(error);
             showMessage("Có lỗi khi lưu danh mục", "danger");
@@ -286,7 +260,8 @@
         try {
             const response = await fetch(`${API_URL}/${categoryId}`, {
                 method: "GET",
-                headers: getHeaders()
+                headers: getHeaders(),
+                credentials: "same-origin"
             });
 
             if (!response.ok) {
@@ -297,9 +272,10 @@
             const category = await response.json();
 
             document.getElementById("formTitle").innerText = "Cập nhật danh mục";
+            document.getElementById("submitCategoryBtn").innerText = "Cập nhật";
             document.getElementById("categoryId").value = category.categoryId;
-            document.getElementById("categoryName").value = category.categoryName;
-            document.getElementById("slug").value = category.slug;
+            document.getElementById("categoryName").value = category.categoryName ?? "";
+            document.getElementById("slug").value = category.slug ?? "";
             document.getElementById("description").value = category.description ?? "";
             document.getElementById("parentCategoryId").value = category.parentCategoryId ?? "";
             document.getElementById("isActive").checked = category.isActive;
@@ -309,6 +285,7 @@
                 top: 0,
                 behavior: "smooth"
             });
+
         } catch (error) {
             console.error(error);
             showMessage("Có lỗi khi lấy danh mục", "danger");
@@ -325,7 +302,8 @@
         try {
             const response = await fetch(`${API_URL}/${categoryId}`, {
                 method: "DELETE",
-                headers: getHeaders()
+                headers: getHeaders(),
+                credentials: "same-origin"
             });
 
             const result = await response.json();
@@ -338,14 +316,64 @@
             showMessage(result.message ?? "Ẩn danh mục thành công", "success");
 
             loadCategories();
+
         } catch (error) {
             console.error(error);
             showMessage("Có lỗi khi ẩn danh mục", "danger");
         }
     }
 
+    async function restoreCategory(categoryId) {
+        try {
+            const detailResponse = await fetch(`${API_URL}/${categoryId}`, {
+                method: "GET",
+                headers: getHeaders(),
+                credentials: "same-origin"
+            });
+
+            if (!detailResponse.ok) {
+                showMessage("Không lấy được thông tin danh mục", "danger");
+                return;
+            }
+
+            const category = await detailResponse.json();
+
+            const body = {
+                categoryName: category.categoryName,
+                slug: category.slug,
+                description: category.description,
+                parentCategoryId: category.parentCategoryId,
+                isActive: true
+            };
+
+            const response = await fetch(`${API_URL}/${categoryId}`, {
+                method: "PUT",
+                headers: getHeaders(),
+                credentials: "same-origin",
+                body: JSON.stringify(body)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                showMessage(result.message ?? "Restore danh mục thất bại", "danger");
+                return;
+            }
+
+            showMessage(result.message ?? "Restore danh mục thành công", "success");
+
+            resetForm();
+            loadCategories();
+
+        } catch (error) {
+            console.error(error);
+            showMessage("Có lỗi khi restore danh mục", "danger");
+        }
+    }
+
     function resetForm() {
         document.getElementById("formTitle").innerText = "Thêm danh mục";
+        document.getElementById("submitCategoryBtn").innerText = "Lưu";
         document.getElementById("categoryId").value = "";
         document.getElementById("categoryName").value = "";
         document.getElementById("slug").value = "";
