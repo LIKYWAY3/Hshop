@@ -1,3 +1,5 @@
+using ASPtestShop.Auth;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using ASPtestShop.Data;
 using ASPtestShop.Services.Implementations;
 using ASPtestShop.Services.Implementations.Admin;
@@ -85,6 +87,19 @@ builder.Services.AddAuthentication(options =>
             }
         }
     };
+})
+.AddCookie(AdminCookieAuth.Scheme, options =>
+{
+    options.Cookie.Name = "HShop.Admin.Auth";
+    options.LoginPath = "/admin/login";
+    options.AccessDeniedPath = "/admin/access-denied";
+
+    options.ExpireTimeSpan = TimeSpan.FromHours(6);
+    options.SlidingExpiration = true;
+
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 });
 //Đăng kí services cho các lớp dịch vụ
 builder.Services.AddScoped<IPaymentService, PaymentService>();
@@ -97,6 +112,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAdminProductService, AdminProductService>();
 builder.Services.AddScoped<IAdminUploadService, AdminUploadService>();
 builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
+builder.Services.AddScoped<IAdminAuthService, AdminAuthService>();
 
 // Payment providers
 builder.Services.AddScoped<IPaymentProvider, CodPaymentProvider>();

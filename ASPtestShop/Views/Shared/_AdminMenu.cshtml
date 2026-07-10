@@ -1,0 +1,53 @@
+﻿@{
+    var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+}
+
+<aside class="bg-dark text-white p-3" style="width: 260px; min-height: 100vh;">
+    <h4 class="mb-4">
+        HShop Admin
+    </h4>
+
+    <div class="mb-3">
+        <small class="text-secondary">MENU</small>
+    </div>
+
+    <ul class="nav flex-column gap-2">
+        <li class="nav-item">
+            <a class="nav-link text-white @(currentPath == "/admin" ? "bg-primary rounded" : "")"
+               href="/admin">
+                Dashboard
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-white @(currentPath.StartsWith("/admin/products") ? "bg-primary rounded" : "")"
+               href="/admin/products">
+                Quản lý sản phẩm
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-white @(currentPath.StartsWith("/admin/categories") ? "bg-primary rounded" : "")"
+               href="/admin/categories">
+                Quản lý danh mục
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-white disabled"
+               href="#">
+                Quản lý đơn hàng
+            </a>
+        </li>
+    </ul>
+
+    <hr class="border-secondary" />
+
+    <form asp-controller="AdminAuth" asp-action="Logout" method="post">
+        @Html.AntiForgeryToken()
+
+        <button type="submit" class="btn btn-outline-light w-100">
+            Đăng xuất
+        </button>
+    </form>
+</aside>

@@ -1,5 +1,7 @@
+using ASPtestShop.Auth;
 using ASPtestShop.Models.DTO.Product;
 using ASPtestShop.Services.Interfaces.Admin;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +9,10 @@ namespace ASPtestShop.Controllers.Api.Admin
 {
     [Route("api/admin/products")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(
+    AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + AdminCookieAuth.Scheme,
+    Roles = "Admin"
+)]
     public class AdminProductApiController : ControllerBase
     {
         private readonly IAdminProductService _adminProductService;

@@ -1,4 +1,6 @@
-﻿using ASPtestShop.Services.Interfaces.Admin;
+﻿using ASPtestShop.Auth;
+using ASPtestShop.Services.Interfaces.Admin;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +8,8 @@ namespace ASPtestShop.Controllers.Api.Admin
 {
     [Route("api/admin/uploads")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(
+    AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + AdminCookieAuth.Scheme, Roles = "Admin")]
     public class AdminUploadApiController : ControllerBase
     {
         private readonly IAdminUploadService _adminUploadService;
