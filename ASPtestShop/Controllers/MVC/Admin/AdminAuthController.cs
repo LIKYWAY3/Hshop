@@ -73,15 +73,21 @@ namespace ASPtestShop.Controllers.MVC.Admin
                 return Redirect(returnUrl);
             }
 
-            return RedirectToAction("/admin");
+            return Redirect("/admin");
         }
 
         [HttpPost("logout")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(AdminCookieAuth.Scheme);
-            return RedirectToAction("Login");
+            return Redirect("/admin/login");
+        }
+
+        [HttpGet("logout")]
+        public async Task<IActionResult> LogoutGet()
+        {
+            await HttpContext.SignOutAsync(AdminCookieAuth.Scheme);
+            return Redirect("/admin/login");
         }
 
         [HttpGet("access-denied")]
