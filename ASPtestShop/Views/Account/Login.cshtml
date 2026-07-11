@@ -4,9 +4,9 @@
     ViewData["Title"] = "Đăng nhập";
 }
 
-<div class="container mt-5" style="max-width: 500px;">
+<div class="container mt-5 login-container">
     <div class="card shadow-sm border-0">
-        <div class="card-header bg-dark text-white text-center">
+        <div class="card-header text-center">
             <h4 class="mb-0">Đăng nhập</h4>
         </div>
 
@@ -22,7 +22,7 @@
 
                 <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
 
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3 font-weight-bold"></div>
 
                 <div class="mb-3">
                     <label asp-for="EmailOrUserName" class="form-label">Email hoặc Username</label>
@@ -36,21 +36,21 @@
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
-                <div class="form-check mb-3">
+                <div class="form-check mb-4">
                     <input asp-for="RememberMe" class="form-check-input" />
-                    <label asp-for="RememberMe" class="form-check-label">
+                    <label asp-for="RememberMe" class="form-check-label text-muted">
                         Ghi nhớ đăng nhập
                     </label>
                 </div>
 
-                <button type="submit" class="btn btn-dark w-100">
+                <button type="submit" class="btn w-100 login-btn">
                     Đăng nhập
                 </button>
 
-                <div class="text-center mt-3">
+                <div class="text-center mt-3 login-links">
                     <a href="/account/register">Chưa có tài khoản? Đăng ký</a>
                     <br />
-                    <a href="/account/forgot-password">Quên mật khẩu?</a>
+                    <a href="/account/forgot-password" class="mt-2 d-inline-block">Quên mật khẩu?</a>
                 </div>
             </form>
         </div>
