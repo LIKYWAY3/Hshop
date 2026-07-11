@@ -2,23 +2,12 @@
     Layout = "_LayoutCustomer";
 }
 
-<!-- Start Hero Section -->
-<div class="hero">
-    <div class="container">
-        <div class="row justify-content-between">
-            <div class="col-lg-5">
-                <div class="intro-excerpt">
-                    <h1>Cart</h1>
-                </div>
-            </div>
-            <div class="col-lg-7">
-            </div>
-        </div>
-    </div>
-</div>
 <!-- End Hero Section -->
+<div class="container mt-5 fw-bold">
+    <h2 class="text-uppercase text-black">Giỏ hàng</h2>
+</div>
 
-<div class="untree_co-section before-footer-section">
+<div class="untree_co-section before-footer-section pt-2">
     <div class="container">
         <div class="row mb-5">
             <form class="col-md-12" method="post">
@@ -26,59 +15,92 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th class="product-thumbnail">Image</th>
-                                <th class="product-name">Product</th>
-                                <th class="product-price">Price</th>
-                                <th class="product-quantity">Quantity</th>
-                                <th class="product-total">Total</th>
-                                <th class="product-remove">Remove</th>
+                                <th class="product-check align-middle" style="width: 50px;">
+                                    <input type="checkbox" id="checkAll" class="form-check-input custom-checkbox">
+                                </th>
+                                <th colspan="2" class="product-name text-start">Sản phẩm</th>
+
+                                <th class="product-price text-center d-none d-lg-table-cell">Đơn giá</th>
+                                <th class="product-quantity text-center" style="width: 150px;">Số lượng</th>
+                                <th class="product-total text-center">Thành tiền</th>
+                                <th class="product-remove text-center">Xóa</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr class="cart-item">
+                                <td class="product-check align-middle">
+                                    <!-- value="1" ở đây tượng trưng cho ID của sản phẩm, bạn sẽ dùng code đổ ID thật vào đây -->
+                                    <input type="checkbox" class="form-check-input custom-checkbox check-item" name="selected_products[]" value="1">
+                                </td>
                                 <td class="product-thumbnail">
                                     <img src="images/product-1.png" alt="Image" class="img-fluid">
                                 </td>
                                 <td class="product-name">
                                     <h2 class="h5 text-black">Product 1</h2>
                                 </td>
-                                <td>$49.00</td>
-                                <td>
-                                    <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
+                                <td class="fs-6 unit-price d-none d-lg-table-cell" data-price="1000000">1.000.000<sup>&#8363</sup></td>
+                                <td class="align-middle product-qty">
+                                    <div class="input-group mb-0 d-flex align-items-center quantity-container mx-auto flex-nowrap">
+
                                         <div class="input-group-prepend">
                                             <button class="btn btn-outline-black decrease" type="button">&minus;</button>
                                         </div>
-                                        <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+
+                                        <input type="text" class="form-control text-center quantity-amount px-1" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-black increase" type="button">&plus;</button>
                                         </div>
+
                                     </div>
                                 </td>
-                                <td>$49.00</td>
-                                <td><a href="#" class="btn btn-black btn-sm">X</a></td>
+                                <td class="fs-6 text-danger item-total">1.000.000<sup>&#8363</sup></td>
+                                <td class=" product-delete">
+                                    <a href="#" class="text-muted" title="Xóa sản phẩm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                                        </svg>
+                                    </a>
+                                </td>
                             </tr>
 
-                            <tr>
+                            <tr class="cart-item">
+                                <td class="product-check align-middle">
+                                    <!-- value="1" ở đây tượng trưng cho ID của sản phẩm, bạn sẽ dùng code đổ ID thật vào đây -->
+                                    <input type="checkbox" class="form-check-input custom-checkbox check-item" name="selected_products[]" value="1">
+                                </td>
                                 <td class="product-thumbnail">
                                     <img src="images/product-2.png" alt="Image" class="img-fluid">
                                 </td>
                                 <td class="product-name">
                                     <h2 class="h5 text-black">Product 2</h2>
                                 </td>
-                                <td>$49.00</td>
-                                <td>
-                                    <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
+                                <td class="fs-6 unit-price d-none d-lg-table-cell" data-price="1500000">1.500.000<sup>&#8363</sup></td>
+                                <td class="align-middle">
+                                    <div class="input-group mb-0 d-flex align-items-center quantity-container mx-auto flex-nowrap">
+
                                         <div class="input-group-prepend">
                                             <button class="btn btn-outline-black decrease" type="button">&minus;</button>
                                         </div>
-                                        <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+
+                                        <input type="text" class="form-control text-center quantity-amount px-1" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-black increase" type="button">&plus;</button>
                                         </div>
+
                                     </div>
                                 </td>
-                                <td>$49.00</td>
-                                <td><a href="#" class="btn btn-black btn-sm">X</a></td>
+                                <td class="fs-6 text-danger item-total">1.500.000<sup>&#8363</sup></td>
+                                <td>
+                                    <a href="#" class="text-muted" title="Xóa sản phẩm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                                        </svg>
+                                    </a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -89,54 +111,59 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="row mb-5">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <button class="btn btn-black btn-sm btn-block">Update Cart</button>
-                    </div>
                     <div class="col-md-6">
-                        <button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button>
+                        <button class="btn btn-outline-black btn-sm btn-block">Tiếp tục mua sắm</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <label class="text-black h4" for="coupon">Coupon</label>
-                        <p>Enter your coupon code if you have one.</p>
+                        <label class="text-black h4" for="coupon">Phiếu giảm giá</label>
+                        <p>Nhập vào phiếu giảm giá nếu có</p>
                     </div>
-                    <div class="col-md-8 mb-3 mb-md-0">
-                        <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
+                    <div class="col-12 col-xl-8 mb-3 mb-xl-0">
+                        <input type="text" class="form-control py-3" id="coupon" placeholder="Mã giảm giá">
                     </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-black">Apply Coupon</button>
+                    <div class="col-12 col-xl-4">
+                        <button class="btn btn-black btn-block py-3">Áp dụng phiếu</button>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 pl-5">
                 <div class="row justify-content-end">
-                    <div class="col-md-7">
+                    <div class="col-md-9 col-lg-7 col-xl-7">
                         <div class="row">
                             <div class="col-md-12 text-right border-bottom mb-5">
-                                <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                                <h3 class="text-black h4 text-uppercase">Tổng thanh toán</h3>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <span class="text-black">Subtotal</span>
+                                <span class="text-black">Tổng tiền hàng</span>
                             </div>
-                            <div class="col-md-6 text-right">
-                                <strong class="text-black">$230.00</strong>
+                            <div class="col-md-6 text-end">
+                                <strong class="text-black" id="cart-subtotal">2.500.000<sup>&#8363</sup></strong>
                             </div>
                         </div>
-                        <div class="row mb-5">
+                        <div class="row mb-3">
                             <div class="col-md-6">
-                                <span class="text-black">Total</span>
+                                <span class="text-black">Mã khuyến mãi</span>
                             </div>
-                            <div class="col-md-6 text-right">
-                                <strong class="text-black">$230.00</strong>
+                            <div class="col-md-6 text-end">
+                                <strong class="text-black" id="cart-discount" data-discount="7000">7.000<sup>&#8363</sup></strong>
+                            </div>
+                        </div>
+                        <div class="row mb-5 border-top mb-5">
+                            <div class="col-md-6">
+                                <span class="text-black">Tổng thanh toán</span>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <strong class="text-black" id="cart-grand-total">2.493.000<sup>&#8363</sup></strong>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-12">
-                                <button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='checkout.html'">Proceed To Checkout</button>
+                                <button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='checkout.html'">Tiến hành thanh toán</button>
                             </div>
                         </div>
                     </div>
@@ -145,3 +172,102 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const checkAll = document.getElementById("checkAll");
+            const itemCheckboxes = document.querySelectorAll(".check-item");
+            const cartItems = document.querySelectorAll(".cart-item");
+
+            function updateCartTotals() {
+                let subtotal = 0;
+
+                cartItems.forEach(function (item) {
+                    const checkbox = item.querySelector(".check-item");
+                    if (checkbox.checked) {
+                        const quantity = parseInt(item.querySelector(".quantity-amount").value) || 0;
+                        const price = parseInt(item.querySelector(".unit-price").getAttribute("data-price")) || 0;
+                        subtotal += (quantity * price);
+                    }
+                });
+
+                const discountElem = document.getElementById("cart-discount");
+                let discount = 0;
+                if (discountElem) {
+                    discount = parseInt(discountElem.getAttribute("data-discount")) || 0;
+                }
+
+                let grandTotal = subtotal - discount;
+                if (subtotal === 0 || grandTotal < 0) {
+                    grandTotal = 0;
+                }
+                const formatCurrency = (amount) => new Intl.NumberFormat('vi-VN').format(amount) + '<sup><u>đ</u></sup>';
+
+                document.getElementById("cart-subtotal").innerHTML = formatCurrency(subtotal);
+                document.getElementById("cart-grand-total").innerHTML = formatCurrency(grandTotal);
+            }
+
+            // checkbox
+            checkAll.addEventListener("change", function () {
+                itemCheckboxes.forEach(function (checkbox) {
+                    checkbox.checked = checkAll.checked;
+                });
+                updateCartTotals();
+            });
+
+            itemCheckboxes.forEach(function (checkbox) {
+                checkbox.addEventListener("change", function () {
+                    const totalChecked = document.querySelectorAll(".check-item:checked").length;
+                    checkAll.checked = (totalChecked === itemCheckboxes.length);
+                    updateCartTotals();
+                });
+            });
+
+            // tăng giảm
+            cartItems.forEach(function (item) {
+                const btnDecrease = item.querySelector(".decrease");
+                const btnIncrease = item.querySelector(".increase");
+                const inputQuantity = item.querySelector(".quantity-amount");
+                const unitPriceElem = item.querySelector(".unit-price");
+                const itemTotalElem = item.querySelector(".item-total");
+
+                function calculateItemTotal() {
+                    let quantity = parseInt(inputQuantity.value);
+                    if (isNaN(quantity) || quantity < 1) {
+                        quantity = 1;
+                        inputQuantity.value = 1;
+                    }
+
+                    let price = parseInt(unitPriceElem.getAttribute("data-price"));
+                    let total = quantity * price;
+
+                    itemTotalElem.innerHTML = new Intl.NumberFormat('vi-VN').format(total) + '<sup><u>đ</u></sup>';
+
+                    updateCartTotals();
+                }
+
+                calculateItemTotal();
+
+                if (btnIncrease) {
+                    btnIncrease.addEventListener("click", function () {
+                        setTimeout(calculateItemTotal, 50);
+                    });
+                }
+
+                if (btnDecrease) {
+                    btnDecrease.addEventListener("click", function () {
+                        setTimeout(calculateItemTotal, 50);
+                    });
+                }
+
+                if (inputQuantity) {
+                    inputQuantity.addEventListener("input", function () {
+                        calculateItemTotal();
+                    });
+                }
+            });
+            updateCartTotals();
+        });
+    </script>
+}
