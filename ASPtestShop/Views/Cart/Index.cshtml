@@ -77,7 +77,7 @@
                                     <h2 class="h5 text-black">Product 2</h2>
                                 </td>
                                 <td class="fs-6 unit-price d-none d-lg-table-cell" data-price="1500000">1.500.000<sup>&#8363</sup></td>
-                                <td class="align-middle">
+                                <td class="align-middle product-qty">
                                     <div class="input-group mb-0 d-flex align-items-center quantity-container mx-auto flex-nowrap">
 
                                         <div class="input-group-prepend">
@@ -109,7 +109,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 mb-5 mb-md-0">
                 <div class="row mb-5">
                     <div class="col-md-6">
                         <button class="btn btn-outline-black btn-sm btn-block">Tiếp tục mua sắm</button>
@@ -120,7 +120,7 @@
                         <label class="text-black h4" for="coupon">Phiếu giảm giá</label>
                         <p>Nhập vào phiếu giảm giá nếu có</p>
                     </div>
-                    <div class="col-12 col-xl-8 mb-3 mb-xl-0">
+                    <div class="col-12 col-md-8 mb-3 mb-xl-0">
                         <input type="text" class="form-control py-3" id="coupon" placeholder="Mã giảm giá">
                     </div>
                     <div class="col-12 col-xl-4">
@@ -128,37 +128,29 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 pl-5">
+            <div class="col-md-6 ps-md-5 pt-3">
                 <div class="row justify-content-end">
-                    <div class="col-md-9 col-lg-7 col-xl-7">
+                    <div class="col-md-10 col-lg-9 col-xl-7">
                         <div class="row">
-                            <div class="col-md-12 text-right border-bottom mb-5">
+                            <div class="col-md-12 text-right border-bottom mb-4">
                                 <h3 class="text-black h4 text-uppercase">Tổng thanh toán</h3>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <span class="text-black">Tổng tiền hàng</span>
-                            </div>
-                            <div class="col-md-6 text-end">
-                                <strong class="text-black" id="cart-subtotal">2.500.000<sup>&#8363</sup></strong>
-                            </div>
+                        
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-black">Tổng tiền hàng</span>
+                            <strong class="text-black" id="cart-subtotal">2.500.000<sup>&#8363</sup></strong>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <span class="text-black">Mã khuyến mãi</span>
-                            </div>
-                            <div class="col-md-6 text-end">
-                                <strong class="text-black" id="cart-discount" data-discount="7000">7.000<sup>&#8363</sup></strong>
-                            </div>
+                      
+                       
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-black">Mã khuyến mãi</span>
+                            <strong class="text-black" id="cart-discount" data-discount="7000">7.000<sup>&#8363</sup></strong>
                         </div>
-                        <div class="row mb-5 border-top mb-5">
-                            <div class="col-md-6">
-                                <span class="text-black">Tổng thanh toán</span>
-                            </div>
-                            <div class="col-md-6 text-end">
-                                <strong class="text-black" id="cart-grand-total">2.493.000<sup>&#8363</sup></strong>
-                            </div>
+
+                        <div class="d-flex justify-content-between mb-4 border-top pt-3">
+                            <span class="text-black fw-bold">Tổng thanh toán</span>
+                            <strong class="text-black" id="cart-grand-total">2.493.000<sup>&#8363</sup></strong>
                         </div>
 
                         <div class="row">

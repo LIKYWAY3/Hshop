@@ -1000,7 +1000,7 @@ textarea {
         height: auto !important;
     }
 
-@media (max-width: 768px) {
+@media (max-width: 767.8px) {
     /* 1. Ẩn thanh tiêu đề */
     .site-blocks-table thead {
         display: none;
@@ -1066,7 +1066,7 @@ textarea {
     }
 
         .site-blocks-table td.product-name h2 {
-            font-size: 1rem;
+            font-size: 1.2rem;
             margin: 0;
             line-height: 1.3;
         }
