@@ -1,126 +1,106 @@
 ﻿@{
     ViewData["Title"] = "Chi tiết sản phẩm";
+    Layout = "~/Views/Shared/_LayoutCustomer.cshtml";
 }
 
-<div class="hero">
-    <div class="container">
-        <div class="row justify-content-between">
-            <div class="col-lg-5">
-                <div class="intro-excerpt">
-                    <h1>Chi tiết sản phẩm</h1>
-                    <p class="mb-4">Khám phá thông tin chi tiết và thêm sản phẩm yêu thích vào giỏ hàng của bạn.</p>
-                </div>
-            </div>
-            <div class="col-lg-7">
-                <div class="hero-img-wrap">
-                </div>
-            </div>
+<div class="container mt-5 mb-5" id="product-detail-container">
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
+        <h3 class="text-muted ms-3">Đang tải thông tin sản phẩm...</h3>
     </div>
 </div>
-<div class="untree_co-section">
-    <div class="container">
-        <div class="row" id="product-detail-container">
-            <div class="col-12 text-center py-5">
-                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem; color: #3b5d50 !important;" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-3 text-muted">Đang tải thông tin sản phẩm...</p>
-            </div>
-        </div>
-    </div>
-</div>
+
 @section Scripts {
     <script>
-        // Lấy ID từ Controller truyền sang (nếu bạn dùng ViewBag)
-        // Hoặc bạn có thể lấy trực tiếp từ URL nếu cấu hình Route
-        const productId = @(ViewBag.ProductId ?? "1"); // Mặc định là 1 để test
+        // Lấy ID sản phẩm từ Controller C#
+        const productId = parseInt('@ViewBag.ProductId') || 0;
 
         document.addEventListener("DOMContentLoaded", function () {
-            fetchProductDetail();
+            loadProductDetail();
         });
 
-        async function fetchProductDetail() {
-            try {
-                // Gọi API lấy dữ liệu của bạn
-                const response = await fetch(`/api/products/${productId}`);
-
-                if (!response.ok) {
-                    throw new Error("Không tìm thấy sản phẩm này hoặc hệ thống đang bận.");
-                }
-
-                const product = await response.json();
-                renderProduct(product);
-
-            } catch (error) {
-                document.getElementById('product-detail-container').innerHTML = `
-                    <div class="col-12 text-center py-5">
-                        <h3 class="text-danger">Lỗi!</h3>
-                        <p>${error.message}</p>
-                        <a href="/Shop" class="btn btn-secondary">Quay lại cửa hàng</a>
-                    </div>`;
-            }
+        // Hàm dùng Fetch API để gọi dữ liệu (thay thế hoàn toàn cho Ajax jQuery)
+        function loadProductDetail() {
+            fetch(`/api/products/${productId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Không tìm thấy sản phẩm hoặc ID không tồn tại.");
+                    }
+                    return response.json(); 
+                })
+                .then(product => {
+                    renderProductUI(product);
+                })
+                .catch(error => {
+                    // Xử lý khi lỗi (VD: gõ sai ID trên URL)
+                    console.error("Lỗi:", error);
+                    document.getElementById('product-detail-container').innerHTML = `
+                        <div class="alert alert-danger text-center">
+                            <h4>Oops! Rất tiếc...</h4>
+                            <p>${error.message}</p>
+                            <a href="/" class="btn btn-primary mt-2">Quay về trang chủ</a>
+                        </div>
+                    `;
+                });
         }
 
-        function renderProduct(product) {
-            // Sử dụng các class của UntreeStore template (btn-primary, text-primary, form-control...)
-            const html = `
-                <div class="col-12 col-md-6 mb-5 mb-md-0">
-                    <div class="img-wrap" style="background: #dce5e4; border-radius: 20px; padding: 30px; text-align: center;">
-                        <img src="${product.imageUrl || 'images/product-1.png'}"
+        function renderProductUI(product) {
+            console.log("Dữ liệu lấy từ API:", product);
+
+            // Hàm format tiền tệ VNĐ
+            const formattedPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price || 0);
+
+            // Giao diện chi tiết sản phẩm
+            const htmlContent = `
+                <div class="row">
+                    <!-- Cột Trái: Ảnh sản phẩm -->
+                    <div class="col-md-5">
+                        <img src="${product.imageUrl || '/images/no-image.png'}"
                              alt="${product.productName}"
-                             class="img-fluid"
-                             style="max-height: 500px; object-fit: contain;">
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-6 pl-md-5">
-                    <h2 class="section-title mb-3">${product.productName || 'Tên sản phẩm'}</h2>
-
-                    <div class="mb-4">
-                        <strong class="h2 text-primary d-block" style="color: #3b5d50 !important; font-weight: 700;">
-                            $${product.price ? product.price.toFixed(2) : '0.00'}
-                        </strong>
+                             class="img-fluid rounded shadow-sm"
+                             style="width: 100%; object-fit: cover;">
                     </div>
 
-                    <p class="mb-4 text-muted" style="line-height: 1.8;">
-                        ${product.description || 'Chưa có mô tả chi tiết cho sản phẩm này.'}
-                    </p>
+                    <!-- Cột Phải: Thông tin chi tiết -->
+                    <div class="col-md-7 mt-4 mt-md-0">
+                        <nav aria-label="breadcrumb">
+                          <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/" style="text-decoration: none; color: #555;">Trang chủ</a></li>
+                            <li class="breadcrumb-item"><a href="#" style="text-decoration: none; color: #555;">Sản phẩm</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">${product.productName}</li>
+                          </ol>
+                        </nav>
 
-                    <div class="mb-5 d-flex align-items-center">
-                        <div class="input-group" style="max-width: 150px;">
-                            <button class="btn btn-outline-black decrease-btn" type="button" onclick="updateQty(-1)" style="border: 1px solid #ccc;">&minus;</button>
-                            <input type="text" class="form-control text-center quantity-amount" id="quantity" value="1" readonly>
-                            <button class="btn btn-outline-black increase-btn" type="button" onclick="updateQty(1)" style="border: 1px solid #ccc;">&plus;</button>
+                        <h1 class="display-6 fw-bold" style="color: #2b3a28;">${product.productName}</h1>
+
+                        <h2 class="text-danger fw-bold mt-3">${formattedPrice}</h2>
+
+                        <div class="mt-4">
+                            <p class="text-muted">${product.description || 'Chưa có mô tả cho sản phẩm này.'}</p>
                         </div>
-                    </div>
 
-                    <div class="d-flex gap-3">
-                        <button class="btn btn-primary" onclick="addToCart(${product.id})">Thêm vào giỏ hàng</button>
-                        <a href="/Shop" class="btn btn-white-outline" style="border: 2px solid #2f2f2f; color: #2f2f2f;">Tiếp tục mua sắm</a>
+                        <!-- Phần chọn số lượng và thêm vào giỏ -->
+                        <div class="d-flex align-items-center mt-4">
+                            <label class="me-3 fw-bold">Số lượng:</label>
+                            <input type="number" id="qty" class="form-control text-center me-3" value="1" min="1" max="99" style="width: 80px;">
+
+                            <button class="btn btn-success btn-lg" onclick="addToCart(${product.id})" style="background-color: #3b5d49; border: none;">
+                                <i class="fas fa-shopping-cart me-2"></i> Thêm vào giỏ
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
 
-            document.getElementById('product-detail-container').innerHTML = html;
+            document.getElementById('product-detail-container').innerHTML = htmlContent;
         }
 
-        // Logic tăng/giảm số lượng
-        function updateQty(amount) {
-            const qtyInput = document.getElementById('quantity');
-            let currentVal = parseInt(qtyInput.value);
-            if (!isNaN(currentVal)) {
-                let newVal = currentVal + amount;
-                if (newVal < 1) newVal = 1;
-                qtyInput.value = newVal;
-            }
-        }
-
-        // Xử lý thêm vào giỏ hàng
+        // Tạm thời tạo sẵn hàm Thêm giỏ hàng (sẽ code logic ở các bước sau)
         function addToCart(id) {
-            const qty = document.getElementById('quantity').value;
-            // Chỗ này sau này bạn sẽ gọi API Cart của nhóm bạn
-            alert("Tuyệt vời! Đã thêm " + qty + " sản phẩm vào giỏ hàng.");
+            const quantity = document.getElementById('qty').value;
+            alert('Bạn vừa click thêm sản phẩm ID: ' + id + ' với số lượng: ' + quantity + ' vào giỏ hàng! (Chức năng này sẽ code sau)');
         }
     </script>
 }

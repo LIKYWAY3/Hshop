@@ -1163,3 +1163,48 @@ textarea {
         transform: scaleX(1);
         transform-origin: bottom left;
     }
+
+/*ADMIN LOGIN: LAYOUT & CHECKBOX*/
+.admin-login-body {
+    background-color: #eff2f1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-login-wrapper {
+    width: 100%;
+    max-width: 650px;
+    padding: 20px;
+}
+
+.admin-login-checkbox {
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+    border-color: #3b5d50;
+}
+
+.admin-login-check-label {
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-transform: none !important;
+    font-weight: normal !important;
+    color: #6a6a6a;
+}
+
+.admin-login-card {
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 0 !important;
+}
+
+.admin-login-header {
+    background-color: #3b5d50 !important; 
+    color: white !important;
+    text-align: center;
+    padding: 30px 20px;
+    border-bottom: none;
+    margin: 0;
+}

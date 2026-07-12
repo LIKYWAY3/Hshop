@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ASPtestShop.Controllers.MVC
+namespace ASPtestShop.Controllers.MVC.User
 {
     public class ProductController : Controller
     {
