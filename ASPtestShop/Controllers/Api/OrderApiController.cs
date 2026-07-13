@@ -1,16 +1,17 @@
-using System.Security.Claims;
+using ASPtestShop.Auth;
 using ASPtestShop.Data;
-
 using ASPtestShop.Models.DTO.Order;
+using ASPtestShop.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ASPtestShop.Services.Interfaces;
+using System.Security.Claims;
 
 namespace ASPtestShop.Controllers.Api
 {
     [ApiController]
     [Route("api/orders")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + UserCookieAuth.Scheme)]
     public class OrderApiController : ControllerBase
     {
         private readonly IOrderService _orderService;

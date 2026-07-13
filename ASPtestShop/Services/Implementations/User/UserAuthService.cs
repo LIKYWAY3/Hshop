@@ -119,5 +119,68 @@ namespace ASPtestShop.Services.Implementations.User
                 Message = "Đăng ký tài khoản thành công"
             };
         }
+
+        public async Task<ForgotPasswordResultDto> ForgotPasswordAsync(ForgotPasswordViewModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return new ForgotPasswordResultDto
+                {
+                    Success = true,
+                    Message = "Nếu email tồn tại trong hệ thống, link đặt lại mật khẩu sẽ được tạo."
+                };
+            }
+
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            return new ForgotPasswordResultDto
+            {
+                Success = true,
+                Message = "Đã tạo link đặt lại mật khẩu.",
+                Email = user.Email ?? model.Email,
+                ResetToken = resetToken
+            };
+        }
+
+        public async Task<ResetPasswordResultDto> ResetPasswordAsync(ResetPasswordViewModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return new ResetPasswordResultDto
+                {
+                    Success = false,
+                    Message = "Không tìm thấy tài khoản"
+                };
+            }
+
+            var result = await _userManager.ResetPasswordAsync(
+                user,
+                model.ResetToken,
+                model.NewPassword
+            );
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(" | ", result.Errors.Select(e => e.Description));
+
+                return new ResetPasswordResultDto
+                {
+                    Success = false,
+                    Message = errors
+                };
+            }
+
+            await _userManager.UpdateSecurityStampAsync(user);
+
+            return new ResetPasswordResultDto
+            {
+                Success = true,
+                Message = "Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại."
+            };
+        }
     }
 }
