@@ -7,14 +7,35 @@
     <title>@ViewData["Title"] - HShop Admin</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 </head>
-<body>
-    <div class="d-flex">
-        @await Html.PartialAsync("_AdminMenu")
 
-        <main class="flex-grow-1 p-4" style="min-height: 100vh; background-color: #f8f9fa;">
-            @RenderBody()
-        </main>
+<body>
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            @await Html.PartialAsync("_AdminMenu")
+        </aside>
+
+        <section class="admin-content">
+            <div class="admin-topbar">
+                <div>
+                    <h1 class="admin-page-title">
+                        @ViewData["Title"]
+                    </h1>
+                    <p class="admin-page-subtitle">
+                        Quản lý dữ liệu hệ thống HShop
+                    </p>
+                </div>
+
+                <div class="admin-topbar-badge">
+                    HShop Admin
+                </div>
+            </div>
+
+            <main class="admin-main">
+                @RenderBody()
+            </main>
+        </section>
     </div>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

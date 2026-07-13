@@ -1,0 +1,140 @@
+﻿@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0">Thông tin nhận hàng</h4>
+                </div>
+
+                <div class="card-body">
+                    <div id="checkoutMessage"></div>
+
+                    <form id="checkoutForm">
+                        <div class="mb-3">
+                            <label class="form-label">Tên người nhận</label>
+                            <input type="text" id="receiverName" class="form-control" placeholder="Nhập tên người nhận" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="text" id="receiverPhone" class="form-control" placeholder="Nhập số điện thoại" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Địa chỉ giao hàng</label>
+                            <textarea id="shippingAddress" class="form-control" rows="3" placeholder="Nhập địa chỉ giao hàng" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ghi chú</label>
+                            <textarea id="note" class="form-control" rows="3" placeholder="Ghi chú thêm nếu có"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Phương thức thanh toán</label>
+                            <select id="paymentMethod" class="form-select">
+                                <option value="COD" selected>Thanh toán khi nhận hàng COD</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100">
+                            Đặt hàng
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 mt-4 mt-lg-0">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Tóm tắt đơn hàng</h5>
+                </div>
+
+                <div class="card-body">
+                    <p class="text-muted mb-3">
+                        Đơn hàng sẽ được tạo từ sản phẩm hiện có trong giỏ hàng của bạn.
+                    </p>
+
+                    <div class="d-flex justify-content-between">
+                        <span>Phí vận chuyển</span>
+                        <strong>0đ</strong>
+                    </div>
+
+                    <hr />
+
+                    <p class="mb-0 text-muted">
+                        Sau khi đặt hàng thành công, giỏ hàng sẽ được xóa.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const checkoutForm = document.getElementById("checkoutForm");
+    const checkoutMessage = document.getElementById("checkoutMessage");
+
+    checkoutForm.addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        checkoutMessage.innerHTML = "";
+
+        const body = {
+            receiverName: document.getElementById("receiverName").value.trim(),
+            receiverPhone: document.getElementById("receiverPhone").value.trim(),
+            shippingAddress: document.getElementById("shippingAddress").value.trim(),
+            note: document.getElementById("note").value.trim(),
+            paymentMethod: document.getElementById("paymentMethod").value
+        };
+
+        if (!body.receiverName || !body.receiverPhone || !body.shippingAddress) {
+            checkoutMessage.innerHTML = `
+                    <div class="alert alert-danger">
+                        Vui lòng nhập đầy đủ thông tin nhận hàng.
+                    </div>
+                `;
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/orders/checkout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify(body)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || result.success === false) {
+                checkoutMessage.innerHTML = `
+                        <div class="alert alert-danger">
+                            ${result.message || "Đặt hàng thất bại"}
+                        </div>
+                    `;
+                return;
+            }
+
+            const orderCode = result.orderCode || "";
+
+            window.location.href = `/checkout/success?orderCode=${encodeURIComponent(orderCode)}`;
+
+        } catch (error) {
+            console.error(error);
+
+            checkoutMessage.innerHTML = `
+                    <div class="alert alert-danger">
+                        Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.
+                    </div>
+                `;
+        }
+    });
+</script>

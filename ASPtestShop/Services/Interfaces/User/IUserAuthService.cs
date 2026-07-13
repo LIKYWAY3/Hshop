@@ -8,5 +8,9 @@ namespace ASPtestShop.Services.Interfaces.User
         Task<UserLoginResultDto> LoginAsync(LoginViewModel model);
 
         Task<UserRegisterResultDto> RegisterAsync(RegisterViewModel model);
+
+        Task<ForgotPasswordResultDto> ForgotPasswordAsync(ForgotPasswordViewModel model);
+
+        Task<ResetPasswordResultDto> ResetPasswordAsync(ResetPasswordViewModel model);
     }
 }
