@@ -35,8 +35,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 // Cấu hình JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = UserCookieAuth.Scheme;
+    options.DefaultSignInScheme = UserCookieAuth.Scheme;
+    options.DefaultChallengeScheme = UserCookieAuth.Scheme;
 })
 .AddJwtBearer(options =>
 {
