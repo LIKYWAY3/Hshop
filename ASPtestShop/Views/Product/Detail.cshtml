@@ -14,14 +14,12 @@
 
 @section Scripts {
     <script>
-        // Lấy ID sản phẩm từ Controller C#
         const productId = parseInt('@ViewBag.ProductId') || 0;
 
         document.addEventListener("DOMContentLoaded", function () {
             loadProductDetail();
         });
 
-        // Hàm dùng Fetch API để gọi dữ liệu (thay thế hoàn toàn cho Ajax jQuery)
         function loadProductDetail() {
             fetch(`/api/products/${productId}`)
                 .then(response => {
@@ -34,7 +32,6 @@
                     renderProductUI(product);
                 })
                 .catch(error => {
-                    // Xử lý khi lỗi (VD: gõ sai ID trên URL)
                     console.error("Lỗi:", error);
                     document.getElementById('product-detail-container').innerHTML = `
                         <div class="alert alert-danger text-center">
@@ -49,15 +46,19 @@
         function renderProductUI(product) {
             console.log("Dữ liệu lấy từ API:", product);
 
-            // Hàm format tiền tệ VNĐ
             const formattedPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price || 0);
 
-            // Giao diện chi tiết sản phẩm
+            // 1. Xử lý đường dẫn ảnh: Thêm thumbnailUrl và đảm bảo là đường dẫn tuyệt đối
+            let imageUrl = product.imageUrl || product.thumbnailUrl || '/images/no-image.png';
+            if (!imageUrl.startsWith('/') && !imageUrl.startsWith('http')) {
+                imageUrl = '/' + imageUrl;
+            }
+
             const htmlContent = `
                 <div class="row">
                     <!-- Cột Trái: Ảnh sản phẩm -->
                     <div class="col-md-5">
-                        <img src="${product.imageUrl || '/images/no-image.png'}"
+                        <img src="${imageUrl}"
                              alt="${product.productName}"
                              class="img-fluid rounded shadow-sm"
                              style="width: 100%; object-fit: cover;">
@@ -68,7 +69,7 @@
                         <nav aria-label="breadcrumb">
                           <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="/" style="text-decoration: none; color: #555;">Trang chủ</a></li>
-                            <li class="breadcrumb-item"><a href="#" style="text-decoration: none; color: #555;">Sản phẩm</a></li>
+                            <li class="breadcrumb-item"><a href="/Shop" style="text-decoration: none; color: #555;">Sản phẩm</a></li>
                             <li class="breadcrumb-item active" aria-current="page">${product.productName}</li>
                           </ol>
                         </nav>
@@ -86,7 +87,8 @@
                             <label class="me-3 fw-bold">Số lượng:</label>
                             <input type="number" id="qty" class="form-control text-center me-3" value="1" min="1" max="99" style="width: 80px;">
 
-                            <button class="btn btn-success btn-lg" onclick="addToCart(${product.id})" style="background-color: #3b5d49; border: none;">
+                            <!-- 2. Sửa product.id thành product.productId cho đúng với API -->
+                            <button class="btn btn-success btn-lg" onclick="addToCart(${product.productId})" style="background-color: #3b5d49; border: none;">
                                 <i class="fas fa-shopping-cart me-2"></i> Thêm vào giỏ
                             </button>
                         </div>

@@ -1,10 +1,14 @@
 ﻿using ASPtestShop.Auth;
+using ASPtestShop.Data;
 using ASPtestShop.Models.ViewModels.Auth;
 using ASPtestShop.Services.Interfaces;
 using ASPtestShop.Services.Interfaces.User;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ASPtestShop.Controllers.MVC
 {
@@ -12,10 +16,16 @@ namespace ASPtestShop.Controllers.MVC
     public class AccountController : Controller
     {
         private readonly IUserAuthService _userAuthService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AccountController(IUserAuthService userAuthService)
+        public AccountController(IUserAuthService userAuthService, 
+               UserManager<ApplicationUser> userManager,
+               IWebHostEnvironment webHostEnvironment)
         {
             _userAuthService = userAuthService;
+            _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: /account/login
@@ -135,6 +145,81 @@ namespace ASPtestShop.Controllers.MVC
             TempData["SuccessMessage"] = result.Message;
 
             return RedirectToAction("Login");
+        }
+        // GET: /account/profile
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound("Không tìm thấy thông tin người dùng");
+
+            var model = new UserProfileViewModel
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
+                AvatarUrl = user.AvatarUrl
+            };
+
+            return View(model);
+        }
+        // POST: /account/update-profile
+        [HttpPost("update-profile")]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return NotFound("Không tìm thấy người dùng!");
+
+            user.FullName = model.FullName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Address = model.Address;
+
+            user.Email = model.Email;
+
+            if (model.AvatarFile != null && model.AvatarFile.Length > 0)
+            {
+                string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Uploads", "Avatars");
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
+                }
+
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.AvatarFile.FileName;
+                string filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.AvatarFile.CopyToAsync(fileStream);
+                }
+
+                user.AvatarUrl = "/Uploads/Avatars/" + uniqueFileName;
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Cập nhật hồ sơ thành công!";
+                return RedirectToAction("Profile");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            return View("Profile", model);
         }
     }
 }
