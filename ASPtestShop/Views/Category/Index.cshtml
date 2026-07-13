@@ -1,0 +1,96 @@
+﻿<!-- Start Hero Section -->
+<div class="hero">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-lg-5">
+                <div class="intro-excerpt">
+                    <h1>Shop</h1>
+                </div>
+            </div>
+            <div class="col-lg-7">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Hero Section -->
+
+<div id="products" class="untree_co-section product-section before-footer-section">
+    <div class="container">
+        <div class="row" id="productList">
+
+            <!-- Product sẽ được load từ API và render vào đây -->
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        loadProducts();
+    });
+
+    async function loadProducts() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryId = urlParams.get("categoryId");
+
+        let apiUrl = "/api/products";
+
+        if (categoryId) {
+            apiUrl = `/api/products/category/${categoryId}`;
+        }
+
+        try {
+            const response = await fetch(apiUrl);
+
+            if (!response.ok) {
+                console.log("Không lấy được sản phẩm");
+                return;
+            }
+
+            const products = await response.json();
+
+            renderProducts(products);
+        } catch (error) {
+            console.error("Lỗi load products:", error);
+        }
+    }
+
+    function renderProducts(products) {
+        const productList = document.getElementById("productList");
+
+        productList.innerHTML = "";
+
+        if (!products || products.length === 0) {
+            productList.innerHTML = `
+                    <div class="col-12 text-center">
+                        <p class="text-muted">Không có sản phẩm trong danh mục này.</p>
+                    </div>
+                `;
+            return;
+        }
+
+        products.forEach(product => {
+            const imageUrl = product.imageUrl || product.thumbnailUrl || "/images/no-image.png";
+
+            const price = product.price
+                ? product.price.toLocaleString("vi-VN")
+                : "0";
+
+            productList.innerHTML += `
+                    <div class="col-12 col-md-4 col-lg-3 mb-5">
+                        <a class="product-item" href="/Shop/Detail/${product.productId}">
+                            <img src="${imageUrl}" class="img-fluid product-thumbnail">
+
+                            <h3 class="product-title">${product.productName}</h3>
+
+                            <strong class="product-price">${price} đ</strong>
+
+                            <span class="icon-cross">
+                                <img src="/images/cross.svg" class="img-fluid">
+                            </span>
+                        </a>
+                    </div>
+                `;
+        });
+    }
+</script>

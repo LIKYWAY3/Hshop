@@ -141,7 +141,6 @@ a {
     .custom-navbar .custom-navbar-cta li:first-child {
         margin-right: 20px;
     }
-
 .hero {
     background: #3b5d50;
     padding: calc(4rem - 30px) 0 0rem 0;
@@ -1066,7 +1065,7 @@ textarea {
     }
 
         .site-blocks-table td.product-name h2 {
-            font-size: 1.2rem;
+            font-size: 1rem;
             margin: 0;
             line-height: 1.3;
         }
@@ -1153,6 +1152,7 @@ textarea {
     height: 1.3rem;
     cursor: pointer;
 }
+
     .custom-checkbox:checked {
         background-color: #3b5d50;
         border-color: #3b5d50;
@@ -1162,3 +1162,23 @@ textarea {
         border-color: #3b5d50;
         box-shadow: 0 0 0 0.25rem rgb(122, 144, 113, 0.25);
     }
+
+/* CATEGORY DROPDOWN NAVBAR */
+#categoryDropdownMenu {
+    --bs-dropdown-bg: #3b5d50;
+    --bs-dropdown-link-color: #ffffff;
+    --bs-dropdown-link-hover-color: #000000;
+    --bs-dropdown-link-hover-bg: #f9bf29;
+    background-color: #3b5d50 !important;
+    border: none !important;
+}
+
+    #categoryDropdownMenu .dropdown-item {
+        color: #ffffff !important;
+        background-color: transparent !important;
+    }
+
+        #categoryDropdownMenu .dropdown-item:hover {
+            color: #000000 !important;
+            background-color: #f9bf29 !important;
+        }

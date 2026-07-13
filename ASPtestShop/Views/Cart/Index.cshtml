@@ -26,82 +26,7 @@
                                 <th class="product-remove text-center">Xóa</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="cart-item">
-                                <td class="product-check align-middle">
-                                    <!-- value="1" ở đây tượng trưng cho ID của sản phẩm, bạn sẽ dùng code đổ ID thật vào đây -->
-                                    <input type="checkbox" class="form-check-input custom-checkbox check-item" name="selected_products[]" value="1">
-                                </td>
-                                <td class="product-thumbnail">
-                                    <img src="images/product-1.png" alt="Image" class="img-fluid">
-                                </td>
-                                <td class="product-name">
-                                    <h2 class="h5 text-black">Product 1</h2>
-                                </td>
-                                <td class="fs-6 unit-price d-none d-lg-table-cell" data-price="1000000">1.000.000<sup>&#8363</sup></td>
-                                <td class="align-middle product-qty">
-                                    <div class="input-group mb-0 d-flex align-items-center quantity-container mx-auto flex-nowrap">
-
-                                        <div class="input-group-prepend">
-                                            <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                                        </div>
-
-                                        <input type="text" class="form-control text-center quantity-amount px-1" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                                        </div>
-
-                                    </div>
-                                </td>
-                                <td class="fs-6 text-danger item-total">1.000.000<sup>&#8363</sup></td>
-                                <td class=" product-delete">
-                                    <a href="#" class="text-muted" title="Xóa sản phẩm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
-                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
-                                        </svg>
-                                    </a>
-                                </td>
-                            </tr>
-
-                            <tr class="cart-item">
-                                <td class="product-check align-middle">
-                                    <!-- value="1" ở đây tượng trưng cho ID của sản phẩm, bạn sẽ dùng code đổ ID thật vào đây -->
-                                    <input type="checkbox" class="form-check-input custom-checkbox check-item" name="selected_products[]" value="1">
-                                </td>
-                                <td class="product-thumbnail">
-                                    <img src="images/product-2.png" alt="Image" class="img-fluid">
-                                </td>
-                                <td class="product-name">
-                                    <h2 class="h5 text-black">Product 2</h2>
-                                </td>
-                                <td class="fs-6 unit-price d-none d-lg-table-cell" data-price="1500000">1.500.000<sup>&#8363</sup></td>
-                                <td class="align-middle product-qty">
-                                    <div class="input-group mb-0 d-flex align-items-center quantity-container mx-auto flex-nowrap">
-
-                                        <div class="input-group-prepend">
-                                            <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                                        </div>
-
-                                        <input type="text" class="form-control text-center quantity-amount px-1" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                                        </div>
-
-                                    </div>
-                                </td>
-                                <td class="fs-6 text-danger item-total">1.500.000<sup>&#8363</sup></td>
-                                <td>
-                                    <a href="#" class="text-muted" title="Xóa sản phẩm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
-                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
-                                        </svg>
-                                    </a>
-                                </td>
-                            </tr>
+                        <tbody id="cart-tbody">
                         </tbody>
                     </table>
                 </div>
@@ -112,7 +37,7 @@
             <div class="col-md-6 mb-5 mb-md-0">
                 <div class="row mb-5">
                     <div class="col-md-6">
-                        <button class="btn btn-outline-black btn-sm btn-block">Tiếp tục mua sắm</button>
+                        <a href="/Shop" class="btn btn-outline-black btn-sm btn-block">Tiếp tục mua sắm</a>
                     </div>
                 </div>
                 <div class="row">
@@ -139,18 +64,19 @@
                         
                         <div class="d-flex justify-content-between mb-3">
                             <span class="text-black">Tổng tiền hàng</span>
-                            <strong class="text-black" id="cart-subtotal">2.500.000<sup>&#8363</sup></strong>
+                            <strong class="text-black" id="cart-subtotal">0<sup>&#8363</sup></strong>
                         </div>
                       
                        
                         <div class="d-flex justify-content-between mb-3">
                             <span class="text-black">Mã khuyến mãi</span>
-                            <strong class="text-black" id="cart-discount" data-discount="7000">7.000<sup>&#8363</sup></strong>
+                            <strong class="text-black" id="cart-discount" data-discount="0">0<sup>&#8363</sup></strong>
                         </div>
 
                         <div class="d-flex justify-content-between mb-4 border-top pt-3">
                             <span class="text-black fw-bold">Tổng thanh toán</span>
-                            <strong class="text-black" id="cart-grand-total">2.493.000<sup>&#8363</sup></strong>
+                            <strong class="text-black" id="cart-grand-total">0<sup>&#8363</sup></strong>
+
                         </div>
 
                         <div class="row">
@@ -167,17 +93,89 @@
 
 @section Scripts {
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        async function getCartData() {
+            try {
+                const response = await fetch('/api/cart', {
+                    method: 'GET',
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Dữ liệu giỏ hàng từ Database:", data);
+
+                    const productList = data.items || []; 
+
+                    const tbody = document.getElementById("cart-tbody");
+                    tbody.innerHTML = ""; 
+
+                    if (productList.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-5 fs-5 text-muted fw-normal">Bạn chưa có sản phẩm nào trong giỏ hàng.</td></tr>`;
+                    } else {
+                        productList.forEach(item => {
+                            const tr = document.createElement("tr");
+                            tr.className = "cart-item";
+                            tr.setAttribute("data-cart-item-id", item.cartItemId);
+                            tr.innerHTML = `
+                                <td class="product-check align-middle">
+                                    <input type="checkbox" class="form-check-input custom-checkbox check-item" name="selected_products[]" value="${item.cartItemId}">
+                                </td>
+                                <td class="product-thumbnail">
+                                    <img src="${item.thumbnailUrl}" alt="Image" class="img-fluid">
+                                </td>
+                                <td class="product-name">
+                                    <h2 class="h6 text-black">${item.productName}</h2>
+                                </td>
+                                <td class="fs-6 unit-price d-none d-lg-table-cell" data-price="${item.unitPrice}">${new Intl.NumberFormat('vi-VN').format(item.unitPrice)}<sup>&#8363</sup></td>
+                                <td class="align-middle product-qty">
+                                    <div class="input-group mb-0 d-flex align-items-center quantity-container mx-auto flex-nowrap">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-outline-black decrease" type="button">&minus;</button>
+                                        </div>
+                                        <input type="text" class="form-control text-center quantity-amount px-1" value="${item.quantity}" placeholder="" aria-label="Example text" aria-describedby="button-addon1">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-black increase" type="button">&plus;</button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="fs-6 text-danger item-total">0<sup>&#8363</sup></td>
+                                <td class="product-delete">
+                                    <a href="javascript:void(0)" class="text-muted btn-remove" data-cart-item-id="${item.cartItemId}" title="Xóa sản phẩm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                                        </svg>
+                                    </a>
+                                </td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+
+                    initCartEvents();
+
+                } else {
+                    console.error("Lỗi từ server:", response.status);
+                    document.getElementById("cart-tbody").innerHTML =
+                        `<tr><td colspan="6" class="text-center py-4">Không tải được giỏ hàng (lỗi ${response.status}). Vui lòng thử lại hoặc đăng nhập lại.</td></tr>`;
+                }
+            } catch (error) {
+                console.error("Lỗi khi kết nối đến API giỏ hàng:", error);
+                document.getElementById("cart-tbody").innerHTML =
+                    `<tr><td colspan="6" class="text-center py-4">Không thể kết nối đến máy chủ.</td></tr>`;}
+        }
+
+        function initCartEvents() {
             const checkAll = document.getElementById("checkAll");
             const itemCheckboxes = document.querySelectorAll(".check-item");
             const cartItems = document.querySelectorAll(".cart-item");
 
             function updateCartTotals() {
                 let subtotal = 0;
-
                 cartItems.forEach(function (item) {
                     const checkbox = item.querySelector(".check-item");
-                    if (checkbox.checked) {
+                    if (checkbox && checkbox.checked) {
                         const quantity = parseInt(item.querySelector(".quantity-amount").value) || 0;
                         const price = parseInt(item.querySelector(".unit-price").getAttribute("data-price")) || 0;
                         subtotal += (quantity * price);
@@ -200,23 +198,25 @@
                 document.getElementById("cart-grand-total").innerHTML = formatCurrency(grandTotal);
             }
 
-            // checkbox
-            checkAll.addEventListener("change", function () {
-                itemCheckboxes.forEach(function (checkbox) {
-                    checkbox.checked = checkAll.checked;
+            // Xử lý Checkbox
+            if(checkAll) {
+                checkAll.addEventListener("change", function () {
+                    itemCheckboxes.forEach(function (checkbox) {
+                        checkbox.checked = checkAll.checked;
+                    });
+                    updateCartTotals();
                 });
-                updateCartTotals();
-            });
+            }
 
             itemCheckboxes.forEach(function (checkbox) {
                 checkbox.addEventListener("change", function () {
                     const totalChecked = document.querySelectorAll(".check-item:checked").length;
-                    checkAll.checked = (totalChecked === itemCheckboxes.length);
+                    if(checkAll) checkAll.checked = (totalChecked === itemCheckboxes.length);
                     updateCartTotals();
                 });
             });
 
-            // tăng giảm
+            // Xử lý Tăng/Giảm số lượng
             cartItems.forEach(function (item) {
                 const btnDecrease = item.querySelector(".decrease");
                 const btnIncrease = item.querySelector(".increase");
@@ -230,36 +230,112 @@
                         quantity = 1;
                         inputQuantity.value = 1;
                     }
-
                     let price = parseInt(unitPriceElem.getAttribute("data-price"));
                     let total = quantity * price;
-
                     itemTotalElem.innerHTML = new Intl.NumberFormat('vi-VN').format(total) + '<sup><u>đ</u></sup>';
-
                     updateCartTotals();
                 }
 
                 calculateItemTotal();
 
                 if (btnIncrease) {
-                    btnIncrease.addEventListener("click", function () {
-                        setTimeout(calculateItemTotal, 50);
+                    btnIncrease.addEventListener("click", async function () {
+                        inputQuantity.value = parseInt(inputQuantity.value) + 1;
+                        calculateItemTotal();
+
+                        const itemId = item.getAttribute("data-cart-item-id");
+                        await updateCartItemQuantity(itemId, inputQuantity.value);
                     });
                 }
 
                 if (btnDecrease) {
-                    btnDecrease.addEventListener("click", function () {
-                        setTimeout(calculateItemTotal, 50);
+                    btnDecrease.addEventListener("click", async function () {
+                        let currentVal = parseInt(inputQuantity.value);
+                        if(currentVal > 1) {
+                            inputQuantity.value = currentVal - 1;
+                            calculateItemTotal();
+
+                            const itemId = item.getAttribute("data-cart-item-id");
+                            await updateCartItemQuantity(itemId, inputQuantity.value);
+                        }
                     });
                 }
 
                 if (inputQuantity) {
-                    inputQuantity.addEventListener("input", function () {
+                    inputQuantity.addEventListener("change", async function () {
                         calculateItemTotal();
+                        const itemId = item.getAttribute("data-cart-item-id");
+                        await updateCartItemQuantity(itemId, inputQuantity.value);
                     });
                 }
             });
             updateCartTotals();
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            getCartData(); 
         });
+
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('.btn-remove');
+            if (!btn) return;
+
+            const cartItemId = btn.dataset.cartItemId;
+            if (!cartItemId) return;
+
+            if (!confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
+
+            try {
+                const res = await fetch(`/api/cart/remove/${encodeURIComponent(cartItemId)}`, {
+                    method: 'DELETE',
+                    credentials: 'same-origin',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (res.status === 401) {
+                    window.location.href = '/account/login';
+                    return;
+                }
+
+                if (!res.ok) {
+                    alert('Xóa thất bại');
+                    return;
+                }
+
+                getCartData();
+
+            } catch (err) {
+                console.error(err);
+                alert('Lỗi mạng. Vui lòng thử lại.');
+            }
+        });
+        //Gọi API cập nhật số lượng
+        async function updateCartItemQuantity(cartItemId, newQuantity) {
+            if (!cartItemId || newQuantity <= 0) return;
+
+            const payload = {
+                CartItemId: Number(cartItemId),
+                Quantity: Number(newQuantity)
+            };
+
+            try {
+                const res = await fetch('/api/cart/update', {
+                    method: 'PUT',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.status === 401) {
+                    window.location.href = '/account/login';
+                    return null;
+                }
+            } catch (err) {
+                console.error('Lỗi khi update số lượng:', err);
+            }
+        }
     </script>
 }
