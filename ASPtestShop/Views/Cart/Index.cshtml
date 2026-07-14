@@ -2,7 +2,6 @@
     Layout = "_LayoutCustomer";
 }
 
-<!-- End Hero Section -->
 <div class="container mt-5 fw-bold">
     <h2 class="text-uppercase text-black">Giỏ hàng</h2>
 </div>
@@ -10,23 +9,46 @@
 <div class="untree_co-section before-footer-section pt-2">
     <div class="container">
         <div class="row mb-5">
-            <form class="col-md-12" method="post">
+            <form class="col-md-12" method="post" onsubmit="return false;">
                 <div class="site-blocks-table">
                     <table class="table">
                         <thead>
                             <tr>
                                 <th class="product-check align-middle" style="width: 50px;">
-                                    <input type="checkbox" id="checkAll" class="form-check-input custom-checkbox">
+                                    <input type="checkbox"
+                                           id="checkAll"
+                                           class="form-check-input custom-checkbox"
+                                           aria-label="Chọn tất cả sản phẩm">
                                 </th>
-                                <th colspan="2" class="product-name text-start">Sản phẩm</th>
 
-                                <th class="product-price text-center d-none d-lg-table-cell">Đơn giá</th>
-                                <th class="product-quantity text-center" style="width: 150px;">Số lượng</th>
-                                <th class="product-total text-center">Thành tiền</th>
-                                <th class="product-remove text-center">Xóa</th>
+                                <th colspan="2" class="product-name text-start">
+                                    Sản phẩm
+                                </th>
+
+                                <th class="product-price text-center d-none d-lg-table-cell">
+                                    Đơn giá
+                                </th>
+
+                                <th class="product-quantity text-center" style="width: 150px;">
+                                    Số lượng
+                                </th>
+
+                                <th class="product-total text-center">
+                                    Thành tiền
+                                </th>
+
+                                <th class="product-remove text-center">
+                                    Xóa
+                                </th>
                             </tr>
                         </thead>
+
                         <tbody id="cart-tbody">
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    Đang tải giỏ hàng...
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -37,51 +59,91 @@
             <div class="col-md-6 mb-5 mb-md-0">
                 <div class="row mb-5">
                     <div class="col-md-6">
-                        <a href="/Shop" class="btn btn-outline-black btn-sm btn-block">Tiếp tục mua sắm</a>
+                        <a href="/Shop"
+                           class="btn btn-outline-black btn-sm btn-block">
+                            Tiếp tục mua sắm
+                        </a>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-12">
-                        <label class="text-black h4" for="coupon">Phiếu giảm giá</label>
+                        <label class="text-black h4" for="coupon">
+                            Phiếu giảm giá
+                        </label>
+
                         <p>Nhập vào phiếu giảm giá nếu có</p>
                     </div>
+
                     <div class="col-12 col-md-8 mb-3 mb-xl-0">
-                        <input type="text" class="form-control py-3" id="coupon" placeholder="Mã giảm giá">
+                        <input type="text"
+                               class="form-control py-3"
+                               id="coupon"
+                               placeholder="Mã giảm giá">
                     </div>
+
                     <div class="col-12 col-xl-4">
-                        <button class="btn btn-black btn-block py-3">Áp dụng phiếu</button>
+                        <button type="button"
+                                class="btn btn-black btn-block py-3">
+                            Áp dụng phiếu
+                        </button>
                     </div>
                 </div>
             </div>
+
             <div class="col-md-6 ps-md-5 pt-3">
                 <div class="row justify-content-end">
                     <div class="col-md-10 col-lg-9 col-xl-7">
                         <div class="row">
                             <div class="col-md-12 text-right border-bottom mb-4">
-                                <h3 class="text-black h4 text-uppercase">Tổng thanh toán</h3>
+                                <h3 class="text-black h4 text-uppercase">
+                                    Tổng thanh toán
+                                </h3>
                             </div>
                         </div>
-                        
+
                         <div class="d-flex justify-content-between mb-3">
                             <span class="text-black">Tổng tiền hàng</span>
-                            <strong class="text-black" id="cart-subtotal">0<sup>&#8363</sup></strong>
+
+                            <strong class="text-black" id="cart-subtotal">
+                                0<sup>&#8363;</sup>
+                            </strong>
                         </div>
-                      
-                       
+
                         <div class="d-flex justify-content-between mb-3">
                             <span class="text-black">Mã khuyến mãi</span>
-                            <strong class="text-black" id="cart-discount" data-discount="0">0<sup>&#8363</sup></strong>
+
+                            <strong class="text-black"
+                                    id="cart-discount"
+                                    data-discount="0">
+                                0<sup>&#8363;</sup>
+                            </strong>
                         </div>
 
                         <div class="d-flex justify-content-between mb-4 border-top pt-3">
-                            <span class="text-black fw-bold">Tổng thanh toán</span>
-                            <strong class="text-black" id="cart-grand-total">0<sup>&#8363</sup></strong>
+                            <span class="text-black fw-bold">
+                                Tổng thanh toán
+                            </span>
 
+                            <strong class="text-black" id="cart-grand-total">
+                                0<sup>&#8363;</sup>
+                            </strong>
                         </div>
 
                         <div class="row">
                             <div class="col-md-12">
-                                <button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='checkout.html'">Tiến hành thanh toán</button>
+                                <a id="checkout-btn"
+                                   class="btn btn-black btn-lg py-3 btn-block disabled"
+                                   href="#"
+                                   aria-disabled="true"
+                                   tabindex="-1">
+                                    Tiến hành thanh toán
+                                </a>
+
+                                <div id="checkout-hint"
+                                     class="small text-muted text-center mt-2">
+                                    Vui lòng chọn ít nhất một sản phẩm.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -93,249 +155,547 @@
 
 @section Scripts {
     <script>
+        const selectedCartItemsStorageKey = "selectedCartItemIds";
+
+        document.addEventListener("DOMContentLoaded", function() {
+            sessionStorage.removeItem(selectedCartItemsStorageKey);
+            setCheckoutButtonState(false);
+            getCartData();
+        });
+
+        function getSelectedCartItemIds() {
+            return Array.from(
+                document.querySelectorAll(".check-item:checked")
+            )
+                .map(checkbox => Number(checkbox.value))
+                .filter(id => Number.isInteger(id) && id > 0);
+        }
+
+        function setCheckoutButtonState(canCheckout) {
+            const checkoutButton =
+                document.getElementById("checkout-btn");
+
+            const checkoutHint =
+                document.getElementById("checkout-hint");
+
+            if (!checkoutButton) {
+                return;
+            }
+
+            if (canCheckout) {
+                checkoutButton.classList.remove("disabled");
+                checkoutButton.setAttribute("href", "/checkout");
+                checkoutButton.setAttribute("aria-disabled", "false");
+                checkoutButton.removeAttribute("tabindex");
+
+                if (checkoutHint) {
+                    checkoutHint.classList.add("d-none");
+                }
+
+                return;
+            }
+
+            checkoutButton.classList.add("disabled");
+            checkoutButton.setAttribute("href", "#");
+            checkoutButton.setAttribute("aria-disabled", "true");
+            checkoutButton.setAttribute("tabindex", "-1");
+
+            if (checkoutHint) {
+                checkoutHint.classList.remove("d-none");
+            }
+        }
+
+        function updateSelectionState() {
+            const itemCheckboxes =
+                Array.from(document.querySelectorAll(".check-item"));
+
+            const selectedIds = getSelectedCartItemIds();
+            const checkAll = document.getElementById("checkAll");
+
+            if (checkAll) {
+                checkAll.disabled = itemCheckboxes.length === 0;
+
+                checkAll.checked =
+                    itemCheckboxes.length > 0
+                    && selectedIds.length === itemCheckboxes.length;
+
+                checkAll.indeterminate =
+                    selectedIds.length > 0
+                    && selectedIds.length < itemCheckboxes.length;
+            }
+
+            setCheckoutButtonState(selectedIds.length > 0);
+            updateCartTotals();
+        }
+
         async function getCartData() {
+            const tbody = document.getElementById("cart-tbody");
+
             try {
-                const response = await fetch('/api/cart', {
-                    method: 'GET',
-                    credentials: 'same-origin',
-                    headers: { 'Content-Type': 'application/json' }
+                const response = await fetch("/api/cart", {
+                    method: "GET",
+                    credentials: "same-origin",
+                    headers: {
+                        "Accept": "application/json"
+                    }
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log("Dữ liệu giỏ hàng từ Database:", data);
+                if (response.status === 401) {
+                    window.location.href = "/account/login";
+                    return;
+                }
 
-                    const productList = data.items || []; 
+                if (!response.ok) {
+                    throw new Error(
+                        `Không tải được giỏ hàng (lỗi ${response.status}).`
+                    );
+                }
 
-                    const tbody = document.getElementById("cart-tbody");
-                    tbody.innerHTML = ""; 
+                const data = await response.json();
+                const productList = Array.isArray(data?.items)
+                    ? data.items
+                    : [];
 
-                    if (productList.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-5 fs-5 text-muted fw-normal">Bạn chưa có sản phẩm nào trong giỏ hàng.</td></tr>`;
-                    } else {
-                        productList.forEach(item => {
-                            const tr = document.createElement("tr");
-                            tr.className = "cart-item";
-                            tr.setAttribute("data-cart-item-id", item.cartItemId);
-                            tr.innerHTML = `
+                tbody.innerHTML = "";
+
+                if (productList.length === 0) {
+                    tbody.innerHTML = `
+                                <tr>
+                                    <td colspan="7"
+                                        class="text-center py-5 fs-5 text-muted fw-normal">
+                                        Bạn chưa có sản phẩm nào trong giỏ hàng.
+                                    </td>
+                                </tr>
+                            `;
+
+                    updateSelectionState();
+                    return;
+                }
+
+                productList.forEach(item => {
+                    const cartItemId = Number(item.cartItemId);
+                    const unitPrice = Number(item.unitPrice) || 0;
+                    const quantity = Number(item.quantity) || 1;
+                    const thumbnailUrl =
+                        item.thumbnailUrl || "/images/no-image.png";
+                    const productName =
+                        item.productName || "Sản phẩm";
+
+                    const tr = document.createElement("tr");
+
+                    tr.className = "cart-item";
+                    tr.dataset.cartItemId = cartItemId;
+
+                    tr.innerHTML = `
                                 <td class="product-check align-middle">
-                                    <input type="checkbox" class="form-check-input custom-checkbox check-item" name="selected_products[]" value="${item.cartItemId}">
+                                    <input type="checkbox"
+                                           class="form-check-input custom-checkbox check-item"
+                                           value="${cartItemId}"
+                                           aria-label="Chọn ${escapeHtml(productName)}">
                                 </td>
+
                                 <td class="product-thumbnail">
-                                    <img src="${item.thumbnailUrl}" alt="Image" class="img-fluid">
+                                    <img src="${escapeAttribute(thumbnailUrl)}"
+                                         alt="${escapeAttribute(productName)}"
+                                         class="img-fluid"
+                                         onerror="this.onerror=null; this.src='/images/no-image.png';">
                                 </td>
+
                                 <td class="product-name">
-                                    <h2 class="h6 text-black">${item.productName}</h2>
+                                    <h2 class="h6 text-black">
+                                        ${escapeHtml(productName)}
+                                    </h2>
                                 </td>
-                                <td class="fs-6 unit-price d-none d-lg-table-cell" data-price="${item.unitPrice}">${new Intl.NumberFormat('vi-VN').format(item.unitPrice)}<sup>&#8363</sup></td>
+
+                                <td class="fs-6 unit-price d-none d-lg-table-cell"
+                                    data-price="${unitPrice}">
+                                    ${formatCurrency(unitPrice)}
+                                </td>
+
                                 <td class="align-middle product-qty">
                                     <div class="input-group mb-0 d-flex align-items-center quantity-container mx-auto flex-nowrap">
                                         <div class="input-group-prepend">
-                                            <button class="btn btn-outline-black decrease" type="button">&minus;</button>
+                                            <button class="btn btn-outline-black decrease"
+                                                    type="button"
+                                                    aria-label="Giảm số lượng">
+                                                &minus;
+                                            </button>
                                         </div>
-                                        <input type="text" class="form-control text-center quantity-amount px-1" value="${item.quantity}" placeholder="" aria-label="Example text" aria-describedby="button-addon1">
+
+                                        <input type="number"
+                                               class="form-control text-center quantity-amount px-1"
+                                               value="${quantity}"
+                                               min="1"
+                                               max="99"
+                                               aria-label="Số lượng">
+
                                         <div class="input-group-append">
-                                            <button class="btn btn-outline-black increase" type="button">&plus;</button>
+                                            <button class="btn btn-outline-black increase"
+                                                    type="button"
+                                                    aria-label="Tăng số lượng">
+                                                &plus;
+                                            </button>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="fs-6 text-danger item-total">0<sup>&#8363</sup></td>
+
+                                <td class="fs-6 text-danger item-total">
+                                    ${formatCurrency(unitPrice * quantity)}
+                                </td>
+
                                 <td class="product-delete">
-                                    <a href="javascript:void(0)" class="text-muted btn-remove" data-cart-item-id="${item.cartItemId}" title="Xóa sản phẩm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                    <button type="button"
+                                            class="btn btn-link text-muted btn-remove p-0"
+                                            data-cart-item-id="${cartItemId}"
+                                            title="Xóa sản phẩm"
+                                            aria-label="Xóa ${escapeAttribute(productName)}">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             width="20"
+                                             height="20"
+                                             fill="currentColor"
+                                             viewBox="0 0 16 16">
                                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
                                             <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
                                         </svg>
-                                    </a>
+                                    </button>
                                 </td>
                             `;
-                            tbody.appendChild(tr);
-                        });
-                    }
 
-                    initCartEvents();
+                    tbody.appendChild(tr);
+                });
 
-                } else {
-                    console.error("Lỗi từ server:", response.status);
-                    document.getElementById("cart-tbody").innerHTML =
-                        `<tr><td colspan="6" class="text-center py-4">Không tải được giỏ hàng (lỗi ${response.status}). Vui lòng thử lại hoặc đăng nhập lại.</td></tr>`;
-                }
-            } catch (error) {
-                console.error("Lỗi khi kết nối đến API giỏ hàng:", error);
-                document.getElementById("cart-tbody").innerHTML =
-                    `<tr><td colspan="6" class="text-center py-4">Không thể kết nối đến máy chủ.</td></tr>`;}
+                initCartEvents();
+                updateSelectionState();
+            }
+            catch (error) {
+                console.error("Lỗi khi tải giỏ hàng:", error);
+
+                tbody.innerHTML = `
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-danger">
+                                    ${escapeHtml(
+                    error?.message
+                    || "Không thể kết nối đến máy chủ."
+                )}
+                                </td>
+                            </tr>
+                        `;
+
+                setCheckoutButtonState(false);
+            }
         }
 
         function initCartEvents() {
             const checkAll = document.getElementById("checkAll");
-            const itemCheckboxes = document.querySelectorAll(".check-item");
-            const cartItems = document.querySelectorAll(".cart-item");
 
-            function updateCartTotals() {
-                let subtotal = 0;
-                cartItems.forEach(function (item) {
-                    const checkbox = item.querySelector(".check-item");
-                    if (checkbox && checkbox.checked) {
-                        const quantity = parseInt(item.querySelector(".quantity-amount").value) || 0;
-                        const price = parseInt(item.querySelector(".unit-price").getAttribute("data-price")) || 0;
-                        subtotal += (quantity * price);
-                    }
-                });
+            if (checkAll) {
+                checkAll.onchange = function() {
+                    document
+                        .querySelectorAll(".check-item")
+                        .forEach(checkbox => {
+                            checkbox.checked = checkAll.checked;
+                        });
 
-                const discountElem = document.getElementById("cart-discount");
-                let discount = 0;
-                if (discountElem) {
-                    discount = parseInt(discountElem.getAttribute("data-discount")) || 0;
-                }
-
-                let grandTotal = subtotal - discount;
-                if (subtotal === 0 || grandTotal < 0) {
-                    grandTotal = 0;
-                }
-                const formatCurrency = (amount) => new Intl.NumberFormat('vi-VN').format(amount) + '<sup><u>đ</u></sup>';
-
-                document.getElementById("cart-subtotal").innerHTML = formatCurrency(subtotal);
-                document.getElementById("cart-grand-total").innerHTML = formatCurrency(grandTotal);
+                    updateSelectionState();
+                };
             }
 
-            // Xử lý Checkbox
-            if(checkAll) {
-                checkAll.addEventListener("change", function () {
-                    itemCheckboxes.forEach(function (checkbox) {
-                        checkbox.checked = checkAll.checked;
-                    });
-                    updateCartTotals();
+            document
+                .querySelectorAll(".check-item")
+                .forEach(checkbox => {
+                    checkbox.onchange = updateSelectionState;
                 });
-            }
 
-            itemCheckboxes.forEach(function (checkbox) {
-                checkbox.addEventListener("change", function () {
-                    const totalChecked = document.querySelectorAll(".check-item:checked").length;
-                    if(checkAll) checkAll.checked = (totalChecked === itemCheckboxes.length);
-                    updateCartTotals();
-                });
-            });
+            document
+                .querySelectorAll(".cart-item")
+                .forEach(item => {
+                    const btnDecrease =
+                        item.querySelector(".decrease");
 
-            // Xử lý Tăng/Giảm số lượng
-            cartItems.forEach(function (item) {
-                const btnDecrease = item.querySelector(".decrease");
-                const btnIncrease = item.querySelector(".increase");
-                const inputQuantity = item.querySelector(".quantity-amount");
-                const unitPriceElem = item.querySelector(".unit-price");
-                const itemTotalElem = item.querySelector(".item-total");
+                    const btnIncrease =
+                        item.querySelector(".increase");
 
-                function calculateItemTotal() {
-                    let quantity = parseInt(inputQuantity.value);
-                    if (isNaN(quantity) || quantity < 1) {
-                        quantity = 1;
-                        inputQuantity.value = 1;
-                    }
-                    let price = parseInt(unitPriceElem.getAttribute("data-price"));
-                    let total = quantity * price;
-                    itemTotalElem.innerHTML = new Intl.NumberFormat('vi-VN').format(total) + '<sup><u>đ</u></sup>';
-                    updateCartTotals();
-                }
+                    const inputQuantity =
+                        item.querySelector(".quantity-amount");
 
-                calculateItemTotal();
+                    const unitPriceElement =
+                        item.querySelector(".unit-price");
 
-                if (btnIncrease) {
-                    btnIncrease.addEventListener("click", async function () {
-                        inputQuantity.value = parseInt(inputQuantity.value) + 1;
-                        calculateItemTotal();
+                    const itemTotalElement =
+                        item.querySelector(".item-total");
 
-                        const itemId = item.getAttribute("data-cart-item-id");
-                        await updateCartItemQuantity(itemId, inputQuantity.value);
-                    });
-                }
+                    function normalizeQuantity() {
+                        let quantity = Number.parseInt(
+                            inputQuantity.value,
+                            10
+                        );
 
-                if (btnDecrease) {
-                    btnDecrease.addEventListener("click", async function () {
-                        let currentVal = parseInt(inputQuantity.value);
-                        if(currentVal > 1) {
-                            inputQuantity.value = currentVal - 1;
-                            calculateItemTotal();
-
-                            const itemId = item.getAttribute("data-cart-item-id");
-                            await updateCartItemQuantity(itemId, inputQuantity.value);
+                        if (!Number.isInteger(quantity) || quantity < 1) {
+                            quantity = 1;
                         }
-                    });
-                }
 
-                if (inputQuantity) {
-                    inputQuantity.addEventListener("change", async function () {
+                        if (quantity > 99) {
+                            quantity = 99;
+                        }
+
+                        inputQuantity.value = quantity;
+                        return quantity;
+                    }
+
+                    function calculateItemTotal() {
+                        const quantity = normalizeQuantity();
+
+                        const price = Number(
+                            unitPriceElement.dataset.price
+                        ) || 0;
+
+                        itemTotalElement.innerHTML =
+                            formatCurrency(price * quantity);
+
+                        updateCartTotals();
+                    }
+
+                    btnIncrease.onclick = async function() {
+                        const currentQuantity = normalizeQuantity();
+
+                        if (currentQuantity >= 99) {
+                            return;
+                        }
+
+                        inputQuantity.value = currentQuantity + 1;
                         calculateItemTotal();
-                        const itemId = item.getAttribute("data-cart-item-id");
-                        await updateCartItemQuantity(itemId, inputQuantity.value);
-                    });
-                }
-            });
-            updateCartTotals();
+
+                        await updateCartItemQuantity(
+                            item.dataset.cartItemId,
+                            inputQuantity.value
+                        );
+                    };
+
+                    btnDecrease.onclick = async function() {
+                        const currentQuantity = normalizeQuantity();
+
+                        if (currentQuantity <= 1) {
+                            return;
+                        }
+
+                        inputQuantity.value = currentQuantity - 1;
+                        calculateItemTotal();
+
+                        await updateCartItemQuantity(
+                            item.dataset.cartItemId,
+                            inputQuantity.value
+                        );
+                    };
+
+                    inputQuantity.onchange = async function() {
+                        calculateItemTotal();
+
+                        await updateCartItemQuantity(
+                            item.dataset.cartItemId,
+                            inputQuantity.value
+                        );
+                    };
+
+                    calculateItemTotal();
+                });
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            getCartData(); 
-        });
+        function updateCartTotals() {
+            let subtotal = 0;
 
-        document.addEventListener('click', async (e) => {
-            const btn = e.target.closest('.btn-remove');
-            if (!btn) return;
+            document
+                .querySelectorAll(".cart-item")
+                .forEach(item => {
+                    const checkbox =
+                        item.querySelector(".check-item");
 
-            const cartItemId = btn.dataset.cartItemId;
-            if (!cartItemId) return;
+                    if (!checkbox?.checked) {
+                        return;
+                    }
 
-            if (!confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
+                    const quantity = Number.parseInt(
+                        item.querySelector(".quantity-amount").value,
+                        10
+                    ) || 0;
 
-            try {
-                const res = await fetch(`/api/cart/remove/${encodeURIComponent(cartItemId)}`, {
-                    method: 'DELETE',
-                    credentials: 'same-origin',
-                    headers: { 'Accept': 'application/json' }
+                    const price = Number(
+                        item.querySelector(".unit-price").dataset.price
+                    ) || 0;
+
+                    subtotal += quantity * price;
                 });
 
-                if (res.status === 401) {
-                    window.location.href = '/account/login';
-                    return;
-                }
+            const discountElement =
+                document.getElementById("cart-discount");
 
-                if (!res.ok) {
-                    alert('Xóa thất bại');
-                    return;
-                }
+            const discount = Number(
+                discountElement?.dataset.discount
+            ) || 0;
 
-                getCartData();
+            const grandTotal = Math.max(
+                subtotal - discount,
+                0
+            );
 
-            } catch (err) {
-                console.error(err);
-                alert('Lỗi mạng. Vui lòng thử lại.');
+            document.getElementById("cart-subtotal").innerHTML =
+                formatCurrency(subtotal);
+
+            document.getElementById("cart-grand-total").innerHTML =
+                formatCurrency(grandTotal);
+        }
+
+        document.addEventListener("click", function(event) {
+            const checkoutButton =
+                event.target.closest("#checkout-btn");
+
+            if (!checkoutButton) {
+                return;
             }
-        });
-        //Gọi API cập nhật số lượng
-        async function updateCartItemQuantity(cartItemId, newQuantity) {
-            if (!cartItemId || newQuantity <= 0) return;
 
-            const payload = {
-                CartItemId: Number(cartItemId),
-                Quantity: Number(newQuantity)
-            };
+            event.preventDefault();
+
+            const selectedCartItemIds =
+                getSelectedCartItemIds();
+
+            if (selectedCartItemIds.length === 0) {
+                setCheckoutButtonState(false);
+
+                alert(
+                    "Vui lòng chọn ít nhất một sản phẩm để thanh toán."
+                );
+
+                return;
+            }
+
+            sessionStorage.setItem(
+                selectedCartItemsStorageKey,
+                JSON.stringify(selectedCartItemIds)
+            );
+
+            window.location.href = "/checkout";
+        });
+
+        document.addEventListener("click", async function(event) {
+            const removeButton =
+                event.target.closest(".btn-remove");
+
+            if (!removeButton) {
+                return;
+            }
+
+            const cartItemId =
+                Number(removeButton.dataset.cartItemId);
+
+            if (!Number.isInteger(cartItemId) || cartItemId <= 0) {
+                return;
+            }
+
+            if (!confirm(
+                "Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?"
+            )) {
+                return;
+            }
 
             try {
-                const res = await fetch('/api/cart/update', {
-                    method: 'PUT',
-                    credentials: 'same-origin',
+                const response = await fetch(
+                    `/api/cart/remove/${cartItemId}`,
+                    {
+                        method: "DELETE",
+                        credentials: "same-origin",
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    }
+                );
+
+                if (response.status === 401) {
+                    window.location.href = "/account/login";
+                    return;
+                }
+
+                if (!response.ok) {
+                    alert("Xóa sản phẩm thất bại.");
+                    return;
+                }
+
+                sessionStorage.removeItem(
+                    selectedCartItemsStorageKey
+                );
+
+                await getCartData();
+            }
+            catch (error) {
+                console.error(error);
+                alert("Lỗi mạng. Vui lòng thử lại.");
+            }
+        });
+
+        async function updateCartItemQuantity(
+            cartItemId,
+            newQuantity
+        ) {
+            const itemId = Number(cartItemId);
+            const quantity = Number(newQuantity);
+
+            if (!Number.isInteger(itemId)
+                || itemId <= 0
+                || !Number.isInteger(quantity)
+                || quantity <= 0) {
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/cart/update", {
+                    method: "PUT",
+                    credentials: "same-origin",
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
                     },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({
+                        cartItemId: itemId,
+                        quantity: quantity
+                    })
                 });
 
-                if (res.status === 401) {
-                    window.location.href = '/account/login';
-                    return null;
+                if (response.status === 401) {
+                    window.location.href = "/account/login";
+                    return;
                 }
-            } catch (err) {
-                console.error('Lỗi khi update số lượng:', err);
+
+                if (!response.ok) {
+                    alert("Cập nhật số lượng thất bại.");
+                    await getCartData();
+                }
             }
+            catch (error) {
+                console.error(
+                    "Lỗi khi cập nhật số lượng:",
+                    error
+                );
+
+                alert("Không thể cập nhật số lượng.");
+                await getCartData();
+            }
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat("vi-VN")
+                .format(Number(amount) || 0)
+                + "<sup><u>đ</u></sup>";
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        function escapeAttribute(value) {
+            return escapeHtml(value);
         }
     </script>
 }

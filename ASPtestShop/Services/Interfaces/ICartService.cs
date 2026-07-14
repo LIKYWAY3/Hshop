@@ -13,5 +13,7 @@ namespace ASPtestShop.Services.Interfaces
         Task<CartResultDto> RemoveCartItemAsync(string userId, int cartItemId);
 
         Task<CartResultDto> ClearCartAsync(string userId);
+
+        Task<bool> HasCartItemsAsync(string userId);
     }
 }

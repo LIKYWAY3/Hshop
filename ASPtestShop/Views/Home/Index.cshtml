@@ -1,13 +1,11 @@
 ﻿<!-- Start Hero Section -->
-
-<script src="@Url.Content("~/js/loading/loadingProducts.js")"></script>
 <div class="hero">
 	<div class="container">
 		<div class="row justify-content-between">
 			<div class="col-lg-5">
 				<div class="intro-excerpt">
 					<h1>Dụng Cụ Câu Cá <span clsas="d-block">Chuyên Nghiệp</span></h1>
-					<p class="mb-4">Chào mừng bạn đến với UmiShop – không gian mua sắm đẳng cấp dành riêng cho những cần thủ đam mê sự hoàn hảo. Chúng tôi tự hào là nhà phân phối chính thức các dòng cần câu, máy câu và phụ kiện cao cấp từ các thương hiệu huyền thoại toàn cầu.</p>
+					<p class="mb-4">Chào mừng bạn đến với FuuFishing – không gian mua sắm đẳng cấp dành riêng cho những cần thủ đam mê sự hoàn hảo. Chúng tôi tự hào là nhà phân phối chính thức các dòng cần câu, máy câu và phụ kiện cao cấp từ các thương hiệu huyền thoại toàn cầu.</p>
 					<p><a href="#" class="btn btn-secondary me-2">Mua Ngay</a><a href="home" class="btn btn-white-outline">Khám Phá</a></p>
 				</div>
 			</div>
@@ -262,5 +260,197 @@
 	</div>
 </div>
 <!-- End Testimonial Slider -->
+@section Scripts {
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			loadFeaturedProducts();
+		});
+
+		async function loadFeaturedProducts() {
+			const productList =
+				document.getElementById("product-list");
+
+			if (!productList) {
+				return;
+			}
+
+			productList.innerHTML = `
+				<div class="col-12 text-center py-5">
+					<div class="spinner-border text-success"
+						 role="status">
+						<span class="visually-hidden">
+							Đang tải...
+						</span>
+					</div>
+
+					<p class="text-muted mt-3">
+						Đang tải sản phẩm nổi bật...
+					</p>
+				</div>
+			`;
+
+			try {
+				const response = await fetch(
+					"/api/products/featured",
+					{
+						method: "GET",
+						headers: {
+							"Accept": "application/json"
+						}
+					}
+				);
+
+				if (!response.ok) {
+					throw new Error(
+						`Không tải được sản phẩm nổi bật. Lỗi ${response.status}`
+					);
+				}
+
+				const result = await response.json();
+
+				const products =
+					Array.isArray(result)
+						? result
+						: Array.isArray(result?.data)
+							? result.data
+							: Array.isArray(result?.items)
+								? result.items
+								: [];
+
+				renderFeaturedProducts(products);
+			}
+			catch (error) {
+				console.error(
+					"Load featured products error:",
+					error
+				);
+
+				productList.innerHTML = `
+					<div class="col-12">
+						<div class="alert alert-danger text-center">
+							Không thể tải sản phẩm nổi bật.
+						</div>
+					</div>
+				`;
+			}
+		}
+
+		function renderFeaturedProducts(products) {
+			const productList =
+				document.getElementById("product-list");
+
+			productList.innerHTML = "";
+
+			if (!products || products.length === 0) {
+				productList.innerHTML = `
+					<div class="col-12 text-center py-5">
+						<p class="text-muted mb-0">
+							Hiện chưa có sản phẩm nổi bật.
+						</p>
+					</div>
+				`;
+
+				return;
+			}
+
+			products.forEach(product => {
+				const productId = Number(
+					product.productId ?? product.id
+				);
+
+				if (!Number.isInteger(productId)
+					|| productId <= 0) {
+					return;
+				}
+
+				const productName =
+					product.productName
+					?? product.name
+					?? "Sản phẩm";
+
+				const price = Number(
+					product.price
+					?? product.salePrice
+					?? 0
+				);
+
+				const originalPrice = Number(
+					product.originalPrice
+					?? product.price
+					?? 0
+				);
+
+				const imageUrl =
+					product.thumbnailUrl
+					?? product.imageUrl
+					?? "/images/no-image.png";
+
+				const originalPriceHtml =
+					originalPrice > price
+						? `
+							<div class="text-muted
+										text-decoration-line-through
+										small">
+								${formatCurrency(originalPrice)}
+							</div>
+						  `
+						: "";
+
+				productList.innerHTML += `
+					<div class="col-12 col-md-4 col-lg-3 mb-5">
+						<a class="product-item"
+						   href="/Shop/Detail/${productId}">
+
+							<img src="${escapeAttribute(imageUrl)}"
+								 alt="${escapeAttribute(productName)}"
+								 class="img-fluid product-thumbnail"
+								 onerror="this.onerror=null;
+										  this.src='/images/no-image.png';">
+
+							<h3 class="product-title">
+								${escapeHtml(productName)}
+							</h3>
+
+							<strong class="product-price">
+								${formatCurrency(price)}
+							</strong>
+
+							${originalPriceHtml}
+
+							<span class="icon-cross">
+								<img src="/images/cross.svg"
+									 alt="Xem sản phẩm"
+									 class="img-fluid">
+							</span>
+						</a>
+					</div>
+				`;
+			});
+		}
+
+		function formatCurrency(value) {
+			return new Intl.NumberFormat(
+				"vi-VN",
+				{
+					style: "currency",
+					currency: "VND"
+				}
+			).format(Number(value) || 0);
+		}
+
+		function escapeHtml(value) {
+			return String(value ?? "")
+				.replaceAll("&", "&amp;")
+				.replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;")
+				.replaceAll('"', "&quot;")
+				.replaceAll("'", "&#039;");
+		}
+
+		function escapeAttribute(value) {
+			return escapeHtml(value);
+		}
+	</script>
+}
 
 	
