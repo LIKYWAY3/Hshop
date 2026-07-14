@@ -1,0 +1,281 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+    var orderId = ViewBag.OrderId;
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Chi tiết đơn hàng</h2>
+
+        <a href="/orders/history" class="btn btn-outline-dark">
+            Quay lại lịch sử
+        </a>
+    </div>
+
+    <div id="orderDetailMessage"></div>
+
+    <div id="orderDetailContent">
+        <div class="text-center text-muted py-5">
+            Đang tải chi tiết đơn hàng...
+        </div>
+    </div>
+</div>
+
+<script>
+    const orderId = @orderId;
+    const orderDetailMessage = document.getElementById("orderDetailMessage");
+    const orderDetailContent = document.getElementById("orderDetailContent");
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadOrderDetail();
+    });
+
+    async function loadOrderDetail() {
+        try {
+            const response = await fetch(`/api/orders/${orderId}`, {
+                method: "GET",
+                credentials: "include"
+            });
+
+            if (response.status === 401) {
+                window.location.href = "/account/login";
+                return;
+            }
+
+            if (response.status === 404) {
+                orderDetailContent.innerHTML = `
+                        <div class="alert alert-warning">
+                            Không tìm thấy đơn hàng.
+                        </div>
+                    `;
+                return;
+            }
+
+            if (!response.ok) {
+                orderDetailContent.innerHTML = `
+                        <div class="alert alert-danger">
+                            Không thể tải chi tiết đơn hàng.
+                        </div>
+                    `;
+                return;
+            }
+
+            const order = await response.json();
+
+            renderOrderDetail(order);
+
+        } catch (error) {
+            console.error(error);
+
+            orderDetailContent.innerHTML = `
+                    <div class="alert alert-danger">
+                        Có lỗi xảy ra khi tải chi tiết đơn hàng.
+                    </div>
+                `;
+        }
+    }
+
+    function renderOrderDetail(order) {
+        const items = order.items || [];
+
+        orderDetailContent.innerHTML = `
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-header bg-dark text-white">
+                                <h5 class="mb-0">Thông tin đơn hàng</h5>
+                            </div>
+
+                            <div class="card-body">
+                                <p>
+                                    <strong>Mã đơn:</strong>
+                                    ${order.orderCode || ""}
+                                </p>
+
+                                <p>
+                                    <strong>Ngày đặt:</strong>
+                                    ${formatDate(order.createdAt)}
+                                </p>
+
+                                <p>
+                                    <strong>Trạng thái đơn:</strong>
+                                    ${renderOrderStatus(order.orderStatus)}
+                                </p>
+
+                                <p>
+                                    <strong>Trạng thái thanh toán:</strong>
+                                    ${renderPaymentStatus(order.paymentStatus)}
+                                </p>
+
+                                <p>
+                                    <strong>Phương thức thanh toán:</strong>
+                                    ${order.paymentMethod || "COD"}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Sản phẩm trong đơn</h5>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>Sản phẩm</th>
+                                                <th class="text-center">SL</th>
+                                                <th class="text-end">Đơn giá</th>
+                                                <th class="text-end">Thành tiền</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            ${renderOrderItems(items)}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Thông tin nhận hàng</h5>
+                            </div>
+
+                            <div class="card-body">
+                                <p>
+                                    <strong>Người nhận:</strong>
+                                    ${order.receiverName || ""}
+                                </p>
+
+                                <p>
+                                    <strong>Số điện thoại:</strong>
+                                    ${order.receiverPhone || ""}
+                                </p>
+
+                                <p>
+                                    <strong>Địa chỉ:</strong>
+                                    ${order.shippingAddress || ""}
+                                </p>
+
+                                <p>
+                                    <strong>Ghi chú:</strong>
+                                    ${order.note || "Không có"}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Tổng kết thanh toán</h5>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Tạm tính</span>
+                                    <strong>${formatCurrency(order.totalAmount)}</strong>
+                                </div>
+
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Giảm giá</span>
+                                    <strong>${formatCurrency(order.discountAmount)}</strong>
+                                </div>
+
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Phí vận chuyển</span>
+                                    <strong>${formatCurrency(order.shippingFee)}</strong>
+                                </div>
+
+                                <hr />
+
+                                <div class="d-flex justify-content-between fs-5">
+                                    <span>Tổng thanh toán</span>
+                                    <strong>${formatCurrency(order.finalAmount)}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+    }
+
+    function renderOrderItems(items) {
+        if (!items || items.length === 0) {
+            return `
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            Không có sản phẩm trong đơn.
+                        </td>
+                    </tr>
+                `;
+        }
+
+        return items.map(item => `
+                <tr>
+                    <td>
+                        <strong>${item.productNameSnapshot || ""}</strong>
+                    </td>
+
+                    <td class="text-center">
+                        ${item.quantity || 0}
+                    </td>
+
+                    <td class="text-end">
+                        ${formatCurrency(item.unitPrice)}
+                    </td>
+
+                    <td class="text-end">
+                        <strong>${formatCurrency(item.lineTotal)}</strong>
+                    </td>
+                </tr>
+            `).join("");
+    }
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND"
+        }).format(value || 0);
+    }
+
+    function formatDate(value) {
+        if (!value) return "";
+
+        const date = new Date(value);
+
+        return date.toLocaleDateString("vi-VN") + " " + date.toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    function renderOrderStatus(status) {
+        const value = status || "Pending";
+
+        let badgeClass = "bg-secondary";
+
+        if (value === "Pending") badgeClass = "bg-warning text-dark";
+        if (value === "Confirmed") badgeClass = "bg-primary";
+        if (value === "Shipped") badgeClass = "bg-info text-dark";
+        if (value === "Completed") badgeClass = "bg-success";
+        if (value === "Cancelled") badgeClass = "bg-danger";
+
+        return `<span class="badge ${badgeClass}">${value}</span>`;
+    }
+
+    function renderPaymentStatus(status) {
+        const value = status || "Unpaid";
+
+        let badgeClass = "bg-secondary";
+
+        if (value === "Unpaid") badgeClass = "bg-warning text-dark";
+        if (value === "Paid") badgeClass = "bg-success";
+        if (value === "Failed") badgeClass = "bg-danger";
+
+        return `<span class="badge ${badgeClass}">${value}</span>`;
+    }
+</script>

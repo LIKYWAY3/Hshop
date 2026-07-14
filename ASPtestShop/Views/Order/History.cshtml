@@ -1,0 +1,203 @@
+﻿@{
+    ViewData["Title"] = "Lịch sử đơn hàng";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Lịch sử đơn hàng</h2>
+
+        <a href="/Shop" class="btn btn-outline-dark">
+            Tiếp tục mua hàng
+        </a>
+    </div>
+
+    <div id="orderMessage"></div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái đơn</th>
+                            <th>Thanh toán</th>
+                            <th>Phương thức</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="orderTableBody">
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                Đang tải đơn hàng...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const orderTableBody = document.getElementById("orderTableBody");
+    const orderMessage = document.getElementById("orderMessage");
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadOrderHistory();
+    });
+
+    async function loadOrderHistory() {
+        try {
+            const response = await fetch("/api/orders/history", {
+                method: "GET",
+                credentials: "include"
+            });
+
+            if (response.status === 401) {
+                window.location.href = "/account/login";
+                return;
+            }
+
+            const result = await response.json();
+
+            console.log("Order history API result:", result);
+
+            if (!response.ok) {
+                orderMessage.innerHTML = `
+                    <div class="alert alert-danger">
+                        ${result.message || "Không thể tải lịch sử đơn hàng."}
+                    </div>
+                `;
+                orderTableBody.innerHTML = "";
+                return;
+            }
+
+            let orders = [];
+
+            if (Array.isArray(result)) {
+                orders = result;
+            }
+            else if (Array.isArray(result.data)) {
+                orders = result.data;
+            }
+            else if (Array.isArray(result.orders)) {
+                orders = result.orders;
+            }
+            else if (Array.isArray(result.items)) {
+                orders = result.items;
+            }
+
+            renderOrders(orders);
+
+        } catch (error) {
+            console.error("Lỗi load order history:", error);
+
+            orderMessage.innerHTML = `
+                <div class="alert alert-danger">
+                    Có lỗi xảy ra khi tải đơn hàng.
+                </div>
+            `;
+
+            orderTableBody.innerHTML = "";
+        }
+    }
+
+    function renderOrders(orders) {
+        if (!Array.isArray(orders) || orders.length === 0) {
+            orderTableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        Bạn chưa có đơn hàng nào.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        orderTableBody.innerHTML = "";
+
+        orders.forEach(order => {
+            orderTableBody.innerHTML += `
+                <tr>
+                    <td>
+                        <strong>${order.orderCode || ""}</strong>
+                    </td>
+
+                    <td>
+                        ${formatDate(order.createdAt)}
+                    </td>
+
+                    <td>
+                        <strong>${formatCurrency(order.finalAmount)}</strong>
+                    </td>
+
+                    <td>
+                        ${renderOrderStatus(order.orderStatus)}
+                    </td>
+
+                    <td>
+                        ${renderPaymentStatus(order.paymentStatus)}
+                    </td>
+
+                    <td>
+                        ${order.paymentMethod || "COD"}
+                    </td>
+
+                    <td class="text-end">
+                        <a href="/orders/detail/${order.orderId}" class="btn btn-sm btn-dark">
+                            Xem chi tiết
+                        </a>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND"
+        }).format(value || 0);
+    }
+
+    function formatDate(value) {
+        if (!value) return "";
+
+        const date = new Date(value);
+
+        return date.toLocaleDateString("vi-VN") + " " + date.toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    function renderOrderStatus(status) {
+        const value = status || "Pending";
+
+        let badgeClass = "bg-secondary";
+
+        if (value === "Pending") badgeClass = "bg-warning text-dark";
+        if (value === "Confirmed") badgeClass = "bg-primary";
+        if (value === "Shipped") badgeClass = "bg-info text-dark";
+        if (value === "Completed") badgeClass = "bg-success";
+        if (value === "Cancelled") badgeClass = "bg-danger";
+
+        return `<span class="badge ${badgeClass}">${value}</span>`;
+    }
+
+    function renderPaymentStatus(status) {
+        const value = status || "Unpaid";
+
+        let badgeClass = "bg-secondary";
+
+        if (value === "Unpaid") badgeClass = "bg-warning text-dark";
+        if (value === "Paid") badgeClass = "bg-success";
+        if (value === "Failed") badgeClass = "bg-danger";
+
+        return `<span class="badge ${badgeClass}">${value}</span>`;
+    }
+</script>

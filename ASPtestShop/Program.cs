@@ -35,8 +35,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 // Cấu hình JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = UserCookieAuth.Scheme;
+    options.DefaultSignInScheme = UserCookieAuth.Scheme;
+    options.DefaultChallengeScheme = UserCookieAuth.Scheme;
 })
 .AddJwtBearer(options =>
 {
@@ -128,6 +129,7 @@ builder.Services.AddScoped<IAdminProductService, AdminProductService>();
 builder.Services.AddScoped<IAdminUploadService, AdminUploadService>();
 builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
 builder.Services.AddScoped<IAdminAuthService, AdminAuthService>();
+builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
 //user services
 builder.Services.AddScoped<IUserAuthService, UserAuthService>();
 // Payment providers

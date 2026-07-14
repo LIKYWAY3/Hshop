@@ -1,7 +1,7 @@
 ﻿@model ASPtestShop.Models.ViewModels.Auth.AdminLoginViewModel
 
 @{
-    ViewData["Title"] = "Admin Login";
+    ViewData["Title"] = "Admin Login - HShop";
     Layout = null;
 }
 
@@ -14,73 +14,61 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <style>
-            body {
-                min-height: 100vh;
-                background: #f3f4f6;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-            .login-card {
-                width: 100%;
-                max-width: 460px;
-            }
-
-            .login-title {
-                font-weight: 700;
-            }
-    </style>
+    <link rel="stylesheet" href="~/css/Style.css" />
 </head>
-<body>
-    <div class="login-card">
-        <div class="card shadow border-0">
-            <div class="card-header bg-dark text-white text-center py-3">
-                <h4 class="mb-0 login-title">HShop Admin</h4>
-                <small>Đăng nhập quản trị</small>
+<body class="admin-login-body">
+
+    <div class="admin-login-wrapper login-container">
+        <div class="card border-0 admin-login-card">
+
+            <div class="card-header admin-login-header">
+                <h4 class="fw-bold mb-1 text-white">HShop Admin</h4>
+                <p class="mb-0 small text-white-50">Đăng nhập quản trị</p>
             </div>
 
-            <div class="card-body p-4">
+            <div class="card-body p-4 p-md-5">
                 <form action="/admin/login" method="post">
                     @Html.AntiForgeryToken()
 
                     <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
 
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger fw-bold mb-3"></div>
 
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label asp-for="EmailOrUserName" class="form-label">
                             Email hoặc Username
                         </label>
                         <input asp-for="EmailOrUserName"
                                class="form-control"
                                placeholder="Nhập email hoặc username admin" />
-                        <span asp-validation-for="EmailOrUserName" class="text-danger"></span>
+                        <span asp-validation-for="EmailOrUserName" class="text-danger small mt-1 d-block"></span>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label asp-for="Password" class="form-label">
                             Mật khẩu
                         </label>
                         <input asp-for="Password"
                                class="form-control"
                                placeholder="Nhập mật khẩu" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
                     </div>
 
-                    <div class="form-check mb-3">
-                        <input asp-for="RememberMe" class="form-check-input" />
-                        <label asp-for="RememberMe" class="form-check-label">
+                    <div class="form-check mb-4 d-flex align-items-center">
+                        <input asp-for="RememberMe" class="form-check-input me-2 mt-0 admin-login-checkbox" id="rememberAdmin" />
+                        <label asp-for="RememberMe" class="form-check-label mb-0 admin-login-check-label" for="rememberAdmin">
                             Ghi nhớ đăng nhập
                         </label>
                     </div>
 
-                    <button type="submit" class="btn btn-dark w-100">
-                        Đăng nhập
+                    <button type="submit" class="btn login-btn w-100 mt-2">
+                        ĐĂNG NHẬP
                     </button>
                 </form>
             </div>
+
         </div>
     </div>
 

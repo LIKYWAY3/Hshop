@@ -2,52 +2,63 @@
     var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
 }
 
-<aside class="bg-dark text-white p-3" style="width: 260px; min-height: 100vh;">
-    <h4 class="mb-4">
-        HShop Admin
-    </h4>
+<div class="admin-menu">
+    <div class="admin-brand">
+        <div class="admin-brand-logo">
+            H
+        </div>
 
-    <div class="mb-3">
-        <small class="text-secondary">MENU</small>
+        <div>
+            <h4>HShop</h4>
+            <span>Admin Dashboard</span>
+        </div>
     </div>
 
-    <ul class="nav flex-column gap-2">
-        <li class="nav-item">
-            <a class="nav-link text-white @(currentPath == "/admin" ? "bg-primary rounded" : "")"
+    <div class="admin-menu-label">
+        MENU
+    </div>
+
+    <ul class="admin-menu-list">
+        <li>
+            <a class="admin-menu-link @(currentPath == "/admin" ? "active" : "")"
                href="/admin">
+                <span class="admin-menu-icon">▦</span>
                 Dashboard
             </a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link text-white @(currentPath.StartsWith("/admin/products") ? "bg-primary rounded" : "")"
+        <li>
+            <a class="admin-menu-link @(currentPath.StartsWith("/admin/products") ? "active" : "")"
                href="/admin/products">
+                <span class="admin-menu-icon">▣</span>
                 Quản lý sản phẩm
             </a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link text-white @(currentPath.StartsWith("/admin/categories") ? "bg-primary rounded" : "")"
+        <li>
+            <a class="admin-menu-link @(currentPath.StartsWith("/admin/categories") ? "active" : "")"
                href="/admin/categories">
+                <span class="admin-menu-icon">▤</span>
                 Quản lý danh mục
             </a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link text-white disabled"
-               href="#">
+        <li>
+            <a class="admin-menu-link @(currentPath.StartsWith("/admin/orders") ? "active" : "")"
+               href="/admin/orders">
+                <span class="admin-menu-icon">▥</span>
                 Quản lý đơn hàng
             </a>
         </li>
     </ul>
 
-    <hr class="border-secondary" />
+    <div class="admin-menu-footer">
+        <form action="/admin/logout" method="post">
+            @Html.AntiForgeryToken()
 
-    <form action="/admin/logout" method="post">
-        @Html.AntiForgeryToken()
-
-        <button type="submit" class="btn btn-outline-light w-100">
-            Đăng xuất
-        </button>
-    </form>
-</aside>
+            <button type="submit" class="admin-logout-btn">
+                Đăng xuất
+            </button>
+        </form>
+    </div>
+</div>

@@ -1182,3 +1182,171 @@ textarea {
             color: #000000 !important;
             background-color: #f9bf29 !important;
         }
+
+/* =========================================
+   GIAO DIỆN PREMIUM: ĐĂNG NHẬP & ĐĂNG KÝ
+   ========================================= */
+
+.login-container, .register-container {
+    margin-bottom: 5rem;
+    position: relative;
+    z-index: 1;
+}
+
+    /* Thẻ Card: Mềm mại, viền bo tròn lớn, bóng đổ sâu 3D (Soft UI) */
+    .login-container .card, .register-container .card {
+        border-radius: 24px;
+        background: #ffffff;
+        box-shadow: 0 20px 40px rgba(59, 93, 80, 0.12) !important;
+        border: 1px solid rgba(59, 93, 80, 0.05);
+        padding: 10px; /* Thêm padding để tạo không gian thở */
+    }
+
+    /* Biến Header thành kiểu dáng Typography hiện đại */
+    .login-container .card-header, .register-container .card-header {
+        background: transparent;
+        padding: 30px 20px 10px;
+        border-bottom: none;
+    }
+
+        .login-container .card-header h4, .register-container .card-header h4 {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: #2b3a32; /* Màu xanh lá cực đậm */
+            letter-spacing: -0.5px;
+        }
+
+    /* Style Input: Nền xám nhạt, không viền cứng, hiệu ứng Float khi Focus */
+    .login-container .form-control, .register-container .form-control {
+        border-radius: 12px;
+        padding: 14px 20px;
+        font-size: 0.95rem;
+        background-color: #f4f7f5;
+        border: 2px solid transparent; /* Giấu viền đi */
+        color: #333;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .login-container .form-control:focus, .register-container .form-control:focus {
+            background-color: #ffffff;
+            border-color: #3b5d50;
+            box-shadow: 0 10px 20px rgba(59, 93, 80, 0.08);
+            transform: translateY(-2px); /* Nhập liệu nảy nhẹ lên */
+            outline: none;
+        }
+
+    /* Tiêu đề (Label) của từng ô nhập liệu */
+    .login-container .form-label, .register-container .form-label {
+        font-weight: 600;
+        font-size: 0.8rem;
+        color: #6c757d;
+        text-transform: uppercase; /* Viết hoa chữ để nhìn sang trọng hơn */
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+/* Nút bấm: Gradient, tỏa hào quang (Glow effect) */
+.login-btn, .register-btn {
+    background: linear-gradient(135deg, #43705f 0%, #3b5d50 100%);
+    color: #ffffff;
+    border-radius: 50px;
+    padding: 15px 20px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(59, 93, 80, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 15px;
+}
+
+    .login-btn:hover, .register-btn:hover {
+        background: linear-gradient(135deg, #4a7d6a 0%, #2f4a40 100%);
+        color: #ffffff;
+        transform: translateY(-4px); /* Nhảy lên cao hơn khi trỏ chuột */
+        box-shadow: 0 15px 35px rgba(59, 93, 80, 0.45);
+    }
+
+    .login-btn:active, .register-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 5px 15px rgba(59, 93, 80, 0.2);
+    }
+
+/* Các liên kết phụ (Quên MK, Đăng nhập ngay) */
+.login-links a, .register-links a {
+    color: #6c757d;
+    font-weight: 600;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s ease;
+    display: inline-block;
+}
+
+    .login-links a:hover, .register-links a:hover {
+        color: #3b5d50;
+    }
+
+    /* Hiệu ứng gạch chân trượt mượt mà (Underline sweep) */
+    .login-links a::after, .register-links a::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        bottom: -4px;
+        left: 0;
+        background-color: #3b5d50;
+        transform: scaleX(0);
+        transform-origin: bottom right;
+        transition: transform 0.3s ease-out;
+    }
+
+    .login-links a:hover::after, .register-links a:hover::after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+
+/*ADMIN LOGIN: LAYOUT & CHECKBOX*/
+.admin-login-body {
+    background-color: #eff2f1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-login-wrapper {
+    width: 100%;
+    max-width: 650px;
+    padding: 20px;
+}
+
+.admin-login-checkbox {
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+    border-color: #3b5d50;
+}
+
+.admin-login-check-label {
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-transform: none !important;
+    font-weight: normal !important;
+    color: #6a6a6a;
+}
+
+.admin-login-card {
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 0 !important;
+}
+
+.admin-login-header {
+    background-color: #3b5d50 !important; 
+    color: white !important;
+    text-align: center;
+    padding: 30px 20px;
+    border-bottom: none;
+    margin: 0;
+}
