@@ -21,5 +21,8 @@ namespace ASPtestShop.Models.DTO.Order
         public string Note { get; set; } = string.Empty;
 
         public string PaymentMethod { get; set; } = string.Empty;
+
+        [MinLength(1, ErrorMessage = "Vui lòng chọn ít nhất một sản phẩm để thanh toán")]
+        public List<int> CartItemIds { get; set; } = new();
     }
 }

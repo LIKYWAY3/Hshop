@@ -131,8 +131,12 @@
 					</ul>
 				</li>
 
-				<li>
-					<a class="nav-link" asp-controller="Contact" asp-action="Index">Contact us</a>
+				<li class="nav-item">
+					<a class="nav-link"
+					   asp-controller="Shop"
+					   asp-action="Index">
+						Shop
+					</a>
 				</li>
 			</ul>
 
@@ -194,47 +198,17 @@
 					</li>
 				}
 
-				<li><a class="nav-link" asp-controller="Cart" asp-action="Index"><img src="images/cart.svg"></a></li>
+				<li><a class="nav-link" asp-controller="Cart" asp-action="Index"><img src="/images/cart.svg" alt="Giỏ hàng"></a></li>
 			</ul>
 		</div>
 	</div>
 </nav>
 
 <script>
-	document.addEventListener("DOMContentLoaded", function() {
-		loadNavbarCategories();
-		checkLoginStatus();
-	});
-		function checkLoginStatus() {
-		const token = localStorage.getItem('jwtToken');
-		const authMenu = document.querySelector('.custom-navbar-cta');
-
-		if (token) {
-			// Nếu có token (đã đăng nhập), dùng JS để vẽ lại thanh menu
-			// Bạn có thể decode JWT token để lấy tên User nếu muốn, ở đây mình để tạm chữ "Tài khoản"
-			authMenu.innerHTML = `
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle text-white fw-bold" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<i class="fas fa-user-circle me-1"></i> Tài khoản
-					</a>
-					<ul class="dropdown-menu dropdown-menu-end shop-category-dropdown-menu">
-						<li><a class="dropdown-item" href="/account/profile">Tài khoản của tôi</a></li>
-						<li><a class="dropdown-item" href="/orders/history">Lịch sử đơn hàng</a></li>
-						<li><hr class="dropdown-divider"></li>
-						<li><a class="dropdown-item text-warning fw-bold" href="#" onclick="logoutAPI()">Đăng xuất</a></li>
-					</ul>
-				</li>
-				<li>
-					<a class="nav-link" href="/Cart/Cart"><img src="/images/cart.svg" alt="Cart"></a>
-				</li>
-			`;
-		}
-	}
-
-	function logoutAPI() {
-		localStorage.removeItem('jwtToken'); // Xóa token
-		window.location.href = '/Home/Index'; // Tải lại trang
-	}
+	document.addEventListener("DOMContentLoaded", function () {
+    loadNavbarCategories();
+});
+		
 	async function loadNavbarCategories() {
 		try {
 			const response = await fetch("/api/categories");
