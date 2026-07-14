@@ -8,7 +8,7 @@ namespace ASPtestShop.Controllers.Api
 {
     [Route("api/cart")]
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = ASPtestShop.Auth.UserCookieAuth.Scheme)]
     public class CartApiController : ControllerBase
     {
         private readonly ICartService _cartService;

@@ -25,9 +25,9 @@
         @RenderBody()
     </div>
 	@await Html.PartialAsync("_Footer")
-	<script src="~/js/bootstrap.bundle.min.js"></script>
-	<script src="~/js/tiny-slider.js"></script>
-	<script src="~/js/custom.js"></script>
 	@await RenderSectionAsync("Scripts", required: false)
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/tiny-slider.js"></script>
+	<script src="js/custom.js"></script>
 </body>
 </html>

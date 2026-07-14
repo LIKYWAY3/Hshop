@@ -117,7 +117,9 @@ namespace ASPtestShop.Services.Implementations
                 ProductName = ci.Product.ProductName,
                 Quantity = ci.Quantity,
                 UnitPrice = ci.UnitPrice,
-                Total = ci.Quantity * ci.UnitPrice
+                Total = ci.Quantity * ci.UnitPrice,
+                //bổ xung ThumbnailUrl
+                ThumbnailUrl = ci.Product.ThumbnailUrl ?? string.Empty
             }).ToList();
 
             var totalAmount = items.Sum(i => i.Total);
