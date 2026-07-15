@@ -36,10 +36,26 @@
                     <span asp-validation-for="Email" class="text-danger d-block mt-1"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Address" class="form-label">Địa chỉ</label>
-                    <input asp-for="Address" class="form-control" placeholder="Có thể bỏ trống" />
-                    <span asp-validation-for="Address" class="text-danger d-block mt-1"></span>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Address" class="form-label">Địa chỉ</label>
+                        <input asp-for="Address" class="form-control" placeholder="Có thể bỏ trống" />
+                        <span asp-validation-for="Address" class="text-danger d-block mt-1"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Giới tính</label>
+                        <div class="d-flex align-items-center gap-4 pt-2">
+                            <div class="form-check mb-0">
+                                <input class="form-check-input custom-radio-umi" type="radio" asp-for="Gender" value="Nam" id="regGenderMale">
+                                <label class="form-check-label" for="regGenderMale">Nam</label>
+                            </div>
+                            <div class="form-check mb-0">
+                                <input class="form-check-input custom-radio-umi" type="radio" asp-for="Gender" value="Nữ" id="regGenderFemale">
+                                <label class="form-check-label" for="regGenderFemale">Nữ</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row">

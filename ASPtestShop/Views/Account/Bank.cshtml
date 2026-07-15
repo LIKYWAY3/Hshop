@@ -1,0 +1,88 @@
+﻿@model ASPtestShop.Models.ViewModels.Auth.UserProfileViewModel
+
+@{
+    ViewData["Title"] = "Ngân Hàng";
+}
+
+<div class="untree_co-section profile-page-container mt-4 mb-5">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-3">
+                <div class="sidebar-user-info d-flex align-items-center mb-4">
+                    @if (string.IsNullOrEmpty(Model.AvatarUrl))
+                    {
+                        <img src="https://ui-avatars.com/api/?name=@Model.UserName&background=355b4e&color=fff" alt="Avatar" class="sidebar-avatar me-3 rounded-circle" style="width: 50px; height: 50px;" />
+                    }
+                    else
+                    {
+                        <img src="@Model.AvatarUrl" alt="Avatar" class="sidebar-avatar me-3 rounded-circle" style="width: 50px; height: 50px; object-fit: cover;" />
+                    }
+                    <div>
+                        <h6 class="mb-0 fw-bold">@Model.UserName</h6>
+                        <a href="/account/profile" class="text-muted small text-decoration-none edit-profile-link">
+                            <svg viewBox="0 0 24 24" style="width: 14px; height: 14px;"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor" /></svg> Sửa Hồ Sơ
+                        </a>
+                    </div>
+                </div>
+
+                <ul class="sidebar-menu list-unstyled">
+                    <li class="menu-item active mb-2">
+                        <a href="#" class="text-decoration-none text-dark fw-bold">
+                            <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; color: #355b4e;" class="me-2"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor" /></svg> Tài Khoản Của Tôi
+                        </a>
+                        <ul class="sub-menu list-unstyled ms-4 mt-2">
+                            <li class="mb-2"><a href="/account/profile" class="text-decoration-none text-muted">Hồ Sơ</a></li>
+                            <li class="mb-2"><a href="/account/bank" class="text-decoration-none fw-bold" style="color: #355b4e;">Ngân Hàng</a></li>
+                            <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Địa Chỉ</a></li>
+                            <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Đổi Mật Khẩu</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item mb-2 mt-3">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; color: #00bcd4;" class="me-2"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" fill="currentColor" /></svg> Đơn Mua
+                        </a>
+                    </li>
+                    <li class="menu-item mt-3">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; color: #ff9800;" class="me-2"><path d="M21 11.11V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v4.11C4.34 11.45 5 12.63 5 14s-.66 2.55-2 2.89V21c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-4.11c-1.34-.34-2-1.52-2-2.89s.66-2.55 2-2.89zM19 21H5v-2.09c1.92-.91 3-2.92 3-4.91s-1.08-4-3-4.91V7h14v2.09c-1.92.91-3 2.92-3 4.91s1.08 4 3 4.91V21zm-6-9h-2v2h2v-2zm0-4h-2v2h2V8zm0 8h-2v2h2v-2z" fill="currentColor" /></svg> Phiếu giảm giá
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-9">
+                <div class="profile-card card border-0 shadow-sm" style="border-radius: 2px;">
+
+                    <div class="card-body p-4 border-bottom">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0 fw-normal" style="font-size: 1.125rem;">Thẻ Tín Dụng/Ghi Nợ</h5>
+                            <button class="btn btn-sm" style="background-color: #355b4e; color: white;">
+                                <i class="fas fa-plus"></i> Thêm Thẻ Mới
+                            </button>
+                        </div>
+
+                        <div class="text-center py-5">
+                            <div class="text-muted" style="font-size: 1.2rem;">Bạn chưa liên kết thẻ.</div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4 pb-5">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0 fw-normal" style="font-size: 1.125rem;">Tài Khoản Ngân Hàng Của Tôi</h5>
+                            <button class="btn btn-sm" style="background-color: #355b4e; color: white;">
+                                <i class="fas fa-plus"></i> Thêm Ngân Hàng Liên Kết
+                            </button>
+                        </div>
+
+                        <div class="text-center py-5">
+                            <div class="text-muted" style="font-size: 1.2rem;">Bạn chưa có tài khoản ngân hàng.</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

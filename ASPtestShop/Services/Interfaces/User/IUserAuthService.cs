@@ -8,5 +8,7 @@ namespace ASPtestShop.Services.Interfaces.User
         Task<UserLoginResultDto> LoginAsync(LoginViewModel model);
 
         Task<UserRegisterResultDto> RegisterAsync(RegisterViewModel model);
+
+        Task<AuthResultDto> UpdateProfileAsync(string userId, UpdateProfileDto dto);
     }
 }

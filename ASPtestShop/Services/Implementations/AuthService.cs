@@ -33,7 +33,9 @@ namespace ASPtestShop.Services.Implementations
             {
                 UserName = dto.UserName,
                 Email = dto.Email,
-                FullName = dto.FullName
+                FullName = dto.FullName,
+                Address = dto.Address, 
+                Gender = dto.Gender
             };
 
             // UserManager sẽ tự hash password và lưu user vào bảng AspNetUsers

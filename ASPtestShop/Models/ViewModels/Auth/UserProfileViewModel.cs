@@ -23,11 +23,39 @@ namespace ASPtestShop.Models.ViewModels.Auth
 
         [Display(Name = "Địa chỉ giao hàng")]
         public string? Address { get; set; }
-
+        public string? Gender { get; set; }
         public string? AvatarUrl { get; set; }
 
-        // Biến này để hứng file ảnh mới khi người dùng bấm nút Upload từ máy tính
         [Display(Name = "Tải ảnh đại diện mới")]
         public IFormFile? AvatarFile { get; set; }
+
+        //BẢO MẬT THÔNG TIN NGƯỜI DÙNG
+        public string MaskedEmail
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Email) || !Email.Contains("@"))
+                    return "Chưa cập nhật";
+
+                var parts = Email.Split('@');
+                string name = parts[0];
+                string domain = parts[1];
+
+                if (name.Length <= 1) return Email;
+
+                return name.Substring(0, 1) + new string('•', 8) + "@" + domain;
+            }
+        }
+
+        public string MaskedPhoneNumber
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(PhoneNumber) || PhoneNumber.Length <= 2)
+                    return "Chưa cập nhật";
+
+                return new string('•', PhoneNumber.Length - 2) + PhoneNumber.Substring(PhoneNumber.Length - 2);
+            }
+        }
     }
 }

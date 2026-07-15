@@ -1,225 +1,326 @@
-﻿using ASPtestShop.Auth;
-using ASPtestShop.Data;
-using ASPtestShop.Models.ViewModels.Auth;
-using ASPtestShop.Services.Interfaces;
-using ASPtestShop.Services.Interfaces.User;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Hosting;
+﻿    using ASPtestShop.Auth;
+    using ASPtestShop.Data;
+using ASPtestShop.Models.DTO.Auth;
+    using ASPtestShop.Models.ViewModels.Auth;
+    using ASPtestShop.Services.Interfaces;
+    using ASPtestShop.Services.Interfaces.User;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using System.Security.Claims;
 
-namespace ASPtestShop.Controllers.MVC
-{
-    [Route("account")]
-    public class AccountController : Controller
+    namespace ASPtestShop.Controllers.MVC
     {
-        private readonly IUserAuthService _userAuthService;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-
-        public AccountController(IUserAuthService userAuthService, 
-               UserManager<ApplicationUser> userManager,
-               IWebHostEnvironment webHostEnvironment)
+        [Route("account")]
+        public class AccountController : Controller
         {
-            _userAuthService = userAuthService;
-            _userManager = userManager;
-            _webHostEnvironment = webHostEnvironment;
-        }
+            private readonly IUserAuthService _userAuthService;
+            private readonly UserManager<ApplicationUser> _userManager;
+            private readonly IWebHostEnvironment _webHostEnvironment;
 
-        // GET: /account/login
-        [HttpGet("login")]
-        public IActionResult Login(string? returnUrl = null)
-        {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
-        }
-
-        // POST: /account/login
-        [HttpPost("login")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
-        {
-            ViewBag.ReturnUrl = returnUrl;
-
-            if (!ModelState.IsValid)
+            public AccountController(IUserAuthService userAuthService, 
+                   UserManager<ApplicationUser> userManager,
+                   IWebHostEnvironment webHostEnvironment)
             {
-                return View(model);
+                _userAuthService = userAuthService;
+                _userManager = userManager;
+                _webHostEnvironment = webHostEnvironment;
             }
 
-            var result = await _userAuthService.LoginAsync(model);
-
-            if (!result.Success)
+            // GET: /account/login
+            [HttpGet("login")]
+            public IActionResult Login(string? returnUrl = null)
             {
-                ModelState.AddModelError("", result.Message);
-                return View(model);
+                ViewBag.ReturnUrl = returnUrl;
+                return View();
             }
 
-            var displayName = !string.IsNullOrWhiteSpace(result.FullName)
-                ? result.FullName
-                : result.UserName;
-
-            var claims = new List<Claim>
+            // POST: /account/login
+            [HttpPost("login")]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
             {
-                new Claim(ClaimTypes.NameIdentifier, result.UserId),
-                new Claim(ClaimTypes.Name, displayName),
-                new Claim(ClaimTypes.Email, result.Email),
-                new Claim(ClaimTypes.Role, "Customer")
-            };
+                ViewBag.ReturnUrl = returnUrl;
 
-            var identity = new ClaimsIdentity(claims, UserCookieAuth.Scheme);
-            var principal = new ClaimsPrincipal(identity);
-
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = model.RememberMe,
-                ExpiresUtc = model.RememberMe
-                    ? DateTimeOffset.UtcNow.AddDays(7)
-                    : DateTimeOffset.UtcNow.AddHours(6)
-            };
-
-            await HttpContext.SignInAsync(
-                UserCookieAuth.Scheme,
-                principal,
-                authProperties
-            );
-
-            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-
-            return RedirectToAction("Index", "Home");
-        }
-
-        // POST: /account/logout
-        [HttpPost("logout")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(UserCookieAuth.Scheme);
-            return RedirectToAction("Index", "Home");
-        }
-
-        // GET: /account/logout
-        [HttpGet("logout")]
-        public async Task<IActionResult> LogoutGet()
-        {
-            await HttpContext.SignOutAsync(UserCookieAuth.Scheme);
-            return RedirectToAction("Index", "Home");
-        }
-
-        // GET: /account/access-denied
-        [HttpGet("access-denied")]
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
-
-        // GET: /account/register
-        [HttpGet("register")]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        // POST: /account/register
-        [HttpPost("register")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var result = await _userAuthService.RegisterAsync(model);
-
-            if (!result.Success)
-            {
-                ModelState.AddModelError("", result.Message);
-                return View(model);
-            }
-
-            TempData["SuccessMessage"] = result.Message;
-
-            return RedirectToAction("Login");
-        }
-        // GET: /account/profile
-        [HttpGet("profile")]
-        [Authorize]
-        public async Task<IActionResult> Profile()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return RedirectToAction("Login");
-
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) return NotFound("Không tìm thấy thông tin người dùng");
-
-            var model = new UserProfileViewModel
-            {
-                Id = user.Id,
-                FullName = user.FullName,
-                UserName = user.UserName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Address = user.Address,
-                AvatarUrl = user.AvatarUrl
-            };
-
-            return View(model);
-        }
-        // POST: /account/update-profile
-        [HttpPost("update-profile")]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null) return NotFound("Không tìm thấy người dùng!");
-
-            user.FullName = model.FullName;
-            user.PhoneNumber = model.PhoneNumber;
-            user.Address = model.Address;
-
-            user.Email = model.Email;
-
-            if (model.AvatarFile != null && model.AvatarFile.Length > 0)
-            {
-                string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Uploads", "Avatars");
-                if (!Directory.Exists(uploadFolder))
+                if (!ModelState.IsValid)
                 {
-                    Directory.CreateDirectory(uploadFolder);
+                    return View(model);
                 }
 
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.AvatarFile.FileName;
-                string filePath = Path.Combine(uploadFolder, uniqueFileName);
+                var result = await _userAuthService.LoginAsync(model);
 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                if (!result.Success)
                 {
-                    await model.AvatarFile.CopyToAsync(fileStream);
+                    ModelState.AddModelError("", result.Message);
+                    return View(model);
                 }
 
-                user.AvatarUrl = "/Uploads/Avatars/" + uniqueFileName;
+                var displayName = !string.IsNullOrWhiteSpace(result.FullName)
+                    ? result.FullName
+                    : result.UserName;
+
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, result.UserId),
+                    new Claim(ClaimTypes.Name, displayName),
+                    new Claim(ClaimTypes.Email, result.Email),
+                    new Claim(ClaimTypes.Role, "Customer")
+                };
+
+                var identity = new ClaimsIdentity(claims, UserCookieAuth.Scheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = model.RememberMe,
+                    ExpiresUtc = model.RememberMe
+                        ? DateTimeOffset.UtcNow.AddDays(7)
+                        : DateTimeOffset.UtcNow.AddHours(6)
+                };
+
+                await HttpContext.SignInAsync(
+                    UserCookieAuth.Scheme,
+                    principal,
+                    authProperties
+                );
+
+                if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+
+                return RedirectToAction("Index", "Home");
             }
 
-            var result = await _userManager.UpdateAsync(user);
-
-            if (result.Succeeded)
+            // POST: /account/logout
+            [HttpPost("logout")]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> Logout()
             {
-                TempData["SuccessMessage"] = "Cập nhật hồ sơ thành công!";
+                await HttpContext.SignOutAsync(UserCookieAuth.Scheme);
+                return RedirectToAction("Index", "Home");
+            }
+
+            // GET: /account/logout
+            [HttpGet("logout")]
+            public async Task<IActionResult> LogoutGet()
+            {
+                await HttpContext.SignOutAsync(UserCookieAuth.Scheme);
+                return RedirectToAction("Index", "Home");
+            }
+
+            // GET: /account/access-denied
+            [HttpGet("access-denied")]
+            public IActionResult AccessDenied()
+            {
+                return View();
+            }
+
+            // GET: /account/register
+            [HttpGet("register")]
+            public IActionResult Register()
+            {
+                return View();
+            }
+
+            // POST: /account/register
+            [HttpPost("register")]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> Register(RegisterViewModel model)
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                var result = await _userAuthService.RegisterAsync(model);
+
+                if (!result.Success)
+                {
+                    ModelState.AddModelError("", result.Message);
+                    return View(model);
+                }
+
+                TempData["SuccessMessage"] = result.Message;
+
+                return RedirectToAction("Login");
+            }
+            // GET: /account/profile
+            [HttpGet("profile")]
+            [Authorize]
+            public async Task<IActionResult> Profile()
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null) return RedirectToAction("Login");
+
+                var user = await _userManager.FindByIdAsync(userId!);
+                if (user == null) return NotFound("Không tìm thấy thông tin người dùng");
+
+                var model = new UserProfileViewModel
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    Address = user.Address,
+                    Gender = user.Gender,
+                    AvatarUrl = user.AvatarUrl
+                };
+
+                return View(model);
+            }
+            // POST: /account/update-profile
+            [HttpPost("update-profile")]
+            [Authorize]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null) return RedirectToAction("Login");
+
+                var dto = new UpdateProfileDto
+                {
+                    FullName = model.FullName,
+                    PhoneNumber = model.PhoneNumber,
+                    Address = model.Address,
+                    Gender = model.Gender,
+                    AvatarFile = model.AvatarFile
+                };
+
+                var result = await _userAuthService.UpdateProfileAsync(userId, dto);
+
+                if (result.Success)
+                {
+                    TempData["SuccessMessage"] = result.Message; 
+                    return RedirectToAction("Profile");
+                }
+
+                if (result.Errors != null)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", result.Message);
+                }
+
+                return View("Profile", model);
+            }
+            // GET: /account/ChangePhone
+            [HttpGet("ChangePhone")]
+            [Authorize]
+            public IActionResult ChangePhone()
+            {
+                return View();
+            }
+
+            // POST: /account/ChangePhone
+            [HttpPost("ChangePhone")]
+            [Authorize]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> ChangePhone(ChangePhoneViewModel model)
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToAction("Login");
+                }
+
+                var checkPassword = await _userManager.CheckPasswordAsync(user, model.Password!);
+                if (!checkPassword)
+                {
+                    ModelState.AddModelError("Password", "Mật khẩu xác nhận không chính xác.");
+                    return View(model);
+                }
+
+                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.NewPhone!);
+                if (!setPhoneResult.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi khi cập nhật số điện thoại.");
+                    return View(model);
+                }
+
+                TempData["SuccessMessage"] = "Cập nhật số điện thoại thành công!";
                 return RedirectToAction("Profile");
             }
 
-            foreach (var error in result.Errors)
+            // GET: /account/ChangeEmail
+            [HttpGet("ChangeEmail")]
+            [Authorize]
+            public IActionResult ChangeEmail()
             {
-                ModelState.AddModelError("", error.Description);
+                return View();
             }
 
-            return View("Profile", model);
+            // POST: /account/ChangeEmail
+            [HttpPost("ChangeEmail")]
+            [Authorize]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> ChangeEmail(ChangeEmailViewModel model)
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model); 
+                }
+
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToAction("Login");
+                }
+
+                var checkPassword = await _userManager.CheckPasswordAsync(user, model.Password!);
+                if (!checkPassword)
+                {
+                    ModelState.AddModelError("Password", "Mật khẩu xác nhận không chính xác.");
+                    return View(model);
+                }
+
+                var token = await _userManager.GenerateChangeEmailTokenAsync(user, model.NewEmail!);
+                var setOriginalEmailResult = await _userManager.ChangeEmailAsync(user, model.NewEmail!, token);
+
+                if (setOriginalEmailResult.Succeeded)
+                {
+                    await _userManager.SetUserNameAsync(user, model.NewEmail);
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi hoặc Email này đã được sử dụng.");
+                    return View(model);
+                }
+
+                TempData["SuccessMessage"] = "Cập nhật địa chỉ Email thành công!";
+                return RedirectToAction("Profile");
+            }
+            // GET: /account/bank
+            [HttpGet("bank")]
+            [Authorize]
+            public async Task<IActionResult> Bank()
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null) return RedirectToAction("Login");
+
+                var user = await _userManager.FindByIdAsync(userId!);
+                if (user == null) return NotFound("Không tìm thấy thông tin người dùng");
+
+                var model = new UserProfileViewModel
+                {
+                    UserName = user.UserName,
+                    AvatarUrl = user.AvatarUrl
+                };
+
+                return View(model);
+            }
         }
     }
-}

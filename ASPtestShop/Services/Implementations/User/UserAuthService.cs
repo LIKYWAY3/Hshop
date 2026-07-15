@@ -10,10 +10,12 @@ namespace ASPtestShop.Services.Implementations.User
     public class UserAuthService : IUserAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserAuthService(UserManager<ApplicationUser> userManager)
+        public UserAuthService(UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<UserLoginResultDto> LoginAsync(LoginViewModel model)
@@ -95,7 +97,8 @@ namespace ASPtestShop.Services.Implementations.User
                 UserName = model.UserName,
                 Email = model.Email,
                 FullName = model.FullName,
-                Address = model.Address
+                Address = model.Address,
+                Gender = model.Gender
             };
 
             var createResult = await _userManager.CreateAsync(user, model.Password);
@@ -117,6 +120,52 @@ namespace ASPtestShop.Services.Implementations.User
             {
                 Success = true,
                 Message = "Đăng ký tài khoản thành công"
+            };
+        }
+        public async Task<AuthResultDto> UpdateProfileAsync(string userId, UpdateProfileDto dto)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return new AuthResultDto { Success = false, Message = "Không tìm thấy người dùng!" };
+            }
+
+            user.FullName = dto.FullName;
+            user.PhoneNumber = dto.PhoneNumber;
+            user.Address = dto.Address;
+            user.Gender = dto.Gender;
+
+            if (dto.AvatarFile != null && dto.AvatarFile.Length > 0)
+            {
+                string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Uploads", "Avatars");
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
+                }
+
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + dto.AvatarFile.FileName;
+                string filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await dto.AvatarFile.CopyToAsync(fileStream);
+                }
+
+                user.AvatarUrl = "/Uploads/Avatars/" + uniqueFileName;
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return new AuthResultDto { Success = true, Message = "Cập nhật hồ sơ thành công!" };
+            }
+
+            return new AuthResultDto
+            {
+                Success = false,
+                Message = "Cập nhật thất bại",
+                Errors = result.Errors.Select(e => e.Description).ToList()
             };
         }
     }
