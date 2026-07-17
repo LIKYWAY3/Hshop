@@ -138,6 +138,7 @@ builder.Services.AddScoped<IPaymentProvider, CodPaymentProvider>();
 //builder.Services.AddScoped<IPaymentProvider, ZaloPayPaymentProvider>();
 //builder.Services.AddScoped<IPaymentProvider, VnPayPaymentProvider>();
 builder.Services.AddScoped<IPaymentProviderFactory, PaymentProviderFactory>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

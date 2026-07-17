@@ -1,6 +1,6 @@
 ﻿    using ASPtestShop.Auth;
     using ASPtestShop.Data;
-using ASPtestShop.Models.DTO.Auth;
+    using ASPtestShop.Models.DTO.Auth;
     using ASPtestShop.Models.ViewModels.Auth;
     using ASPtestShop.Services.Interfaces;
     using ASPtestShop.Services.Interfaces.User;
@@ -147,33 +147,34 @@ using ASPtestShop.Models.DTO.Auth;
 
                 return RedirectToAction("Login");
             }
-            // GET: /account/profile
-            [HttpGet("profile")]
-            [Authorize]
-            public async Task<IActionResult> Profile()
+        // GET: /account/profile
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return RedirectToAction("Login");
+
+            var userProfile = await _userAuthService.GetUserProfileAsync(userId);
+
+            if (userProfile == null) return NotFound("Không tìm thấy thông tin người dùng");
+
+            var model = new UserProfileViewModel
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (userId == null) return RedirectToAction("Login");
+                Id = userProfile.Id,
+                FullName = userProfile.FullName,
+                UserName = userProfile.UserName,
+                Email = userProfile.Email,
+                PhoneNumber = userProfile.PhoneNumber,
+                Address = userProfile.Address,
+                Gender = userProfile.Gender,
+                AvatarUrl = userProfile.AvatarUrl
+            };
 
-                var user = await _userManager.FindByIdAsync(userId!);
-                if (user == null) return NotFound("Không tìm thấy thông tin người dùng");
-
-                var model = new UserProfileViewModel
-                {
-                    Id = user.Id,
-                    FullName = user.FullName,
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    PhoneNumber = user.PhoneNumber,
-                    Address = user.Address,
-                    Gender = user.Gender,
-                    AvatarUrl = user.AvatarUrl
-                };
-
-                return View(model);
-            }
-            // POST: /account/update-profile
-            [HttpPost("update-profile")]
+            return View(model);
+        }
+        // POST: /account/update-profile
+        [HttpPost("update-profile")]
             [Authorize]
             [ValidateAntiForgeryToken]
             public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
@@ -311,8 +312,49 @@ using ASPtestShop.Models.DTO.Auth;
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (userId == null) return RedirectToAction("Login");
 
-                var user = await _userManager.FindByIdAsync(userId!);
-                if (user == null) return NotFound("Không tìm thấy thông tin người dùng");
+                var user = await _userManager.FindByIdAsync(userId);
+
+                var banks = await _userAuthService.GetBankAccountsAsync(userId);
+
+                var model = new UserProfileViewModel
+                {
+                    UserName = user.UserName,
+                    AvatarUrl = user.AvatarUrl,
+                    BankAccounts = banks 
+                };
+
+                return View(model);
+            }
+
+            // POST: /account/add-bank
+            [HttpPost("add-bank")]
+            [Authorize]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> AddBankAccount(AddBankAccountViewModel model)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                var result = await _userAuthService.AddBankAccountAsync(userId, model);
+
+                if (result.Success)
+                {
+                    TempData["SuccessMessage"] = result.Message;
+                }
+
+                return RedirectToAction("Bank");
+            }
+            // GET: /account/address
+            [HttpGet("address")]
+            [Authorize]
+            public async Task<IActionResult> Address()
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null) return RedirectToAction("Login");
+
+                var user = await _userManager.FindByIdAsync(userId);
+
+                var addresses = await _userAuthService.GetUserAddressesAsync(userId);
+                ViewBag.Addresses = addresses;
 
                 var model = new UserProfileViewModel
                 {
@@ -321,6 +363,46 @@ using ASPtestShop.Models.DTO.Auth;
                 };
 
                 return View(model);
+            }
+
+            // POST: /account/add-address
+            [HttpPost("add-address")]
+            [Authorize]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> AddAddress(AddAddressViewModel model)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null) return RedirectToAction("Login");
+
+                var result = await _userAuthService.AddAddressAsync(userId, model);
+
+                if (result.Success)
+                {
+                    TempData["SuccessMessage"] = result.Message;
+                }
+
+                return RedirectToAction("Address");
+            }
+
+            [HttpPost("set-default-address/{id}")]
+            [Authorize]
+            public async Task<IActionResult> SetDefaultAddress(int id)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var result = await _userAuthService.SetDefaultAddressAsync(userId, id);
+                if (result.Success) TempData["SuccessMessage"] = result.Message;
+                return RedirectToAction("Address");
+            }
+
+            [HttpPost("edit-address")]
+            [Authorize]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> EditAddress(EditAddressViewModel model)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var result = await _userAuthService.EditAddressAsync(userId, model);
+                if (result.Success) TempData["SuccessMessage"] = result.Message;
+                return RedirectToAction("Address");
             }
         }
     }

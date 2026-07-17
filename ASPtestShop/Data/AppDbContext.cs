@@ -19,6 +19,7 @@ namespace ASPtestShop.Data
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<UserAddress> UserAddresses { get; set; }
 
         // ==========================================
         // DBSETS: CHAT SYSTEM

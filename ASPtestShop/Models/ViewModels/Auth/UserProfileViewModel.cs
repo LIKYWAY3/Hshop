@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using ASPtestShop.Models.DTO.Auth;
 
 namespace ASPtestShop.Models.ViewModels.Auth
 {
@@ -29,7 +30,6 @@ namespace ASPtestShop.Models.ViewModels.Auth
         [Display(Name = "Tải ảnh đại diện mới")]
         public IFormFile? AvatarFile { get; set; }
 
-        //BẢO MẬT THÔNG TIN NGƯỜI DÙNG
         public string MaskedEmail
         {
             get
@@ -57,5 +57,6 @@ namespace ASPtestShop.Models.ViewModels.Auth
                 return new string('•', PhoneNumber.Length - 2) + PhoneNumber.Substring(PhoneNumber.Length - 2);
             }
         }
+        public List<BankAccountDto>? BankAccounts { get; set; }
     }
 }
