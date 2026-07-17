@@ -1,10 +1,24 @@
+## Thư mục build và các file tạm của Visual Studio / .NET
 .vs/
 bin/
 obj/
 *.user
-*.suo\
-/appsettings.json
-/appsettings.Development.json
-/Properties/launchSettings.json
-migrations/
-Program.cs
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Cấu hình bảo mật appsettings (Giữ nguyên của bạn)
+**/appsettings.json
+**/appsettings.Development.json
+
+## Thư mục khi deploy / publish code
+publish/
+out/
+
+## File log và file rác của hệ điều hành
+*.log
+.DS_Store
+Thumbs.db
+
+## Thư mục cấu hình local của VS Code (Nếu có)
+.vscode/
