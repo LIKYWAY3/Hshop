@@ -2,7 +2,8 @@
     using ASPtestShop.Data;
     using ASPtestShop.Models.DTO.Auth;
     using ASPtestShop.Models.ViewModels.Auth;
-    using ASPtestShop.Services.Interfaces;
+using ASPtestShop.Models.ViewModels.Profile;
+using ASPtestShop.Services.Interfaces;
     using ASPtestShop.Services.Interfaces.User;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
@@ -404,5 +405,46 @@
                 if (result.Success) TempData["SuccessMessage"] = result.Message;
                 return RedirectToAction("Address");
             }
+            // GET: /account/change-password
+            [HttpGet("change-password")]
+            public IActionResult ChangePassword()
+            {
+                return View(new ChangePasswordViewModel());
+            }
+
+            // POST: /account/change-password
+            [HttpPost("change-password")]
+            [ValidateAntiForgeryToken] 
+            public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+            {
+                if (model.CurrentPassword == model.NewPassword)
+                {
+                    // Báo lỗi trực tiếp vào ô "NewPassword" trên giao diện
+                    ModelState.AddModelError("NewPassword", "Mật khẩu mới không được giống với mật khẩu hiện tại!");
+                }
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null)
+                {
+                    return RedirectToAction("Login");
+                }
+
+                var result = await _userAuthService.ChangePasswordAsync(userId, model);
+
+                if (result.Success)
+                {
+                    TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
+                    return RedirectToAction("Profile");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, result.Message ?? "Có lỗi xảy ra khi đổi mật khẩu.");
+                    return View(model);
+            }
         }
+    }
     }

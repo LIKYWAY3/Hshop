@@ -1,4 +1,4 @@
-﻿@model ASPtestShop.Models.ViewModels.Auth.UserProfileViewModel
+﻿@model ASPtestShop.Models.ViewModels.Profile.UserProfileViewModel
 
 @{
     ViewData["Title"] = "Ngân Hàng";
@@ -102,10 +102,10 @@
                             <svg viewBox="0 0 24 24" class="menu-icon text-primary"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor" /></svg> Tài Khoản Của Tôi
                         </a>
                         <ul class="sub-menu list-unstyled ms-4 mt-2">
-                            <li><a href="/account/profile">Hồ Sơ</a></li>
-                            <li><a href="/account/bank" class="active-text">Ngân Hàng</a></li>
-                            <li><a href="#">Địa Chỉ</a></li>
-                            <li><a href="#">Đổi Mật Khẩu</a></li>
+                            <li><a asp-controller="Account" asp-action="Profile" class="active-text">Hồ Sơ</a></li>
+                            <li><a asp-controller="Account" asp-action="Bank">Ngân Hàng</a></li>
+                            <li><a asp-controller="Account" asp-action="Address">Địa Chỉ</a></li>
+                            <li><a asp-controller="Account" asp-action="ChangePassword">Đổi Mật Khẩu</a></li>
                         </ul>
                     </li>
                     <li class="menu-item mb-2 mt-3">

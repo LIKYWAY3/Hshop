@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using ASPtestShop.Models.DTO.Auth;
 
-namespace ASPtestShop.Models.ViewModels.Auth
+namespace ASPtestShop.Models.ViewModels.Profile
 {
     public class UserProfileViewModel
     {

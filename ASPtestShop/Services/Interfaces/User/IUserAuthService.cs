@@ -1,6 +1,7 @@
 ﻿using ASPtestShop.Data.Entities;
 using ASPtestShop.Models.DTO.Auth;
 using ASPtestShop.Models.ViewModels.Auth;
+using ASPtestShop.Models.ViewModels.Profile;
 
 namespace ASPtestShop.Services.Interfaces.User
 {
@@ -25,5 +26,7 @@ namespace ASPtestShop.Services.Interfaces.User
         Task<AuthResultDto> SetDefaultAddressAsync(string userId, int addressId);
 
         Task<AuthResultDto> EditAddressAsync(string userId, EditAddressViewModel model);
+
+        Task<AuthResultDto> ChangePasswordAsync(string userId, ChangePasswordViewModel model);
     }
 }

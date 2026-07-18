@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ASPtestShop.Models.ViewModels.Auth
+namespace ASPtestShop.Models.ViewModels.Profile
 {
     public class EditAddressViewModel : AddAddressViewModel
     {

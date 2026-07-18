@@ -2,6 +2,7 @@
 using ASPtestShop.Data.Entities;
 using ASPtestShop.Models.DTO.Auth;
 using ASPtestShop.Models.ViewModels.Auth;
+using ASPtestShop.Models.ViewModels.Profile;
 using ASPtestShop.Services.Interfaces;
 using ASPtestShop.Services.Interfaces.User;
 using Microsoft.AspNetCore.Identity;
@@ -312,6 +313,27 @@ namespace ASPtestShop.Services.Implementations.User
 
             await _context.SaveChangesAsync();
             return new AuthResultDto { Success = true, Message = "Cập nhật địa chỉ thành công!" };
+        }
+        public async Task<AuthResultDto> ChangePasswordAsync(string userId, ChangePasswordViewModel model)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return new AuthResultDto { Success = false, Message = "Không tìm thấy người dùng." };
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return new AuthResultDto
+                {
+                    Success = false,
+                    Message = "Mật khẩu hiện tại không chính xác hoặc không hợp lệ."
+                };
+            }
+
+            return new AuthResultDto { Success = true, Message = "Đổi mật khẩu thành công!" };
         }
     }
 }

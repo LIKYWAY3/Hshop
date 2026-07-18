@@ -1,4 +1,4 @@
-﻿@model ASPtestShop.Models.ViewModels.Auth.UserProfileViewModel
+﻿@model ASPtestShop.Models.ViewModels.Profile.UserProfileViewModel
 
 @{
     ViewData["Title"] = "Địa Chỉ Của Tôi";
@@ -6,7 +6,6 @@
 
 @section Styles {
     <style>
-        /* CSS GIAO DIỆN (NÓI KHÔNG VỚI INLINE STYLE) */
         .address-page-wrapper .btn-address-primary {
             background-color: #3b5d50;
             color: white;
@@ -65,7 +64,6 @@
                 cursor: not-allowed;
             }
 
-        /* CÁC CLASS HỖ TRỢ DỌN SẠCH INLINE STYLE */
         .text-umi {
             color: #3b5d50 !important;
         }
@@ -140,10 +138,10 @@
                             <svg viewBox="0 0 24 24" class="menu-icon text-primary"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor" /></svg> Tài Khoản Của Tôi
                         </a>
                         <ul class="sub-menu list-unstyled ms-4 mt-2">
-                            <li class="mb-2"><a href="/account/profile" class="text-decoration-none text-muted">Hồ Sơ</a></li>
-                            <li class="mb-2"><a href="/account/bank" class="text-decoration-none text-muted">Ngân Hàng</a></li>
-                            <li class="mb-2"><a href="/account/address" class="text-decoration-none fw-bold text-umi">Địa Chỉ</a></li>
-                            <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Đổi Mật Khẩu</a></li>
+                            <li><a asp-controller="Account" asp-action="Profile" class="active-text">Hồ Sơ</a></li>
+                            <li><a asp-controller="Account" asp-action="Bank">Ngân Hàng</a></li>
+                            <li><a asp-controller="Account" asp-action="Address">Địa Chỉ</a></li>
+                            <li><a asp-controller="Account" asp-action="ChangePassword">Đổi Mật Khẩu</a></li>
                         </ul>
                     </li>
                     <li class="menu-item mb-2 mt-3">
