@@ -129,6 +129,7 @@ builder.Services.AddScoped<IAdminProductService, AdminProductService>();
 builder.Services.AddScoped<IAdminUploadService, AdminUploadService>();
 builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
 builder.Services.AddScoped<IAdminAuthService, AdminAuthService>();
+builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
 //user services
 builder.Services.AddScoped<IUserAuthService, UserAuthService>();
 // Payment providers
@@ -210,40 +211,57 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var dbContext = services.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+
+    var roleManager =
+        services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var userManager =
+        services.GetRequiredService<UserManager<ApplicationUser>>();
 
     string[] roles = { "Admin", "Customer" };
 
     foreach (var role in roles)
     {
-        var roleExists = await roleManager.RoleExistsAsync(role);
-
-        if (!roleExists)
+        if (!await roleManager.RoleExistsAsync(role))
         {
             await roleManager.CreateAsync(new IdentityRole(role));
-            Console.WriteLine($"[SEED ROLE] Created role: {role}");
         }
     }
 
-    // Email tài khoản admin của bạn
-    var adminEmail = "admin@gmail.com";
+    const string adminEmail = "admin@gmail.com";
+    const string adminPassword = "Admin@123";
 
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
-    if (adminUser != null)
+    if (adminUser == null)
     {
-        var isAdmin = await userManager.IsInRoleAsync(adminUser, "Admin");
-
-        if (!isAdmin)
+        adminUser = new ApplicationUser
         {
-            await userManager.AddToRoleAsync(adminUser, "Admin");
-            Console.WriteLine($"[SEED ROLE] Added {adminEmail} to Admin role");
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true,
+            FullName = "Administrator"
+        };
+
+        var createResult =
+            await userManager.CreateAsync(adminUser, adminPassword);
+
+        if (!createResult.Succeeded)
+        {
+            var errors = string.Join(
+                ", ",
+                createResult.Errors.Select(e => e.Description)
+            );
+
+            throw new Exception($"Không thể tạo Admin: {errors}");
         }
     }
-    else
+
+    if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
     {
-        Console.WriteLine($"[SEED ROLE] Admin user {adminEmail} not found. Register this account first.");
+        await userManager.AddToRoleAsync(adminUser, "Admin");
     }
 }
 // =========================================================================

@@ -1,0 +1,396 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Chi tiết đơn hàng";
+    var orderId = ViewBag.OrderId;
+}
+
+<div class="admin-page">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Chi tiết đơn hàng</h2>
+            <p class="text-muted mb-0">
+                Xem thông tin đơn hàng và cập nhật trạng thái xử lý
+            </p>
+        </div>
+
+        <a href="/admin/orders" class="btn btn-outline-dark">
+            Quay lại danh sách
+        </a>
+    </div>
+
+    <div id="orderDetailMessage"></div>
+
+    <div id="orderDetailContent">
+        <div class="admin-card">
+            <div class="text-center text-muted py-5">
+                Đang tải chi tiết đơn hàng...
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const orderId = @orderId;
+    const orderDetailMessage = document.getElementById("orderDetailMessage");
+    const orderDetailContent = document.getElementById("orderDetailContent");
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadOrderDetail();
+    });
+
+    async function loadOrderDetail() {
+        try {
+            const response = await fetch(`/api/admin/orders/${orderId}`, {
+                method: "GET",
+                credentials: "include"
+            });
+
+            if (response.status === 401 || response.status === 403) {
+                window.location.href = "/admin/login";
+                return;
+            }
+
+            if (response.status === 404) {
+                orderDetailContent.innerHTML = `
+                        <div class="alert alert-warning">
+                            Không tìm thấy đơn hàng.
+                        </div>
+                    `;
+                return;
+            }
+
+            if (!response.ok) {
+                orderDetailContent.innerHTML = `
+                        <div class="alert alert-danger">
+                            Không thể tải chi tiết đơn hàng.
+                        </div>
+                    `;
+                return;
+            }
+
+            const order = await response.json();
+
+            renderOrderDetail(order);
+
+        } catch (error) {
+            console.error("Lỗi tải chi tiết đơn:", error);
+
+            orderDetailContent.innerHTML = `
+                    <div class="alert alert-danger">
+                        Có lỗi xảy ra khi tải chi tiết đơn hàng.
+                    </div>
+                `;
+        }
+    }
+
+    function renderOrderDetail(order) {
+        orderDetailContent.innerHTML = `
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <div class="admin-card mb-4">
+                            <div class="admin-section-header">
+                                <h5 class="mb-0">Thông tin đơn hàng</h5>
+                            </div>
+
+                            <div class="admin-section-body">
+                                <div class="admin-info-row">
+                                    <span>Mã đơn</span>
+                                    <strong>${order.orderCode || ""}</strong>
+                                </div>
+
+                                <div class="admin-info-row">
+                                    <span>User ID</span>
+                                    <strong>${order.userId || ""}</strong>
+                                </div>
+
+                                <div class="admin-info-row">
+                                    <span>Ngày đặt</span>
+                                    <strong>${formatDate(order.createdAt)}</strong>
+                                </div>
+
+                                <div class="admin-info-row">
+                                    <span>Phương thức thanh toán</span>
+                                    <strong>${order.paymentMethod || "COD"}</strong>
+                                </div>
+
+                                <div class="admin-info-row">
+                                    <span>Trạng thái đơn</span>
+                                    <strong>${renderOrderStatusBadge(order.orderStatus)}</strong>
+                                </div>
+
+                                <div class="admin-info-row">
+                                    <span>Trạng thái thanh toán</span>
+                                    <strong>${renderPaymentStatusBadge(order.paymentStatus)}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card">
+                            <div class="admin-section-header">
+                                <h5 class="mb-0">Sản phẩm trong đơn</h5>
+                            </div>
+
+                            <div class="admin-section-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table admin-table align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>Sản phẩm</th>
+                                                <th class="text-center">SL</th>
+                                                <th class="text-end">Đơn giá</th>
+                                                <th class="text-end">Thành tiền</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            ${renderOrderItems(order.items)}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="admin-card mb-4">
+                            <div class="admin-section-header admin-section-header-accent">
+                                <h5 class="mb-0">Cập nhật trạng thái</h5>
+                            </div>
+
+                            <div class="admin-section-body">
+                                <div id="updateStatusMessage"></div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Trạng thái đơn hàng
+                                    </label>
+
+                                    <select id="orderStatus" class="form-select">
+                                        ${renderOrderStatusOptions(order.orderStatus)}
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Trạng thái thanh toán
+                                    </label>
+
+                                    <select id="paymentStatus" class="form-select">
+                                        ${renderPaymentStatusOptions(order.paymentStatus)}
+                                    </select>
+                                </div>
+
+                                <button type="button"
+                                        class="btn btn-dark w-100"
+                                        onclick="updateOrderStatus()">
+                                    Lưu trạng thái
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="admin-card mb-4">
+                            <div class="admin-section-header">
+                                <h5 class="mb-0">Thông tin nhận hàng</h5>
+                            </div>
+
+                            <div class="admin-section-body">
+                                <div class="admin-info-row">
+                                    <span>Người nhận</span>
+                                    <strong>${order.receiverName || ""}</strong>
+                                </div>
+
+                                <div class="admin-info-row">
+                                    <span>Số điện thoại</span>
+                                    <strong>${order.receiverPhone || ""}</strong>
+                                </div>
+
+                                <div class="admin-info-block">
+                                    <span>Địa chỉ</span>
+                                    <strong>${order.shippingAddress || ""}</strong>
+                                </div>
+
+                                <div class="admin-info-block">
+                                    <span>Ghi chú</span>
+                                    <strong>${order.note || "Không có"}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="admin-card">
+                            <div class="admin-section-header">
+                                <h5 class="mb-0">Tổng kết thanh toán</h5>
+                            </div>
+
+                            <div class="admin-section-body">
+                                <div class="admin-summary-row">
+                                    <span>Tạm tính</span>
+                                    <strong>${formatCurrency(order.totalAmount)}</strong>
+                                </div>
+
+                                <div class="admin-summary-row">
+                                    <span>Giảm giá</span>
+                                    <strong>${formatCurrency(order.discountAmount)}</strong>
+                                </div>
+
+                                <div class="admin-summary-row">
+                                    <span>Phí vận chuyển</span>
+                                    <strong>${formatCurrency(order.shippingFee)}</strong>
+                                </div>
+
+                                <hr />
+
+                                <div class="admin-summary-row admin-summary-total">
+                                    <span>Tổng thanh toán</span>
+                                    <strong>${formatCurrency(order.finalAmount)}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+    }
+
+    async function updateOrderStatus() {
+        const updateStatusMessage = document.getElementById("updateStatusMessage");
+
+        const body = {
+            orderStatus: document.getElementById("orderStatus").value,
+            paymentStatus: document.getElementById("paymentStatus").value
+        };
+
+        try {
+            const response = await fetch(`/api/admin/orders/${orderId}/status`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify(body)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || result.success === false) {
+                updateStatusMessage.innerHTML = `
+                        <div class="alert alert-danger">
+                            ${result.message || "Cập nhật thất bại"}
+                        </div>
+                    `;
+                return;
+            }
+
+            updateStatusMessage.innerHTML = `
+                    <div class="alert alert-success">
+                        ${result.message || "Cập nhật thành công"}
+                    </div>
+                `;
+
+            await loadOrderDetail();
+
+        } catch (error) {
+            console.error("Lỗi cập nhật trạng thái:", error);
+
+            updateStatusMessage.innerHTML = `
+                    <div class="alert alert-danger">
+                        Có lỗi xảy ra khi cập nhật trạng thái.
+                    </div>
+                `;
+        }
+    }
+
+    function renderOrderItems(items) {
+        if (!Array.isArray(items) || items.length === 0) {
+            return `
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            Không có sản phẩm trong đơn.
+                        </td>
+                    </tr>
+                `;
+        }
+
+        return items.map(item => `
+                <tr>
+                    <td>
+                        <strong>${item.productNameSnapshot || ""}</strong>
+                    </td>
+
+                    <td class="text-center">
+                        ${item.quantity || 0}
+                    </td>
+
+                    <td class="text-end">
+                        ${formatCurrency(item.unitPrice)}
+                    </td>
+
+                    <td class="text-end">
+                        <strong>${formatCurrency(item.lineTotal)}</strong>
+                    </td>
+                </tr>
+            `).join("");
+    }
+
+    function renderOrderStatusOptions(currentStatus) {
+        const statuses = ["Pending", "Confirmed", "Shipped", "Completed", "Cancelled"];
+
+        return statuses.map(status => `
+                <option value="${status}" ${status === currentStatus ? "selected" : ""}>
+                    ${status}
+                </option>
+            `).join("");
+    }
+
+    function renderPaymentStatusOptions(currentStatus) {
+        const statuses = ["Unpaid", "Paid", "Failed"];
+
+        return statuses.map(status => `
+                <option value="${status}" ${status === currentStatus ? "selected" : ""}>
+                    ${status}
+                </option>
+            `).join("");
+    }
+
+    function renderOrderStatusBadge(status) {
+        const value = status || "Pending";
+
+        let badgeClass = "bg-secondary";
+
+        if (value === "Pending") badgeClass = "bg-warning text-dark";
+        if (value === "Confirmed") badgeClass = "bg-primary";
+        if (value === "Shipped") badgeClass = "bg-info text-dark";
+        if (value === "Completed") badgeClass = "bg-success";
+        if (value === "Cancelled") badgeClass = "bg-danger";
+
+        return `<span class="badge ${badgeClass}">${value}</span>`;
+    }
+
+    function renderPaymentStatusBadge(status) {
+        const value = status || "Unpaid";
+
+        let badgeClass = "bg-secondary";
+
+        if (value === "Unpaid") badgeClass = "bg-warning text-dark";
+        if (value === "Paid") badgeClass = "bg-success";
+        if (value === "Failed") badgeClass = "bg-danger";
+
+        return `<span class="badge ${badgeClass}">${value}</span>`;
+    }
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND"
+        }).format(value || 0);
+    }
+
+    function formatDate(value) {
+        if (!value) return "";
+
+        const date = new Date(value);
+
+        return date.toLocaleDateString("vi-VN") + " " + date.toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+</script>

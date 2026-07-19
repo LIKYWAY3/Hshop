@@ -15,6 +15,20 @@ namespace ASPtestShop.Services.Implementations
             _context = context;
         }
 
+        public async Task<bool> HasCartItemsAsync(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return false;
+            }
+
+            return await _context.Carts
+                .AsNoTracking()
+                .AnyAsync(cart =>
+                    cart.UserId == userId &&
+                    cart.CartItems.Any());
+        }
+
         public async Task<CartResultDto> AddToCartAsync(string userId, AddToCartDto dto)
         {
             if (dto == null)
@@ -117,7 +131,9 @@ namespace ASPtestShop.Services.Implementations
                 ProductName = ci.Product.ProductName,
                 Quantity = ci.Quantity,
                 UnitPrice = ci.UnitPrice,
-                Total = ci.Quantity * ci.UnitPrice
+                Total = ci.Quantity * ci.UnitPrice,
+                //bổ xung ThumbnailUrl
+                ThumbnailUrl = ci.Product.ThumbnailUrl ?? string.Empty
             }).ToList();
 
             var totalAmount = items.Sum(i => i.Total);

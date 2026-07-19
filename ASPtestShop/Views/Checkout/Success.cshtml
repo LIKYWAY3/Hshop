@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<div class="container my-5">
+    <div class="card shadow-sm border-0 text-center">
+        <div class="card-body p-5">
+            <h2 class="text-success mb-3">Đặt hàng thành công!</h2>
+
+            @if (!string.IsNullOrWhiteSpace(ViewBag.OrderCode))
+            {
+                <p class="fs-5">
+                    Mã đơn hàng của bạn:
+                    <strong>@ViewBag.OrderCode</strong>
+                </p>
+            }
+
+            <p class="text-muted">
+                Cảm ơn bạn đã mua hàng. Đơn hàng của bạn đang chờ xác nhận.
+            </p>
+
+            <div class="mt-4">
+                <a href="/Shop" class="btn btn-dark">
+                    Tiếp tục mua hàng
+                </a>
+
+                <a href="/orders/history" class="btn btn-outline-dark ms-2">
+                    Xem đơn hàng
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@* <a href="/checkout" class="btn btn-dark">
+    Tiến hành thanh toán
+    (Khi nào làm cart rồi thì bỏ vào cart index)
+</a> *@

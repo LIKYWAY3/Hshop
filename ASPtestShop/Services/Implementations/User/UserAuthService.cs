@@ -261,6 +261,12 @@ namespace ASPtestShop.Services.Implementations.User
                 {
                     addr.IsDefault = false;
                 }
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    user.PhoneNumber = model.PhoneNumber;
+                    await _userManager.UpdateAsync(user);
+                }
             }
 
             var newAddress = new UserAddress
@@ -287,6 +293,13 @@ namespace ASPtestShop.Services.Implementations.User
             foreach (var addr in addresses) { addr.IsDefault = false; }
             targetAddress.IsDefault = true;
 
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                user.PhoneNumber = targetAddress.PhoneNumber; 
+                await _userManager.UpdateAsync(user);        
+            }
+
             await _context.SaveChangesAsync();
             return new AuthResultDto { Success = true, Message = "Đã thiết lập làm địa chỉ mặc định!" };
         }
@@ -309,6 +322,16 @@ namespace ASPtestShop.Services.Implementations.User
             if (!address.IsDefault || model.IsDefault)
             {
                 address.IsDefault = model.IsDefault;
+            }
+
+            if (address.IsDefault)
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    user.PhoneNumber = model.PhoneNumber; 
+                    await _userManager.UpdateAsync(user);
+                }
             }
 
             await _context.SaveChangesAsync();
@@ -334,6 +357,69 @@ namespace ASPtestShop.Services.Implementations.User
             }
 
             return new AuthResultDto { Success = true, Message = "Đổi mật khẩu thành công!" };
+        }
+
+        public async Task<ForgotPasswordResultDto> ForgotPasswordAsync(ForgotPasswordViewModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return new ForgotPasswordResultDto
+                {
+                    Success = true,
+                    Message = "Nếu email tồn tại trong hệ thống, link đặt lại mật khẩu sẽ được tạo."
+                };
+            }
+
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            return new ForgotPasswordResultDto
+            {
+                Success = true,
+                Message = "Đã tạo link đặt lại mật khẩu.",
+                Email = user.Email ?? model.Email,
+                ResetToken = resetToken
+            };
+        }
+
+        public async Task<ResetPasswordResultDto> ResetPasswordAsync(ResetPasswordViewModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return new ResetPasswordResultDto
+                {
+                    Success = false,
+                    Message = "Không tìm thấy tài khoản"
+                };
+            }
+
+            var result = await _userManager.ResetPasswordAsync(
+                user,
+                model.ResetToken,
+                model.NewPassword
+            );
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(" | ", result.Errors.Select(e => e.Description));
+
+                return new ResetPasswordResultDto
+                {
+                    Success = false,
+                    Message = errors
+                };
+            }
+
+            await _userManager.UpdateSecurityStampAsync(user);
+
+            return new ResetPasswordResultDto
+            {
+                Success = true,
+                Message = "Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại."
+            };
         }
     }
 }

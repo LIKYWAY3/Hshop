@@ -28,5 +28,9 @@ namespace ASPtestShop.Services.Interfaces.User
         Task<AuthResultDto> EditAddressAsync(string userId, EditAddressViewModel model);
 
         Task<AuthResultDto> ChangePasswordAsync(string userId, ChangePasswordViewModel model);
+
+        Task<ForgotPasswordResultDto> ForgotPasswordAsync(ForgotPasswordViewModel model);
+
+        Task<ResetPasswordResultDto> ResetPasswordAsync(ResetPasswordViewModel model);
     }
 }

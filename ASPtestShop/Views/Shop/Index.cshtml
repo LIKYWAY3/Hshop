@@ -1,4 +1,8 @@
-﻿<!-- Start Hero Section -->
+﻿@{
+    ViewData["Title"] = "Shop";
+    Layout = "~/Views/Shared/_LayoutCustomer.cshtml";
+}
+<!-- Start Hero Section -->
 <div class="hero">
     <div class="container">
         <div class="row justify-content-between">
@@ -27,20 +31,79 @@
     });
 
     async function loadProducts() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const categoryId = urlParams.get("categoryId");
+    const productList =
+        document.getElementById("productList");
 
-        let apiUrl = "/api/products";
+    const urlParams =
+        new URLSearchParams(window.location.search);
 
-        if (categoryId) {
-            apiUrl = `/api/products/category/${categoryId}`;
+    const categoryId =
+        urlParams.get("categoryId");
+
+    let apiUrl = "/api/products";
+
+    if (categoryId) {
+        apiUrl =
+            `/api/products/category/${categoryId}`;
+    }
+
+    productList.innerHTML = `
+        <div class="col-12 text-center py-5">
+            <div class="spinner-border text-success"
+                 role="status">
+                <span class="visually-hidden">
+                    Đang tải...
+                </span>
+            </div>
+
+            <p class="text-muted mt-3">
+                Đang tải sản phẩm...
+            </p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Không tải được sản phẩm. Lỗi ${response.status}`
+            );
         }
 
-        const response = await fetch(apiUrl);
-        const products = await response.json();
+        const result = await response.json();
+
+        const products =
+            Array.isArray(result)
+                ? result
+                : Array.isArray(result?.data)
+                    ? result.data
+                    : Array.isArray(result?.items)
+                        ? result.items
+                        : [];
 
         renderProducts(products);
     }
+    catch (error) {
+        console.error(
+            "Load products error:",
+            error
+        );
+
+        productList.innerHTML = `
+            <div class="col-12">
+                <div class="alert alert-danger text-center">
+                    ${error.message}
+                </div>
+            </div>
+        `;
+    }
+}
 
     function renderProducts(products) {
         const productList = document.getElementById("productList");

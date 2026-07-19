@@ -1,7 +1,5 @@
 ﻿using ASPtestShop.Models.DTO.Payment;
 
-using ASPtestShop.Models.DTO.Payment;
-
 using ASPtestShop.Services.PaymentProviders;
 
 namespace ASPtestShop.Services.Implementations.PaymentProviders

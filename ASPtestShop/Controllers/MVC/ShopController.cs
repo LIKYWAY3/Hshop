@@ -1,12 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ASPtestShop.Controllers
+namespace ASPtestShop.Controllers.MVC.User
 {
+    [Route("Shop")]
     public class ShopController : Controller
     {
+        // GET: /Shop
+        [HttpGet("")]
         public IActionResult Index()
         {
             return View();
+        }
+
+        // GET: /Shop/Detail/2
+        [HttpGet("Detail/{id:int}")]
+        public IActionResult Detail(int id)
+        {
+            if (id <= 0)
+            {
+                return NotFound();
+            }
+
+            ViewBag.ProductId = id;
+
+            return View("Detail");
         }
     }
 }

@@ -1,17 +1,16 @@
-﻿    using ASPtestShop.Auth;
+﻿using ASPtestShop.Auth;
+using ASPtestShop.Models.ViewModels.Auth;
+using ASPtestShop.Services.Interfaces.User;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
     using ASPtestShop.Data;
     using ASPtestShop.Models.DTO.Auth;
-    using ASPtestShop.Models.ViewModels.Auth;
 using ASPtestShop.Models.ViewModels.Profile;
 using ASPtestShop.Services.Interfaces;
-    using ASPtestShop.Services.Interfaces.User;
-    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Mvc;
-    using System.Security.Claims;
-
     namespace ASPtestShop.Controllers.MVC
     {
         [Route("account")]
@@ -414,12 +413,11 @@ using ASPtestShop.Services.Interfaces;
 
             // POST: /account/change-password
             [HttpPost("change-password")]
-            [ValidateAntiForgeryToken] 
+            [ValidateAntiForgeryToken]
             public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
             {
                 if (model.CurrentPassword == model.NewPassword)
                 {
-                    // Báo lỗi trực tiếp vào ô "NewPassword" trên giao diện
                     ModelState.AddModelError("NewPassword", "Mật khẩu mới không được giống với mật khẩu hiện tại!");
                 }
                 if (!ModelState.IsValid)
@@ -444,7 +442,95 @@ using ASPtestShop.Services.Interfaces;
                 {
                     ModelState.AddModelError(string.Empty, result.Message ?? "Có lỗi xảy ra khi đổi mật khẩu.");
                     return View(model);
+                }
+            }
+
+
+        // GET: /account/forgot-password
+        [HttpGet("forgot-password")]
+            public IActionResult ForgotPassword()
+            {
+                return View();
+            }
+
+            // POST: /account/forgot-password
+            [HttpPost("forgot-password")]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                var result = await _userAuthService.ForgotPasswordAsync(model);
+
+                if (!result.Success)
+                {
+                    ModelState.AddModelError("", result.Message);
+                    return View(model);
+                }
+
+                if (!string.IsNullOrWhiteSpace(result.ResetToken))
+                {
+                    var resetLink = Url.Action(
+                        "ResetPassword",
+                        "Account",
+                        new
+                        {
+                            email = result.Email,
+                            resetToken = result.ResetToken
+                        },
+                        Request.Scheme
+                    );
+
+                    TempData["ResetLink"] = resetLink;
+                }
+
+                TempData["SuccessMessage"] = result.Message;
+
+                return RedirectToAction("ForgotPassword");
+            }
+
+            // GET: /account/reset-password
+            [HttpGet("reset-password")]
+            public IActionResult ResetPassword(string email, string resetToken)
+            {
+                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(resetToken))
+                {
+                    return RedirectToAction("Login");
+                }
+
+                var model = new ResetPasswordViewModel
+                {
+                    Email = email,
+                    ResetToken = resetToken
+                };
+
+                return View(model);
+            }
+
+            // POST: /account/reset-password
+            [HttpPost("reset-password")]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                var result = await _userAuthService.ResetPasswordAsync(model);
+
+                if (!result.Success)
+                {
+                    ModelState.AddModelError("", result.Message);
+                    return View(model);
+                }
+
+                TempData["SuccessMessage"] = result.Message;
+
+                return RedirectToAction("Login");
             }
         }
-    }
     }
