@@ -1,16 +1,17 @@
-using System.Security.Claims;
+using ASPtestShop.Auth;
 using ASPtestShop.Data;
-
 using ASPtestShop.Models.DTO.Order;
+using ASPtestShop.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ASPtestShop.Services.Interfaces;
+using System.Security.Claims;
 
 namespace ASPtestShop.Controllers.Api
 {
     [ApiController]
     [Route("api/orders")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + UserCookieAuth.Scheme)]
     public class OrderApiController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -20,6 +21,7 @@ namespace ASPtestShop.Controllers.Api
             _orderService = orderService;
         }
 
+        //===============================CHECKOUT======================================
         [HttpPost("checkout")]
         public async Task<IActionResult> Checkout([FromBody] CheckoutDto checkoutDto)
         {
@@ -44,6 +46,7 @@ namespace ASPtestShop.Controllers.Api
             return Ok(result);
         }
 
+        //===============================GET ORDER HISTORY======================================
         //Lịch sử đơn hàng
         [HttpGet("history")]
         public async Task<IActionResult> GetOrderHistory()
@@ -76,6 +79,7 @@ namespace ASPtestShop.Controllers.Api
             });
         }
 
+        //===============================GET ORDER DETAILS======================================
         // Lấy chi tiết lịch sử đơn hàng
         [Authorize]
         [HttpGet("{orderId:int}")]

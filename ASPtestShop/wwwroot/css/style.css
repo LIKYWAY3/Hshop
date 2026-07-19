@@ -6,6 +6,10 @@
 */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
+html {
+    overflow-y: scroll; /* luôn có chỗ cho scrollbar dù có cần hay không */
+}
+
 body {
     overflow-x: hidden;
     position: relative;
@@ -37,6 +41,7 @@ a {
     a.more {
         font-weight: 600;
     }
+
 
 .custom-navbar {
     background: #3b5d50 !important;
@@ -136,7 +141,6 @@ a {
     .custom-navbar .custom-navbar-cta li:first-child {
         margin-right: 20px;
     }
-
 .hero {
     background: #3b5d50;
     padding: calc(4rem - 30px) 0 0rem 0;
@@ -712,7 +716,7 @@ a {
         }
 
 .before-footer-section {
-    padding: 7rem 0 12rem 0 !important;
+    padding: 3rem 0 12rem 0 !important;
 }
 
 .blog-section {
@@ -953,8 +957,12 @@ textarea {
 }
 
 .site-blocks-table {
-    overflow: auto;
+/*    overflow: auto;*/
 }
+    .site-blocks-table .table {
+        table-layout: fixed; 
+        width: 100%;
+    }
 
     .site-blocks-table .product-thumbnail {
         width: 200px;
@@ -991,6 +999,123 @@ textarea {
         height: auto !important;
     }
 
+@media (max-width: 767.8px) {
+    /* 1. Ẩn thanh tiêu đề */
+    .site-blocks-table thead {
+        display: none;
+    }
+
+    .site-blocks-table .table {
+        table-layout: auto !important;
+        display: block;
+        border: none;
+    }
+
+    .site-blocks-table tbody,
+    .site-blocks-table tr,
+    .site-blocks-table td {
+        display: block;
+        width: 100%;
+    }
+
+        .site-blocks-table tbody tr.cart-item {
+            display: grid;
+            grid-template-columns: 30px 150px 1fr auto;
+            grid-template-rows: auto auto auto;
+            grid-template-areas:
+                "check thumb name name"
+                "check thumb qty delete"
+                "check thumb total total";
+            gap: 8px 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid #dee2e6;
+            align-items: center;
+        }
+
+        .site-blocks-table tbody tr:first-child td {
+            border-top: none !important;
+        }
+
+    .site-blocks-table td {
+        padding: 0 !important;
+        border: none !important; /*sửa viền của bootstrap */
+    }
+
+
+    .site-blocks-table td.product-check {
+        grid-area: check;
+    }
+
+    /* Hình ảnh */
+    .site-blocks-table .product-thumbnail {
+        grid-area: thumb;
+        width: 100% 
+    }
+
+    .site-blocks-table td.product-thumbnail img {
+        width: 100%;
+        height: auto;
+        border-radius: 6px;
+    }
+
+    .site-blocks-table td.product-name {
+        grid-area: name;
+        text-align: left !important;
+        align-self: end;
+    }
+
+        .site-blocks-table td.product-name h2 {
+            font-size: 1rem;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+    .site-blocks-table td.product-qty {
+        grid-area: qty;
+        justify-self: start;
+    }
+
+/*        số lượng*/
+        .site-blocks-table td.product-qty .quantity-container {
+            /*width: 100px !important;*/ /* Nhỏ hơn mức 120px của desktop */
+            min-width: 90px !important;
+            max-width: 150px !important;
+            margin-left: 0 !important;
+            
+        }
+        /*chiều cao của nút bấm*/
+        .site-blocks-table td.product-qty .btn {
+            padding: 0 8px !important;
+            height: 32px !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .site-blocks-table td.product-qty .quantity-amount {
+            padding: 0 !important;
+            height: 40px !important;
+        }
+
+    .site-blocks-table td.product-delete {
+        grid-area: delete;
+        text-align: right !important;
+        align-self: center;
+        justify-self: end;
+    }
+
+    .site-blocks-table td.item-total {
+        grid-area: total;
+        display: block !important;
+        text-align: right !important;
+        color: #ee4d2d !important;
+        font-weight: 700;
+        margin-top: -5px;
+    }
+
+    .site-blocks-table td.unit-price {
+        display: none !important;
+    }
+}
 .site-block-order-table th {
     border-top: none !important;
     border-bottom-width: 1px !important;
@@ -1021,3 +1146,207 @@ textarea {
         border-radius: 50%;
         background: rgba(59, 93, 80, 0.2);
     }
+
+.custom-checkbox {
+    width: 1.3rem;
+    height: 1.3rem;
+    cursor: pointer;
+}
+
+    .custom-checkbox:checked {
+        background-color: #3b5d50;
+        border-color: #3b5d50;
+    }
+
+    .custom-checkbox:focus {
+        border-color: #3b5d50;
+        box-shadow: 0 0 0 0.25rem rgb(122, 144, 113, 0.25);
+    }
+
+/* CATEGORY DROPDOWN NAVBAR */
+#categoryDropdownMenu {
+    --bs-dropdown-bg: #3b5d50;
+    --bs-dropdown-link-color: #ffffff;
+    --bs-dropdown-link-hover-color: #000000;
+    --bs-dropdown-link-hover-bg: #f9bf29;
+    background-color: #3b5d50 !important;
+    border: none !important;
+}
+
+    #categoryDropdownMenu .dropdown-item {
+        color: #ffffff !important;
+        background-color: transparent !important;
+    }
+
+        #categoryDropdownMenu .dropdown-item:hover {
+            color: #000000 !important;
+            background-color: #f9bf29 !important;
+        }
+
+/* =========================================
+   GIAO DIỆN PREMIUM: ĐĂNG NHẬP & ĐĂNG KÝ
+   ========================================= */
+
+.login-container, .register-container {
+    margin-bottom: 5rem;
+    position: relative;
+    z-index: 1;
+}
+
+    /* Thẻ Card: Mềm mại, viền bo tròn lớn, bóng đổ sâu 3D (Soft UI) */
+    .login-container .card, .register-container .card {
+        border-radius: 24px;
+        background: #ffffff;
+        box-shadow: 0 20px 40px rgba(59, 93, 80, 0.12) !important;
+        border: 1px solid rgba(59, 93, 80, 0.05);
+        padding: 10px; /* Thêm padding để tạo không gian thở */
+    }
+
+    /* Biến Header thành kiểu dáng Typography hiện đại */
+    .login-container .card-header, .register-container .card-header {
+        background: transparent;
+        padding: 30px 20px 10px;
+        border-bottom: none;
+    }
+
+        .login-container .card-header h4, .register-container .card-header h4 {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: #2b3a32; /* Màu xanh lá cực đậm */
+            letter-spacing: -0.5px;
+        }
+
+    /* Style Input: Nền xám nhạt, không viền cứng, hiệu ứng Float khi Focus */
+    .login-container .form-control, .register-container .form-control {
+        border-radius: 12px;
+        padding: 14px 20px;
+        font-size: 0.95rem;
+        background-color: #f4f7f5;
+        border: 2px solid transparent; /* Giấu viền đi */
+        color: #333;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .login-container .form-control:focus, .register-container .form-control:focus {
+            background-color: #ffffff;
+            border-color: #3b5d50;
+            box-shadow: 0 10px 20px rgba(59, 93, 80, 0.08);
+            transform: translateY(-2px); /* Nhập liệu nảy nhẹ lên */
+            outline: none;
+        }
+
+    /* Tiêu đề (Label) của từng ô nhập liệu */
+    .login-container .form-label, .register-container .form-label {
+        font-weight: 600;
+        font-size: 0.8rem;
+        color: #6c757d;
+        text-transform: uppercase; /* Viết hoa chữ để nhìn sang trọng hơn */
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+/* Nút bấm: Gradient, tỏa hào quang (Glow effect) */
+.login-btn, .register-btn {
+    background: linear-gradient(135deg, #43705f 0%, #3b5d50 100%);
+    color: #ffffff;
+    border-radius: 50px;
+    padding: 15px 20px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(59, 93, 80, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 15px;
+}
+
+    .login-btn:hover, .register-btn:hover {
+        background: linear-gradient(135deg, #4a7d6a 0%, #2f4a40 100%);
+        color: #ffffff;
+        transform: translateY(-4px); /* Nhảy lên cao hơn khi trỏ chuột */
+        box-shadow: 0 15px 35px rgba(59, 93, 80, 0.45);
+    }
+
+    .login-btn:active, .register-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 5px 15px rgba(59, 93, 80, 0.2);
+    }
+
+/* Các liên kết phụ (Quên MK, Đăng nhập ngay) */
+.login-links a, .register-links a {
+    color: #6c757d;
+    font-weight: 600;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s ease;
+    display: inline-block;
+}
+
+    .login-links a:hover, .register-links a:hover {
+        color: #3b5d50;
+    }
+
+    /* Hiệu ứng gạch chân trượt mượt mà (Underline sweep) */
+    .login-links a::after, .register-links a::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        bottom: -4px;
+        left: 0;
+        background-color: #3b5d50;
+        transform: scaleX(0);
+        transform-origin: bottom right;
+        transition: transform 0.3s ease-out;
+    }
+
+    .login-links a:hover::after, .register-links a:hover::after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+
+/*ADMIN LOGIN: LAYOUT & CHECKBOX*/
+.admin-login-body {
+    background-color: #eff2f1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-login-wrapper {
+    width: 100%;
+    max-width: 650px;
+    padding: 20px;
+}
+
+.admin-login-checkbox {
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+    border-color: #3b5d50;
+}
+
+.admin-login-check-label {
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-transform: none !important;
+    font-weight: normal !important;
+    color: #6a6a6a;
+}
+
+.admin-login-card {
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 0 !important;
+}
+
+.admin-login-header {
+    background-color: #3b5d50 !important; 
+    color: white !important;
+    text-align: center;
+    padding: 30px 20px;
+    border-bottom: none;
+    margin: 0;
+}

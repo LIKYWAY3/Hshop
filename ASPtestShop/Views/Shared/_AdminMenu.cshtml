@@ -1,0 +1,64 @@
+﻿@{
+    var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+}
+
+<div class="admin-menu">
+    <div class="admin-brand">
+        <div class="admin-brand-logo">
+            H
+        </div>
+
+        <div>
+            <h4>HShop</h4>
+            <span>Admin Dashboard</span>
+        </div>
+    </div>
+
+    <div class="admin-menu-label">
+        MENU
+    </div>
+
+    <ul class="admin-menu-list">
+        <li>
+            <a class="admin-menu-link @(currentPath == "/admin" ? "active" : "")"
+               href="/admin">
+                <span class="admin-menu-icon">▦</span>
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a class="admin-menu-link @(currentPath.StartsWith("/admin/products") ? "active" : "")"
+               href="/admin/products">
+                <span class="admin-menu-icon">▣</span>
+                Quản lý sản phẩm
+            </a>
+        </li>
+
+        <li>
+            <a class="admin-menu-link @(currentPath.StartsWith("/admin/categories") ? "active" : "")"
+               href="/admin/categories">
+                <span class="admin-menu-icon">▤</span>
+                Quản lý danh mục
+            </a>
+        </li>
+
+        <li>
+            <a class="admin-menu-link @(currentPath.StartsWith("/admin/orders") ? "active" : "")"
+               href="/admin/orders">
+                <span class="admin-menu-icon">▥</span>
+                Quản lý đơn hàng
+            </a>
+        </li>
+    </ul>
+
+    <div class="admin-menu-footer">
+        <form action="/admin/logout" method="post">
+            @Html.AntiForgeryToken()
+
+            <button type="submit" class="admin-logout-btn">
+                Đăng xuất
+            </button>
+        </form>
+    </div>
+</div>

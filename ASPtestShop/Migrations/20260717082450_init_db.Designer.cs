@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPtestShop.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260706121128_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260717082450_init_db")]
+    partial class init_db
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

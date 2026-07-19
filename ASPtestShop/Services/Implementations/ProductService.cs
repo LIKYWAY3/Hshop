@@ -5,170 +5,236 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASPtestShop.Services.Implementations
 {
-    // ProductService chứa toàn bộ logic xử lý sản phẩm
-    // Đây là nơi gọi AppDbContext thay cho Controller
     public class ProductService : IProductService
     {
         private readonly AppDbContext _context;
 
-        // Inject AppDbContext để service có thể truy cập database
         public ProductService(AppDbContext context)
         {
             _context = context;
         }
 
-        // Lấy danh sách tất cả sản phẩm
-        // Code này được tách từ API GET /api/products cũ
+        // =====================================================
+        // LẤY TẤT CẢ SẢN PHẨM ĐANG HOẠT ĐỘNG
+        // GET: /api/products
+        // Dùng cho trang Shop
+        // =====================================================
         public async Task<List<ProductListItemDto>> GetProductsAsync()
         {
-            var products = await _context.Products
-                // Select trực tiếp sang DTO, không trả Entity Product ra ngoài
+            return await _context.Products
+                .AsNoTracking()
+                .Where(p => p.IsActive)
+                .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new ProductListItemDto
                 {
                     ProductId = p.ProductId,
                     ProductName = p.ProductName,
 
-                    // Nếu có SalePrice thì lấy SalePrice
-                    // Nếu SalePrice null thì lấy Price
                     Price = p.SalePrice ?? p.Price,
-
-                    // Giá gốc
                     OriginalPrice = p.Price,
 
-                    // Ảnh đại diện trong bảng Products
                     ThumbnailUrl = p.ThumbnailUrl,
 
-                    // Lấy ảnh đầu tiên trong ProductImages theo SortOrder
                     ImageUrl = p.ProductImages
-                        .OrderBy(img => img.SortOrder)
+                        .OrderByDescending(img => img.IsPrimary)
+                        .ThenBy(img => img.SortOrder)
                         .Select(img => img.ImageUrl)
                         .FirstOrDefault()
                 })
                 .ToListAsync();
-
-            return products;
         }
 
-        // Lấy danh sách sản phẩm theo categoryId
-        // Code này được tách từ API GET /api/products/category/{categoryId}
-        public async Task<List<ProductListItemDto>> GetProductsByCategoryAsync(int categoryId)
+        // =====================================================
+        // LẤY SẢN PHẨM THEO DANH MỤC
+        // Bao gồm danh mục đang chọn và toàn bộ danh mục con
+        // GET: /api/products/category/{categoryId}
+        // =====================================================
+        public async Task<List<ProductListItemDto>>
+            GetProductsByCategoryAsync(int categoryId)
         {
-            var products = await _context.Products
-                // Lọc sản phẩm theo CategoryId
-                .Where(p => p.CategoryId == categoryId)
+            if (categoryId <= 0)
+            {
+                return new List<ProductListItemDto>();
+            }
 
-                // Map sang DTO
+            var allActiveCategories = await _context.Categories
+                .AsNoTracking()
+                .Where(c => c.IsActive)
+                .Select(c => new
+                {
+                    c.CategoryId,
+                    c.ParentCategoryId
+                })
+                .ToListAsync();
+
+            var selectedCategoryExists = allActiveCategories
+                .Any(c => c.CategoryId == categoryId);
+
+            if (!selectedCategoryExists)
+            {
+                return new List<ProductListItemDto>();
+            }
+
+            var categoryIds = new HashSet<int>
+            {
+                categoryId
+            };
+
+            var queue = new Queue<int>();
+            queue.Enqueue(categoryId);
+
+            while (queue.Count > 0)
+            {
+                var currentCategoryId = queue.Dequeue();
+
+                var childCategoryIds = allActiveCategories
+                    .Where(c =>
+                        c.ParentCategoryId == currentCategoryId)
+                    .Select(c => c.CategoryId)
+                    .ToList();
+
+                foreach (var childCategoryId in childCategoryIds)
+                {
+                    if (categoryIds.Add(childCategoryId))
+                    {
+                        queue.Enqueue(childCategoryId);
+                    }
+                }
+            }
+
+            return await _context.Products
+                .AsNoTracking()
+                .Where(p =>
+                    p.IsActive
+                    && categoryIds.Contains(p.CategoryId))
+                .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new ProductListItemDto
                 {
                     ProductId = p.ProductId,
                     ProductName = p.ProductName,
+
                     Price = p.SalePrice ?? p.Price,
                     OriginalPrice = p.Price,
+
                     ThumbnailUrl = p.ThumbnailUrl,
 
-                    // Lấy ảnh đầu tiên của sản phẩm
                     ImageUrl = p.ProductImages
-                        .OrderBy(img => img.SortOrder)
+                        .OrderByDescending(img => img.IsPrimary)
+                        .ThenBy(img => img.SortOrder)
                         .Select(img => img.ImageUrl)
                         .FirstOrDefault()
                 })
                 .ToListAsync();
-
-            return products;
         }
 
-        // Lấy chi tiết một sản phẩm theo id
-        // Code này được tách từ API GET /api/products/{id}
-        public async Task<ProductDetailDto?> GetProductByIdAsync(int id)
+        // =====================================================
+        // LẤY CHI TIẾT SẢN PHẨM
+        // GET: /api/products/{id}
+        // =====================================================
+        public async Task<ProductDetailDto?>
+            GetProductByIdAsync(int id)
         {
-            var product = await _context.Products
-                // Tìm sản phẩm theo ProductId
-                .Where(p => p.ProductId == id)
+            if (id <= 0)
+            {
+                return null;
+            }
 
-                // Map sang DTO chi tiết
+            return await _context.Products
+                .AsNoTracking()
+                .Where(p =>
+                    p.ProductId == id
+                    && p.IsActive)
                 .Select(p => new ProductDetailDto
                 {
                     ProductId = p.ProductId,
                     ProductName = p.ProductName,
                     Description = p.Description,
 
-                    // Giá bán thực tế
                     Price = p.SalePrice ?? p.Price,
-
-                    // Giá gốc
                     OriginalPrice = p.Price,
 
-                    // Số lượng tồn kho
                     StockQuantity = p.StockQuantity,
-
-                    // Ảnh đại diện
                     ThumbnailUrl = p.ThumbnailUrl,
 
-                    // Lấy toàn bộ ảnh phụ của sản phẩm
                     Images = p.ProductImages
-                        .OrderBy(img => img.SortOrder)
+                        .OrderByDescending(img => img.IsPrimary)
+                        .ThenBy(img => img.SortOrder)
                         .Select(img => img.ImageUrl)
                         .ToList()
                 })
                 .FirstOrDefaultAsync();
-
-            return product;
         }
 
-        // Lấy danh sách sản phẩm nổi bật
-        // Code này được tách từ API GET /api/products/featured
-        public async Task<List<ProductListItemDto>> GetFeaturedProductsAsync()
+        // =====================================================
+        // LẤY SẢN PHẨM NỔI BẬT
+        // GET: /api/products/featured
+        // Dùng cho trang Home
+        // =====================================================
+        public async Task<List<ProductListItemDto>>
+            GetFeaturedProductsAsync()
         {
-            var products = await _context.Products
-                // Chỉ lấy sản phẩm nổi bật
-                .Where(p => p.IsFeatured)
-
-                // Map sang DTO
+            return await _context.Products
+                .AsNoTracking()
+                .Where(p =>
+                    p.IsActive
+                    && p.IsFeatured)
+                .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new ProductListItemDto
                 {
                     ProductId = p.ProductId,
                     ProductName = p.ProductName,
+
                     Price = p.SalePrice ?? p.Price,
                     OriginalPrice = p.Price,
+
                     ThumbnailUrl = p.ThumbnailUrl,
 
-                    // Lấy ảnh đầu tiên
                     ImageUrl = p.ProductImages
-                        .OrderBy(img => img.SortOrder)
+                        .OrderByDescending(img => img.IsPrimary)
+                        .ThenBy(img => img.SortOrder)
                         .Select(img => img.ImageUrl)
                         .FirstOrDefault()
                 })
                 .ToListAsync();
-
-            return products;
         }
 
-        // Tìm kiếm sản phẩm theo keyword
-        // Code này được tách từ API GET /api/products/search?keyword=abc
-        public async Task<List<ProductListItemDto>> SearchProductsAsync(string keyword)
+        // =====================================================
+        // TÌM KIẾM SẢN PHẨM
+        // GET: /api/products/search?keyword=...
+        // =====================================================
+        public async Task<List<ProductListItemDto>>
+            SearchProductsAsync(string keyword)
         {
-            var products = await _context.Products
-                // Tìm sản phẩm có ProductName chứa keyword
-                .Where(p => p.ProductName.Contains(keyword))
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                return new List<ProductListItemDto>();
+            }
 
-                // Map sang DTO
+            keyword = keyword.Trim();
+
+            return await _context.Products
+                .AsNoTracking()
+                .Where(p =>
+                    p.IsActive
+                    && p.ProductName.Contains(keyword))
+                .OrderBy(p => p.ProductName)
                 .Select(p => new ProductListItemDto
                 {
                     ProductId = p.ProductId,
                     ProductName = p.ProductName,
+
                     Price = p.SalePrice ?? p.Price,
                     OriginalPrice = p.Price,
+
                     ThumbnailUrl = p.ThumbnailUrl,
 
-                    // Lấy ảnh đầu tiên
                     ImageUrl = p.ProductImages
-                        .OrderBy(img => img.SortOrder)
+                        .OrderByDescending(img => img.IsPrimary)
+                        .ThenBy(img => img.SortOrder)
                         .Select(img => img.ImageUrl)
                         .FirstOrDefault()
                 })
                 .ToListAsync();
-
-            return products;
         }
     }
 }

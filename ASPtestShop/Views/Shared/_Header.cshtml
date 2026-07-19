@@ -1,31 +1,292 @@
-﻿<!-- Start Header/Navigation -->
-<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+﻿
 
+<!-- Start Header/Navigation -->
+<style>
+	/* Nút dropdown trên navbar */
+	.shop-category-dropdown {
+		color: #ffffff !important;
+	}
+
+		.shop-category-dropdown:hover,
+		.shop-category-dropdown:focus {
+			color: #f9bf29 !important;
+		}
+
+	/* Khung dropdown */
+	.shop-category-dropdown-menu.dropdown-menu {
+		background-color: #3b5d50 !important;
+		border: 1px solid #f9bf29 !important;
+		min-width: 190px !important;
+		padding: 8px 0 !important;
+	}
+
+	/* Chữ item trong dropdown */
+	.shop-category-dropdown-menu .dropdown-item {
+		color: #ffffff !important;
+		background-color: transparent !important;
+		padding: 10px 18px !important;
+		font-weight: 500 !important;
+	}
+
+		.shop-category-dropdown-menu .dropdown-item:hover,
+		.shop-category-dropdown-menu .dropdown-item:focus {
+			color: #000000 !important;
+			background-color: #f9bf29 !important;
+		}
+
+		.shop-category-dropdown-menu .dropdown-item.disabled {
+			color: #cccccc !important;
+		}
+
+	.custom-navbar-nav .nav-item.dropdown:hover > .dropdown-menu {
+		display: block;
+		margin-top: 0;
+	}
+
+	.custom-navbar-nav .nav-item.dropdown:hover > .nav-link {
+		color: #f9bf29 !important;
+	}
+</style>
+
+<nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Umi navigation bar">
 	<div class="container">
 		<a class="navbar-brand" asp-controller="Home" asp-action="Index">Umi<span>.</span></a>
 
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni"
+				aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarsFurni">
 			<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
 				<li class="nav-item active">
-					<a class="nav-link" asp-controller="/MVC/Home" asp-action="Index">Home</a>
+					<a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
 				</li>
-				<li><a class="nav-link" asp-controller="/MVC/Shop" asp-action="Index">Shop</a></li>
-				<li><a class="nav-link" asp-controller="/MVC/About" asp-action="Index">About us</a></li>
-				<li><a class="nav-link" asp-controller="/MVC/Services" asp-action="Index">Services</a></li>
-				<li><a class="nav-link" asp-controller="/MVC/Blog" asp-action="Index">Blog</a></li>
-				<li><a class="nav-link" asp-controller="/MVC/Contact" asp-action="Index">Contact us</a></li>
+
+				<!-- CẦN CÂU -->
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle shop-category-dropdown"
+					   href="/Shop#products"
+					   id="rodDropdown">
+						Cần câu
+					</a>
+
+					<ul class="dropdown-menu shop-category-dropdown-menu"
+						aria-labelledby="rodDropdown"
+						id="rodDropdownMenu">
+						<li>
+							<a class="dropdown-item" href="/Shop#products">Đang tải...</a>
+						</li>
+					</ul>
+				</li>
+
+				<!-- MỒI CÂU -->
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle shop-category-dropdown"
+					   href="/Shop#products"
+					   id="baitDropdown">
+						Mồi câu
+					</a>
+
+					<ul class="dropdown-menu shop-category-dropdown-menu"
+						aria-labelledby="baitDropdown"
+						id="baitDropdownMenu">
+						<li>
+							<a class="dropdown-item" href="/Shop#products">Đang tải...</a>
+						</li>
+					</ul>
+				</li>
+
+				<!-- DÂY CÂU -->
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle shop-category-dropdown"
+					   href="/Shop#products"
+					   id="lineDropdown">
+						Dây câu
+					</a>
+
+					<ul class="dropdown-menu shop-category-dropdown-menu"
+						aria-labelledby="lineDropdown"
+						id="lineDropdownMenu">
+						<li>
+							<a class="dropdown-item" href="/Shop#products">Đang tải...</a>
+						</li>
+					</ul>
+				</li>
+
+				<!-- PHỤ KIỆN -->
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle shop-category-dropdown"
+					   href="/Shop#products"
+					   id="accessoryDropdown">
+						Phụ kiện
+					</a>
+
+					<ul class="dropdown-menu shop-category-dropdown-menu"
+						aria-labelledby="accessoryDropdown"
+						id="accessoryDropdownMenu">
+						<li>
+							<a class="dropdown-item" href="/Shop#products">Đang tải...</a>
+						</li>
+					</ul>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link"
+					   asp-controller="Shop"
+					   asp-action="Index">
+						Shop
+					</a>
+				</li>
 			</ul>
 
 			<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-				<li><a class="nav-link" asp-controller="/MVC/Account" asp-action="Profile"><img src="images/user.svg"></a></li>
-				<li><a class="nav-link" asp-controller="/MVC/Cart" asp-action="Cart"><img src="images/cart.svg"></a></li>
+				@if (User.Identity != null && User.Identity.IsAuthenticated)
+				{
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle"
+						   href="#"
+						   role="button"
+						   data-bs-toggle="dropdown"
+						   aria-expanded="false">
+							@User.Identity.Name
+						</a>
+
+						<ul class="dropdown-menu dropdown-menu-end">
+							<li>
+								<a class="dropdown-item" href="/account/profile">
+									Tài khoản của tôi
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="/orders/history">
+									Lịch sử đơn hàng
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="/account/logout">
+									Đăng xuất
+								</a>
+							</li>
+						</ul>
+					</li>
+				}
+				else
+				{
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle"
+						   href="#"
+						   role="button"
+						   data-bs-toggle="dropdown"
+						   aria-expanded="false">
+							<img src="/images/user.svg" alt="User">
+						</a>
+
+						<ul class="dropdown-menu dropdown-menu-end">
+							<li>
+								<a class="dropdown-item" href="/account/login">
+									Đăng nhập
+								</a>
+							</li>
+
+							<li>
+								<a class="dropdown-item" href="/account/register">
+									Đăng ký
+								</a>
+							</li>
+						</ul>
+					</li>
+				}
+
+				<li><a class="nav-link" asp-controller="Cart" asp-action="Index"><img src="/images/cart.svg" alt="Giỏ hàng"></a></li>
 			</ul>
 		</div>
 	</div>
-
 </nav>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+    loadNavbarCategories();
+});
+		
+	async function loadNavbarCategories() {
+		try {
+			const response = await fetch("/api/categories");
+
+			if (!response.ok) {
+				console.log("Không lấy được category");
+				return;
+			}
+
+			const categories = await response.json();
+
+			renderCategoryDropdown(categories, "Cần câu", "rodDropdown", "rodDropdownMenu");
+			renderCategoryDropdown(categories, "Mồi câu", "baitDropdown", "baitDropdownMenu");
+			renderCategoryDropdown(categories, "Dây câu", "lineDropdown", "lineDropdownMenu");
+			renderCategoryDropdown(categories, "Phụ kiện", "accessoryDropdown", "accessoryDropdownMenu");
+
+		} catch (error) {
+			console.error("Lỗi load navbar categories:", error);
+		}
+	}
+
+	function normalizeText(text) {
+		return (text || "")
+			.toString()
+			.trim()
+			.toLowerCase();
+	}
+
+	function renderCategoryDropdown(categories, parentCategoryName, linkId, menuId) {
+		const link = document.getElementById(linkId);
+		const menu = document.getElementById(menuId);
+
+		if (!link || !menu) {
+			return;
+		}
+
+		const parentCategory = categories.find(c =>
+			normalizeText(c.categoryName) === normalizeText(parentCategoryName)
+		);
+
+		if (parentCategory) {
+			link.href = `/Shop?categoryId=${parentCategory.categoryId}#products`;
+		} else {
+			link.href = "/Shop#products";
+		}
+
+		const childCategories = categories.filter(c => {
+			const sameParentName =
+				normalizeText(c.parentCategoryName) === normalizeText(parentCategoryName);
+
+			const sameParentId =
+				parentCategory && c.parentCategoryId === parentCategory.categoryId;
+
+			return sameParentName || sameParentId;
+		});
+
+		menu.innerHTML = "";
+
+		if (childCategories.length === 0) {
+			menu.innerHTML = `
+				<li>
+					<span class="dropdown-item disabled">
+						Chưa có danh mục con
+					</span>
+				</li>
+			`;
+			return;
+		}
+
+		childCategories.forEach(category => {
+			menu.innerHTML += `
+				<li>
+					<a class="dropdown-item" href="/Shop?categoryId=${category.categoryId}#products">
+						${category.categoryName}
+					</a>
+				</li>
+			`;
+		});
+	}
+</script>
 <!-- End Header/Navigation -->
