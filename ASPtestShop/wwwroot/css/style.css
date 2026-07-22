@@ -1183,9 +1183,7 @@ textarea {
             background-color: #f9bf29 !important;
         }
 
-/* =========================================
-   GIAO DIỆN PREMIUM: ĐĂNG NHẬP & ĐĂNG KÝ
-   ========================================= */
+/*GIAO DIỆN: ĐĂNG NHẬP & ĐĂNG KÝ*/
 
 .login-container, .register-container {
     margin-bottom: 5rem;
@@ -1193,16 +1191,14 @@ textarea {
     z-index: 1;
 }
 
-    /* Thẻ Card: Mềm mại, viền bo tròn lớn, bóng đổ sâu 3D (Soft UI) */
     .login-container .card, .register-container .card {
         border-radius: 24px;
         background: #ffffff;
         box-shadow: 0 20px 40px rgba(59, 93, 80, 0.12) !important;
-        border: 1px solid rgba(59, 93, 80, 0.05);
-        padding: 10px; /* Thêm padding để tạo không gian thở */
+        border: 1px solid rgba(59, 93, 80, 0.05); 
+        padding: 10px;
     }
 
-    /* Biến Header thành kiểu dáng Typography hiện đại */
     .login-container .card-header, .register-container .card-header {
         background: transparent;
         padding: 30px 20px 10px;
@@ -1212,17 +1208,16 @@ textarea {
         .login-container .card-header h4, .register-container .card-header h4 {
             font-weight: 800;
             font-size: 1.8rem;
-            color: #2b3a32; /* Màu xanh lá cực đậm */
+            color: #2b3a32;
             letter-spacing: -0.5px;
         }
 
-    /* Style Input: Nền xám nhạt, không viền cứng, hiệu ứng Float khi Focus */
     .login-container .form-control, .register-container .form-control {
         border-radius: 12px;
         padding: 14px 20px;
         font-size: 0.95rem;
         background-color: #f4f7f5;
-        border: 2px solid transparent; /* Giấu viền đi */
+        border: 2px solid transparent; 
         color: #333;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -1231,21 +1226,19 @@ textarea {
             background-color: #ffffff;
             border-color: #3b5d50;
             box-shadow: 0 10px 20px rgba(59, 93, 80, 0.08);
-            transform: translateY(-2px); /* Nhập liệu nảy nhẹ lên */
+            transform: translateY(-2px);
             outline: none;
         }
 
-    /* Tiêu đề (Label) của từng ô nhập liệu */
     .login-container .form-label, .register-container .form-label {
         font-weight: 600;
         font-size: 0.8rem;
         color: #6c757d;
-        text-transform: uppercase; /* Viết hoa chữ để nhìn sang trọng hơn */
+        text-transform: uppercase; 
         letter-spacing: 0.5px;
         margin-bottom: 8px;
     }
 
-/* Nút bấm: Gradient, tỏa hào quang (Glow effect) */
 .login-btn, .register-btn {
     background: linear-gradient(135deg, #43705f 0%, #3b5d50 100%);
     color: #ffffff;
@@ -1264,7 +1257,7 @@ textarea {
     .login-btn:hover, .register-btn:hover {
         background: linear-gradient(135deg, #4a7d6a 0%, #2f4a40 100%);
         color: #ffffff;
-        transform: translateY(-4px); /* Nhảy lên cao hơn khi trỏ chuột */
+        transform: translateY(-4px); 
         box-shadow: 0 15px 35px rgba(59, 93, 80, 0.45);
     }
 
@@ -1273,7 +1266,6 @@ textarea {
         box-shadow: 0 5px 15px rgba(59, 93, 80, 0.2);
     }
 
-/* Các liên kết phụ (Quên MK, Đăng nhập ngay) */
 .login-links a, .register-links a {
     color: #6c757d;
     font-weight: 600;
@@ -1287,7 +1279,6 @@ textarea {
         color: #3b5d50;
     }
 
-    /* Hiệu ứng gạch chân trượt mượt mà (Underline sweep) */
     .login-links a::after, .register-links a::after {
         content: '';
         position: absolute;
@@ -1349,4 +1340,189 @@ textarea {
     padding: 30px 20px;
     border-bottom: none;
     margin: 0;
+}
+/*   PROFILE PAGE STYLES*/
+
+.profile-page-container {
+    padding: 40px 0;
+    background-color: #f5f5f5; 
+}
+
+.sidebar-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #efefef;
+}
+
+.edit-profile-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.icon-pencil {
+    width: 12px;
+    height: 12px;
+}
+
+.sidebar-menu .menu-item > a {
+    color: #333;
+    font-weight: 500;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+    font-size: 15px;
+}
+
+    .sidebar-menu .menu-item > a:hover {
+        color: #3b5d50;
+    }
+
+.sidebar-menu .menu-icon {
+    width: 22px;
+    height: 22px;
+    margin-right: 12px;
+}
+
+    .sidebar-menu .menu-icon.text-primary {
+        color: #0055aa !important;
+    }
+
+    .sidebar-menu .menu-icon.text-info {
+        color: #00bcd4 !important;
+    }
+
+    .sidebar-menu .menu-icon.text-warning {
+        color: #ff9800 !important;
+    }
+
+.sub-menu a {
+    color: #757575;
+    text-decoration: none;
+    font-size: 14px;
+    display: block;
+    padding: 6px 0;
+    transition: color 0.2s;
+}
+
+    .sub-menu a:hover,
+    .sub-menu a.active-text {
+        color: #3b5d50;
+        font-weight: 500;
+    }
+
+.profile-card {
+    border-radius: 4px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+    .profile-card .card-header {
+        border-bottom: 1px solid #efefef;
+    }
+
+.form-label-custom {
+    color: #555;
+    font-size: 14px;
+}
+
+.profile-form-control {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    padding: 10px 12px;
+    font-size: 14px;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    color: #333;
+}
+
+    .profile-form-control:focus {
+        border-color: #3b5d50;
+        outline: none;
+        box-shadow: 0 0 4px rgba(59, 93, 80, 0.2);
+    }
+
+    .profile-form-control[readonly] {
+        border: 1px solid #ced4da !important;
+        background-color: #f8f9fa !important;
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.375rem;
+        color: #495057;
+    }
+
+.btn-save-profile {
+    background-color: #3b5d50;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 2px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+    .btn-save-profile:hover {
+        background-color: #2f4a40;
+        color: white;
+    }
+
+.avatar-upload-section {
+    min-height: 250px;
+}
+
+.avatar-preview-lg {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #efefef;
+}
+
+.btn-choose-image {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    color: #555;
+    padding: 8px 18px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-block;
+    transition: background-color 0.2s;
+}
+
+    .btn-choose-image:hover {
+        background-color: #f8f9fa;
+    }
+
+.avatar-upload-hint {
+    color: #999;
+    font-size: 12px;
+    line-height: 1.6;
+}
+.profile-link-blue {
+    color: #0055aa !important;
+    transition: color 0.2s;
+}
+
+    .profile-link-blue:hover {
+        color: #003377 !important;
+        text-decoration: underline !important;
+    }
+
+.auth-verification-card {
+    width: 100%;
+    max-width: 500px;
+}
+
+.custom-radio-umi:checked {
+    background-color: #3b5d50 !important;
+    border-color: #3b5d50 !important;
+}
+
+.custom-radio-umi:focus {
+    box-shadow: 0 0 0 0.25rem rgba(59, 93, 80, 0.25) !important;
+    border-color: #3b5d50 !important;
 }

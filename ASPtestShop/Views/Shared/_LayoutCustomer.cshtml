@@ -16,6 +16,7 @@
 	<link href="~/css/tiny-slider.css" rel="stylesheet">
 	<link href="~/css/style.css" rel="stylesheet">
 	<title>UmiShop.com </title>
+	@await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
 	<!-- Start Header/Navigation -->
@@ -26,8 +27,8 @@
     </div>
 	@await Html.PartialAsync("_Footer")
 	@await RenderSectionAsync("Scripts", required: false)
-	<script src="js/bootstrap.bundle.min.js"></script>
-	<script src="js/tiny-slider.js"></script>
-	<script src="js/custom.js"></script>
+	<script src="~/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/tiny-slider.js"></script>
+	<script src="~/js/custom.js"></script>
 </body>
 </html>

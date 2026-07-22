@@ -6,22 +6,24 @@ namespace ASPtestShop.Models.ViewModels.Auth
     {
         [Required(ErrorMessage = "Vui lòng nhập username")]
         [MaxLength(100)]
-        public string UserName { get; set; } = string.Empty;
+        public string? UserName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập email")]
         [EmailAddress(ErrorMessage = "Email không hợp lệ")]
-        public string Email { get; set; } = string.Empty;
+        public string? Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập họ tên")]
         [MaxLength(150)]
-        public string FullName { get; set; } = string.Empty;
+        public string? FullName { get; set; } = string.Empty;
 
         [MaxLength(255)]
         public string? Address { get; set; }
 
+        public string? Gender { get; set; }
+
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu")]
         [DataType(DataType.Password)]
-        public string Password { get; set; } = string.Empty;
+        public string? Password { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập lại mật khẩu")]
         [DataType(DataType.Password)]

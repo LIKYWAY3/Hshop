@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPtestShop.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260714065653_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260714051718_AddGenderToUser")]
+    partial class AddGenderToUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,6 +51,9 @@ namespace ASPtestShop.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")

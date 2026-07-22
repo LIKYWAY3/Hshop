@@ -1,0 +1,220 @@
+﻿@model ASPtestShop.Models.ViewModels.Profile.UserProfileViewModel
+
+@{
+    ViewData["Title"] = "Ngân Hàng";
+}
+
+<style>
+    .sidebar-avatar-custom {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+
+    .profile-card-custom {
+        border-radius: 2px;
+    }
+
+    .bank-section-title {
+        font-size: 1.125rem;
+    }
+
+    .btn-theme {
+        background-color: #355b4e;
+        color: white;
+    }
+
+        .btn-theme:hover {
+            background-color: #29473d;
+            color: white;
+        }
+
+    .bank-icon-box {
+        width: 50px;
+        height: 50px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .empty-bank-text {
+        font-size: 1.2rem;
+    }
+
+    .form-helper-text {
+        font-size: 0.8rem;
+    }
+
+    .sidebar-menu a {
+        text-decoration: none;
+        color: #333;
+    }
+
+    .sub-menu a {
+        color: #666;
+        display: block;
+        padding: 4px 0;
+    }
+
+        .sub-menu a:hover, .active-text {
+            color: #3b5d50 !important;
+        }
+
+    .icon-pencil {
+        width: 12px;
+        height: 12px;
+    }
+
+    .menu-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+</style>
+
+<div class="untree_co-section profile-page-container mt-4 mb-5">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-3">
+                <div class="sidebar-user-info d-flex align-items-center mb-4">
+                    @if (string.IsNullOrEmpty(Model.AvatarUrl))
+                    {
+                        <img src="https://ui-avatars.com/api/?name=@Model.UserName&background=3b5d50&color=fff" alt="Avatar" class="sidebar-avatar me-3 rounded-circle sidebar-avatar-custom" />
+                    }
+                    else
+                    {
+                        <img src="@Model.AvatarUrl" alt="Avatar" class="sidebar-avatar me-3 rounded-circle sidebar-avatar-custom" />
+                    }
+                    <div>
+                        <h6 class="mb-0 fw-bold">@Model.UserName</h6>
+                        <a href="#" class="text-muted small text-decoration-none edit-profile-link">
+                            <svg viewBox="0 0 24 24" class="icon-pencil"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor" /></svg> Sửa Hồ Sơ
+                        </a>
+                    </div>
+                </div>
+
+                <ul class="sidebar-menu list-unstyled">
+                    <li class="menu-item active mb-2">
+                        <a href="#" class="fw-bold">
+                            <svg viewBox="0 0 24 24" class="menu-icon text-primary"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor" /></svg> Tài Khoản Của Tôi
+                        </a>
+                        <ul class="sub-menu list-unstyled ms-4 mt-2">
+                            <li><a asp-controller="Account" asp-action="Profile" class="active-text">Hồ Sơ</a></li>
+                            <li><a asp-controller="Account" asp-action="Bank">Ngân Hàng</a></li>
+                            <li><a asp-controller="Account" asp-action="Address">Địa Chỉ</a></li>
+                            <li><a asp-controller="Account" asp-action="ChangePassword">Đổi Mật Khẩu</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item mb-2 mt-3">
+                        <a asp-controller="Order" asp-action="History" class="text-decoration-none text-dark">
+                            <svg viewBox="0 0 24 24" class="menu-icon text-info"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" fill="currentColor" /></svg> Đơn Mua
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-9">
+                <div class="profile-card card border-0 shadow-sm profile-card-custom">
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success m-4">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    @* đang chưa xong phần API, kiểm tra lại BankApiController hiện tại đang dùng biến static List để test giả lập, coi có file bank nào dư xóa dùm nha *@
+
+                    <div class="card-body p-4 pb-5">
+                        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                            <div>
+                                <h5 class="mb-1 fw-bold bank-section-title">Tài Khoản Ngân Hàng Của Tôi</h5>
+                                <p class="text-muted small mb-0">Quản lý thẻ và tài khoản ngân hàng của bạn</p>
+                            </div>
+                            <button class="btn btn-sm btn-theme" data-bs-toggle="modal" data-bs-target="#addBankModal">
+                                <i class="fas fa-plus"></i> Thêm Ngân Hàng Liên Kết
+                            </button>
+                        </div>
+
+                        @if (Model.BankAccounts != null && Model.BankAccounts.Any())
+                        {
+                            foreach (var bank in Model.BankAccounts)
+                            {
+                                <div class="card mb-3 border-light shadow-sm">
+                                    <div class="card-body d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3 bank-icon-box">
+                                                <i class="fas fa-university text-muted fs-4"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">@bank.BankName</h6>
+                                                <div class="text-muted small">@bank.AccountName</div>
+                                                <div class="text-dark fw-bold">**** **** **** @bank.AccountNumber.Substring(Math.Max(0, bank.AccountNumber.Length - 4))</div>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-danger">Xóa</button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center py-5">
+                                <div class="text-muted empty-bank-text">Bạn chưa có tài khoản ngân hàng.</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Form Thêm Ngân Hàng -->
+<div class="modal fade" id="addBankModal" tabindex="-1" aria-labelledby="addBankModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title" id="addBankModalLabel">Thêm Tài Khoản Ngân Hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/account/add-bank" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Ngân Hàng</label>
+                        <select name="BankName" class="form-select" required>
+                            <option value="">Chọn ngân hàng...</option>
+                            <option value="Vietcombank">Vietcombank</option>
+                            <option value="Techcombank">Techcombank</option>
+                            <option value="MB Bank">MB Bank</option>
+                            <option value="VietinBank">VietinBank</option>
+                            <option value="BIDV">BIDV</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Số Tài Khoản</label>
+                        <input type="text" name="AccountNumber" class="form-control" required placeholder="Ví dụ: 10123456789">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Tên Chủ Tài Khoản (Không dấu)</label>
+                        <input type="text" name="AccountName" class="form-control" required placeholder="Ví dụ: NGUYEN VAN A">
+                        <div class="form-text form-helper-text">Vui lòng nhập chính xác tên in trên thẻ/ứng dụng ngân hàng.</div>
+                    </div>
+
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Trở lại</button>
+                    <button type="submit" class="btn btn-theme">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

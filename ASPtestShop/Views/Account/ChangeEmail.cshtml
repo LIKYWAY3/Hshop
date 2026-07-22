@@ -1,0 +1,46 @@
+﻿@model ASPtestShop.Models.ViewModels.Profile.ChangeEmailViewModel
+
+@{
+    ViewData["Title"] = "Thay Đổi Email";
+}
+
+<div class="untree_co-section profile-page-container">
+    <div class="container d-flex justify-content-center">
+        <div class="card border-0 shadow-sm auth-verification-card">
+            <div class="card-header bg-white border-bottom pt-4 pb-3 px-4 text-center">
+                <h5 class="mb-1 fw-bold">Thay Đổi Địa Chỉ Email</h5>
+                <p class="text-muted small mb-0">Vui lòng nhập mật khẩu để xác nhận danh tính</p>
+            </div>
+
+            <div class="card-body p-4">
+                <form asp-action="ChangeEmail" asp-controller="Account" method="post">
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label-custom mb-1"></label>
+                        <input asp-for="Password" class="profile-form-control" placeholder="Nhập mật khẩu của bạn" />
+                        <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="NewEmail" class="form-label-custom mb-1"></label>
+                        <input asp-for="NewEmail" class="profile-form-control" placeholder="Nhập địa chỉ email mới" />
+                        <span asp-validation-for="NewEmail" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn-save-profile">Xác Nhận Thay Đổi</button>
+                        <a asp-action="Profile" class="btn btn-light border">Hủy</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

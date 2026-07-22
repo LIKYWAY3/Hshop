@@ -1,4 +1,5 @@
 using ASPtestShop.Models.DTO.Order;
+using ASPtestShop.Models.ViewModels.Profile;
 
 namespace ASPtestShop.Services.Interfaces
 {
@@ -9,5 +10,6 @@ namespace ASPtestShop.Services.Interfaces
         Task<List<OrderHistoryDto>> GetOrderHistoryAsync(string userId);
 
         Task<OrderHistoryDto?> GetOrderDetailAsync(string userId, int orderId);
+
     }
 }
