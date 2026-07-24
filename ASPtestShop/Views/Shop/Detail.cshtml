@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Chi tiết sản phẩm";
     Layout = "~/Views/Shared/_LayoutCustomer.cshtml";
 }
@@ -116,24 +116,27 @@
                     Số lượng:
                 </label>
 
-                <div class="input-group quantity-control">
+                <div class="detail-qty-ctrl">
 
                     <button type="button"
                             id="btn-decrease"
-                            class="btn btn-outline-secondary">
+                            class="detail-qty-btn"
+                            aria-label="Giảm số lượng">
                         −
                     </button>
 
                     <input type="number"
                            id="quantity"
-                           class="form-control text-center"
+                           class="detail-qty-input"
                            value="1"
                            min="1"
-                           max="99">
+                           max="99"
+                           aria-label="Số lượng">
 
                     <button type="button"
                             id="btn-increase"
-                            class="btn btn-outline-secondary">
+                            class="detail-qty-btn"
+                            aria-label="Tăng số lượng">
                         +
                     </button>
 
@@ -192,18 +195,93 @@
         white-space: pre-line;
     }
 
-    .quantity-control {
-        width: 145px;
+    /* ==============================================
+       Nút tăng / giảm số lượng — kiểu bo tròn
+    ============================================== */
+    .detail-qty-ctrl {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
-        .quantity-control input {
-            min-width: 55px;
+    /* Nút tròn − / + */
+    .detail-qty-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #3b5d50;
+        background-color: #ffffff;
+        color: #3b5d50;
+        font-size: 1.25rem;
+        font-weight: 700;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s, color 0.2s;
+        flex-shrink: 0;
+        padding: 0;
+        user-select: none;
+    }
+
+        .detail-qty-btn:hover:not(:disabled) {
+            background-color: #3b5d50;
+            color: #ffffff;
         }
 
+        .detail-qty-btn:active:not(:disabled) {
+            background-color: #2a4338;
+            border-color: #2a4338;
+            color: #ffffff;
+        }
+
+        .detail-qty-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+    /* Input số lượng */
+    .detail-qty-input {
+        width: 68px;
+        height: 40px;
+        text-align: center;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #253f36;
+        background-color: #fff;
+        /* Ẩn mũi tên spin */
+        -moz-appearance: textfield;
+    }
+
+        .detail-qty-input::-webkit-outer-spin-button,
+        .detail-qty-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .detail-qty-input:focus {
+            outline: none;
+            border-color: #3b5d50;
+            box-shadow: 0 0 0 2px rgba(59,93,80,.15);
+        }
+
+        .detail-qty-input:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+        }
+
+    /* Nút Thêm vào giỏ */
     .btn-add-cart {
         color: #ffffff;
         background-color: #3b5d50;
         border-color: #3b5d50;
+        border-radius: 50px;
+        padding: 10px 28px;
+        font-weight: 600;
     }
 
         .btn-add-cart:hover,
@@ -477,6 +555,8 @@
 
             quantityInput.value = 1;
             quantityInput.disabled = true;
+            document.getElementById("btn-increase").disabled = true;
+            document.getElementById("btn-decrease").disabled = true;
             addButton.disabled = true;
 
             addButton.innerHTML = `

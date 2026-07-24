@@ -1,4 +1,4 @@
-﻿<!-- Start Hero Section -->
+<!-- Start Hero Section -->
 <div class="hero">
     <div class="container">
         <div class="row justify-content-between">
@@ -16,56 +16,248 @@
 
 <div id="products" class="untree_co-section product-section before-footer-section">
     <div class="container">
+
+        <!-- Search Bar -->
+        <div class="row mb-4">
+            <div class="col-12 col-md-6 offset-md-3">
+                <div class="input-group shadow-sm" id="searchWrapper">
+                    <span class="input-group-text bg-white border-end-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#3b5d50" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z" />
+                        </svg>
+                    </span>
+                    <input type="text"
+                           id="searchInput"
+                           class="form-control border-start-0"
+                           placeholder="Tìm kiếm sản phẩm..."
+                           autocomplete="off" />
+                    <button class="btn btn-outline-secondary border-start-0"
+                            id="clearSearchBtn"
+                            type="button"
+                            title="Xóa tìm kiếm"
+                            style="display:none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="searchStatus" class="text-muted small mt-1 text-center" style="min-height:20px;"></div>
+            </div>
+        </div>
+
         <div class="row" id="productList">
-
             <!-- Product sẽ được load từ API và render vào đây -->
-
         </div>
     </div>
 </div>
 
+<style>
+    /* ================================================
+       Thanh Search — theme xanh #3b5d50
+    ================================================ */
+    #searchWrapper {
+        border-radius: 50px;
+        overflow: hidden;
+        border: 2px solid #ced4da;
+        background: #fff;
+        transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+        #searchWrapper:focus-within {
+            border-color: #3b5d50;
+            box-shadow: 0 0 0 3px rgba(59,93,80,.18);
+        }
+
+    #searchWrapper .input-group-text {
+        background: transparent;
+        border: none;
+        padding-left: 16px;
+        padding-right: 8px;
+    }
+
+    #searchWrapper .form-control {
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        font-size: 0.95rem;
+        padding-left: 4px;
+        color: #253f36;
+    }
+
+        #searchWrapper .form-control::placeholder {
+            color: #9aafa8;
+        }
+
+    #searchWrapper #clearSearchBtn {
+        border: none;
+        background: transparent;
+        color: #9aafa8;
+        padding-right: 12px;
+        display: flex;
+        align-items: center;
+    }
+
+        #searchWrapper #clearSearchBtn:hover {
+            color: #3b5d50;
+        }
+
+    #searchStatus {
+        font-size: 0.82rem;
+        color: #3b5d50;
+        font-style: italic;
+    }
+</style>
+
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        loadProducts();
+    // ============================================================
+    // Trạng thái tìm kiếm
+    // ============================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryId = urlParams.get("categoryId");
+
+    let currentKeyword = "";
+    let debounceTimer = null;
+
+    // ============================================================
+    // Khởi động
+    // ============================================================
+    document.addEventListener("DOMContentLoaded", function () {
+        // Phục hồi keyword từ URL nếu có
+        const keywordFromUrl = urlParams.get("keyword");
+        if (keywordFromUrl) {
+            document.getElementById("searchInput").value = keywordFromUrl;
+            currentKeyword = keywordFromUrl;
+            toggleClearBtn(keywordFromUrl);
+        }
+
+        loadProducts(currentKeyword);
+        setupSearch();
     });
 
-    async function loadProducts() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const categoryId = urlParams.get("categoryId");
+    // ============================================================
+    // Gắn sự kiện cho ô tìm kiếm
+    // ============================================================
+    function setupSearch() {
+        const searchInput = document.getElementById("searchInput");
+        const clearBtn = document.getElementById("clearSearchBtn");
 
-        let apiUrl = "/api/products";
+        // Debounce: đợi 400ms sau khi ngừng gõ mới gọi API
+        searchInput.addEventListener("input", function () {
+            const keyword = this.value.trim();
+            toggleClearBtn(keyword);
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                currentKeyword = keyword;
+                loadProducts(keyword);
+            }, 400);
+        });
 
-        if (categoryId) {
+        // Enter để search ngay
+        searchInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                clearTimeout(debounceTimer);
+                currentKeyword = this.value.trim();
+                toggleClearBtn(currentKeyword);
+                loadProducts(currentKeyword);
+            }
+        });
+
+        // Nút xóa tìm kiếm
+        clearBtn.addEventListener("click", function () {
+            searchInput.value = "";
+            currentKeyword = "";
+            toggleClearBtn("");
+            clearTimeout(debounceTimer);
+            loadProducts("");
+        });
+    }
+
+    function toggleClearBtn(keyword) {
+        const clearBtn = document.getElementById("clearSearchBtn");
+        clearBtn.style.display = keyword ? "inline-flex" : "none";
+    }
+
+    // ============================================================
+    // Load sản phẩm (có hoặc không có keyword)
+    // ============================================================
+    async function loadProducts(keyword) {
+        const productList = document.getElementById("productList");
+        const searchStatus = document.getElementById("searchStatus");
+
+        let apiUrl;
+
+        if (keyword) {
+            // Tìm kiếm: nếu có categoryId thì tìm trong danh mục, không thì tìm toàn bộ
+            apiUrl = `/api/products/search?keyword=${encodeURIComponent(keyword)}`;
+            if (categoryId) {
+                apiUrl += `&categoryId=${categoryId}`;
+            }
+        } else if (categoryId) {
+            // Không có keyword, có categoryId → lấy sản phẩm theo danh mục
             apiUrl = `/api/products/category/${categoryId}`;
+        } else {
+            // Không có gì → lấy toàn bộ
+            apiUrl = "/api/products";
         }
+
+        productList.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Đang tải...</span>
+                </div>
+                <p class="text-muted mt-3">Đang tải sản phẩm...</p>
+            </div>
+        `;
+        searchStatus.textContent = "";
 
         try {
             const response = await fetch(apiUrl);
 
             if (!response.ok) {
                 console.log("Không lấy được sản phẩm");
+                productList.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-danger text-center">
+                            Không tải được sản phẩm. Lỗi ${response.status}
+                        </div>
+                    </div>
+                `;
                 return;
             }
 
             const products = await response.json();
 
-            renderProducts(products);
+            // Cập nhật trạng thái tìm kiếm
+            if (keyword) {
+                searchStatus.textContent = `Tìm thấy ${products.length} sản phẩm cho "${keyword}"`;
+            } else {
+                searchStatus.textContent = "";
+            }
+
+            renderProducts(products, keyword);
         } catch (error) {
             console.error("Lỗi load products:", error);
         }
     }
 
-    function renderProducts(products) {
+    // ============================================================
+    // Render danh sách sản phẩm
+    // ============================================================
+    function renderProducts(products, keyword) {
         const productList = document.getElementById("productList");
 
         productList.innerHTML = "";
 
         if (!products || products.length === 0) {
+            const message = keyword
+                ? `Không tìm thấy sản phẩm nào cho "<strong>${keyword}</strong>".`
+                : "Không có sản phẩm trong danh mục này.";
+
             productList.innerHTML = `
-                    <div class="col-12 text-center">
-                        <p class="text-muted">Không có sản phẩm trong danh mục này.</p>
-                    </div>
-                `;
+                <div class="col-12 text-center py-4">
+                    <p class="text-muted">${message}</p>
+                </div>
+            `;
             return;
         }
 
@@ -77,20 +269,20 @@
                 : "0";
 
             productList.innerHTML += `
-                    <div class="col-12 col-md-4 col-lg-3 mb-5">
-                        <a class="product-item" href="/Product/Detail/${product.productId}">
-                            <img src="${imageUrl}" class="img-fluid product-thumbnail">
+                <div class="col-12 col-md-4 col-lg-3 mb-5">
+                    <a class="product-item" href="/Product/Detail/${product.productId}">
+                        <img src="${imageUrl}" class="img-fluid product-thumbnail">
 
-                            <h3 class="product-title">${product.productName}</h3>
+                        <h3 class="product-title">${product.productName}</h3>
 
-                            <strong class="product-price">${price} đ</strong>
+                        <strong class="product-price">${price} đ</strong>
 
-                            <span class="icon-cross">
-                                <img src="/images/cross.svg" class="img-fluid">
-                            </span>
-                        </a>
-                    </div>
-                `;
+                        <span class="icon-cross">
+                            <img src="/images/cross.svg" class="img-fluid">
+                        </span>
+                    </a>
+                </div>
+            `;
         });
     }
 </script>
