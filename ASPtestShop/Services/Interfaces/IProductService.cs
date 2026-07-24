@@ -20,7 +20,11 @@ public interface IProductService
     // Dùng cho: GET /api/products/featured
     Task<List<ProductListItemDto>> GetFeaturedProductsAsync();
 
-    // 5. Tìm kiếm sản phẩm theo keyword
+    // 5. Tìm kiếm sản phẩm theo keyword (toàn bộ shop)
     // Dùng cho: GET /api/products/search?keyword=abc
     Task<List<ProductListItemDto>> SearchProductsAsync(string keyword);
+
+    // 6. Tìm kiếm sản phẩm theo keyword trong danh mục cụ thể (bao gồm danh mục con)
+    // Dùng cho: GET /api/products/search?keyword=abc&categoryId=1
+    Task<List<ProductListItemDto>> SearchProductsInCategoryAsync(string keyword, int categoryId);
 }

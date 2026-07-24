@@ -1,3 +1,4 @@
+using ASPtestShop.Models.DTO.Product;
 using ASPtestShop.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -77,12 +78,14 @@ namespace ASPtestShop.Controllers.Api
 
         //===============================SEARCH PRODUCTS======================================
         // GET: api/products/search?keyword=abc
-        // Tìm kiếm sản phẩm theo keyword
+        // GET: api/products/search?keyword=abc&categoryId=1
+        // Tìm kiếm sản phẩm theo keyword (toàn bộ shop hoặc trong danh mục cụ thể)
         [HttpGet("search")]
-        public async Task<IActionResult> SearchProducts([FromQuery] string keyword)
+        public async Task<IActionResult> SearchProducts(
+            [FromQuery] string keyword,
+            [FromQuery] int? categoryId)
         {
             // Nếu keyword rỗng thì trả BadRequest
-            // Tránh lỗi ProductName.Contains(null)
             if (string.IsNullOrWhiteSpace(keyword))
             {
                 return BadRequest(new
@@ -91,8 +94,18 @@ namespace ASPtestShop.Controllers.Api
                 });
             }
 
-            // Gọi service tìm kiếm sản phẩm
-            var products = await _productService.SearchProductsAsync(keyword);
+            List<ProductListItemDto> products;
+
+            // Nếu có categoryId thì tìm trong danh mục đó (bao gồm danh mục con)
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                products = await _productService.SearchProductsInCategoryAsync(keyword, categoryId.Value);
+            }
+            else
+            {
+                // Tìm toàn bộ shop
+                products = await _productService.SearchProductsAsync(keyword);
+            }
 
             return Ok(products);
         }
