@@ -38,6 +38,11 @@
 			color: #cccccc !important;
 		}
 
+	.shop-category-dropdown-menu .dropdown-divider {
+		border-color: rgba(255,255,255,0.18) !important;
+		margin: 6px 0 !important;
+	}
+
 	.custom-navbar-nav .nav-item.dropdown:hover > .dropdown-menu {
 		display: block;
 		margin-top: 0;
@@ -265,28 +270,57 @@
 			return sameParentName || sameParentId;
 		});
 
-		menu.innerHTML = "";
+		const accessoryCategory = categories.find(c =>
+			normalizeText(c.categoryName) === "phụ kiện"
+		);
 
-		if (childCategories.length === 0) {
-			menu.innerHTML = `
+		const items = [];
+
+		if (parentCategory) {
+			items.push(`
+				<li>
+					<a class="dropdown-item fw-bold" href="/Shop?categoryId=${parentCategory.categoryId}#products">
+						Tất cả ${parentCategory.categoryName}
+					</a>
+				</li>
+			`);
+		}
+
+		if (accessoryCategory && parentCategory && accessoryCategory.categoryId !== parentCategory.categoryId) {
+			items.push(`
+				<li>
+					<a class="dropdown-item" href="/Shop?categoryId=${accessoryCategory.categoryId}#products">
+						Phụ kiện
+					</a>
+				</li>
+			`);
+		}
+
+		if (childCategories.length > 0) {
+			if (items.length > 0) {
+				items.push('<li><hr class="dropdown-divider"></li>');
+			}
+
+			childCategories.forEach(category => {
+				items.push(`
+					<li>
+						<a class="dropdown-item" href="/Shop?categoryId=${category.categoryId}#products">
+							${category.categoryName}
+						</a>
+					</li>
+				`);
+			});
+		}
+
+		menu.innerHTML = items.length > 0
+			? items.join("")
+			: `
 				<li>
 					<span class="dropdown-item disabled">
-						Chưa có danh mục con
+						Chưa có danh mục phù hợp
 					</span>
 				</li>
 			`;
-			return;
-		}
-
-		childCategories.forEach(category => {
-			menu.innerHTML += `
-				<li>
-					<a class="dropdown-item" href="/Shop?categoryId=${category.categoryId}#products">
-						${category.categoryName}
-					</a>
-				</li>
-			`;
-		});
 	}
 </script>
 <!-- End Header/Navigation -->

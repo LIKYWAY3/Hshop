@@ -210,14 +210,74 @@ namespace ASPtestShop.Services.Implementations
                 return new List<ProductListItemDto>();
             }
 
-            keyword = keyword.Trim();
+            return await FilterProductsAsync(keyword, null);
+        }
 
-            return await _context.Products
+        // =====================================================
+        // LỌC SẢN PHẨM THEO TỪ KHÓA VÀ DANH MỤC
+        // GET: /api/products/filter?keyword=...&categoryId=...
+        // =====================================================
+        public async Task<List<ProductListItemDto>>
+            FilterProductsAsync(string? keyword, int? categoryId)
+        {
+            var query = _context.Products
                 .AsNoTracking()
-                .Where(p =>
-                    p.IsActive
-                    && p.ProductName.Contains(keyword))
-                .OrderBy(p => p.ProductName)
+                .Where(p => p.IsActive);
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                var normalizedKeyword = keyword.Trim();
+
+                query = query.Where(p =>
+                    p.ProductName.Contains(normalizedKeyword)
+                    || (p.ShortDescription != null && p.ShortDescription.Contains(normalizedKeyword))
+                    || (p.Description != null && p.Description.Contains(normalizedKeyword)));
+            }
+
+            if (categoryId.HasValue && categoryId.Value > 0)
+{
+    // Lấy toàn bộ category đang hoạt động
+    var allCategories = await _context.Categories
+        .AsNoTracking()
+        .Where(c => c.IsActive)
+        .Select(c => new
+        {
+            c.CategoryId,
+            c.ParentCategoryId
+        })
+        .ToListAsync();
+
+    var categoryIds = new HashSet<int>
+    {
+        categoryId.Value
+    };
+
+    var queue = new Queue<int>();
+    queue.Enqueue(categoryId.Value);
+
+    while (queue.Count > 0)
+    {
+        var current = queue.Dequeue();
+
+        var children = allCategories
+            .Where(c => c.ParentCategoryId == current)
+            .Select(c => c.CategoryId)
+            .ToList();
+
+        foreach (var child in children)
+        {
+            if (categoryIds.Add(child))
+            {
+                queue.Enqueue(child);
+            }
+        }
+    }
+
+    query = query.Where(p => categoryIds.Contains(p.CategoryId));
+}
+
+            return await query
+                .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new ProductListItemDto
                 {
                     ProductId = p.ProductId,

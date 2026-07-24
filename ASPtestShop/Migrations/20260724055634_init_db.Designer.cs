@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPtestShop.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260717082450_init_db")]
+    [Migration("20260724055634_init_db")]
     partial class init_db
     {
         /// <inheritdoc />
@@ -215,135 +215,6 @@ namespace ASPtestShop.Migrations
                         .IsUnique();
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("ASPtestShop.Data.Entities.ChatAttachment", b =>
-                {
-                    b.Property<Guid>("ChatAttachmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("AttachmentType")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("ChatMessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ContentType")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FileName")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<long>("FileSize")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.HasKey("ChatAttachmentId");
-
-                    b.HasIndex("ChatMessageId");
-
-                    b.ToTable("ChatAttachments");
-                });
-
-            modelBuilder.Entity("ASPtestShop.Data.Entities.ChatMessage", b =>
-                {
-                    b.Property<Guid>("ChatMessageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<Guid>("ConversationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Entitiesjson")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Intent")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MessageType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RasaResponse")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SenderType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ChatMessageId");
-
-                    b.HasIndex("ConversationId");
-
-                    b.HasIndex("Intent");
-
-                    b.ToTable("ChatMessages");
-                });
-
-            modelBuilder.Entity("ASPtestShop.Data.Entities.Conversation", b =>
-                {
-                    b.Property<Guid>("ConversationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("EndedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsClosed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ConversationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Conversations");
                 });
 
             modelBuilder.Entity("ASPtestShop.Data.Entities.Coupon", b =>
@@ -889,39 +760,6 @@ namespace ASPtestShop.Migrations
                     b.Navigation("ParentCategory");
                 });
 
-            modelBuilder.Entity("ASPtestShop.Data.Entities.ChatAttachment", b =>
-                {
-                    b.HasOne("ASPtestShop.Data.Entities.ChatMessage", "ChatMessage")
-                        .WithMany("Attachments")
-                        .HasForeignKey("ChatMessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ChatMessage");
-                });
-
-            modelBuilder.Entity("ASPtestShop.Data.Entities.ChatMessage", b =>
-                {
-                    b.HasOne("ASPtestShop.Data.Entities.Conversation", "Conversation")
-                        .WithMany("ChatMessages")
-                        .HasForeignKey("ConversationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Conversation");
-                });
-
-            modelBuilder.Entity("ASPtestShop.Data.Entities.Conversation", b =>
-                {
-                    b.HasOne("ASPtestShop.Data.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ASPtestShop.Data.Entities.Order", b =>
                 {
                     b.HasOne("ASPtestShop.Data.Entities.Coupon", "Coupon")
@@ -1072,16 +910,6 @@ namespace ASPtestShop.Migrations
                     b.Navigation("Products");
 
                     b.Navigation("SubCategories");
-                });
-
-            modelBuilder.Entity("ASPtestShop.Data.Entities.ChatMessage", b =>
-                {
-                    b.Navigation("Attachments");
-                });
-
-            modelBuilder.Entity("ASPtestShop.Data.Entities.Conversation", b =>
-                {
-                    b.Navigation("ChatMessages");
                 });
 
             modelBuilder.Entity("ASPtestShop.Data.Entities.Coupon", b =>

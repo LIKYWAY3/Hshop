@@ -23,9 +23,6 @@ namespace ASPtestShop.Data
         // ==========================================
         // DBSETS: CHAT SYSTEM
         // ==========================================
-        public DbSet<Conversation> Conversations { get; set; }
-        public DbSet<ChatMessage> ChatMessages { get; set; }
-        public DbSet<ChatAttachment> ChatAttachments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -55,14 +52,6 @@ namespace ASPtestShop.Data
                 .HasIndex(p => p.OrderId)
                 .IsUnique();
 
-            builder.Entity<Conversation>()
-                .HasIndex(c => c.UserId);
-
-            builder.Entity<ChatMessage>()
-                .HasIndex(cm => cm.ConversationId);
-
-            builder.Entity<ChatMessage>()
-                .HasIndex(cm => cm.Intent);
 
 
             // ==========================================
@@ -162,46 +151,8 @@ namespace ASPtestShop.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-            // ==========================================
-            // RELATIONSHIPS: CHAT SYSTEM
-            // ==========================================
 
-            // Conversation -> User
-            builder.Entity<Conversation>()
-                .HasOne(c => c.User)
-                .WithMany()
-                .HasForeignKey(c => c.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Conversation -> ChatMessages (1 - N)
-            builder.Entity<Conversation>()
-                .HasMany(c => c.ChatMessages)
-                .WithOne(cm => cm.Conversation)
-                .HasForeignKey(cm => cm.ConversationId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // ChatMessage -> ChatAttachments (1 - N)
-            builder.Entity<ChatMessage>()
-                .HasMany(cm => cm.Attachments)
-                .WithOne(a => a.ChatMessage)
-                .HasForeignKey(a => a.ChatMessageId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-
-            // ==========================================
-            // ENUM CONVERSIONS (Mã hóa Enum thành Int trong DB)
-            // ==========================================
-            builder.Entity<ChatMessage>()
-                .Property(cm => cm.SenderType)
-                .HasConversion<int>();
-
-            builder.Entity<ChatMessage>()
-                .Property(cm => cm.MessageType)
-                .HasConversion<int>();
-
-            builder.Entity<ChatAttachment>()
-                .Property(ca => ca.AttachmentType)
-                .HasConversion<int>();
-        }
-    }
-}
+            
+            
+    
+}}}

@@ -81,8 +81,6 @@ namespace ASPtestShop.Controllers.Api
         [HttpGet("search")]
         public async Task<IActionResult> SearchProducts([FromQuery] string keyword)
         {
-            // Nếu keyword rỗng thì trả BadRequest
-            // Tránh lỗi ProductName.Contains(null)
             if (string.IsNullOrWhiteSpace(keyword))
             {
                 return BadRequest(new
@@ -91,8 +89,17 @@ namespace ASPtestShop.Controllers.Api
                 });
             }
 
-            // Gọi service tìm kiếm sản phẩm
             var products = await _productService.SearchProductsAsync(keyword);
+
+            return Ok(products);
+        }
+
+        //===============================FILTER PRODUCTS======================================
+        // GET: api/products/filter?keyword=abc&categoryId=1
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterProducts([FromQuery] string? keyword, [FromQuery] int? categoryId)
+        {
+            var products = await _productService.FilterProductsAsync(keyword, categoryId);
 
             return Ok(products);
         }
